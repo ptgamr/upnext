@@ -1,5 +1,5 @@
 <!doctype html>
-<html>
+<html ng-app="soundCloudify" ng-csp>
     <head>
         <meta charset="utf-8">
         <!-- build:css styles/vendor.css -->
@@ -11,7 +11,10 @@
         <!-- endbuild -->
     </head>
     <body>
-        <h1>'Allo, 'Allo!</h1>
+        <div ng-controller="MainController as ctrl">
+            <p>{{ctrl.track.title}}</p>
+            <button ng-click="ctrl.getTrack()">Get Track</button>
+        </div>
 
         <!-- build:js scripts/vendor.js -->
         <!-- bower:js -->
@@ -19,6 +22,9 @@
         <!-- endbuild -->
 
         <!-- build:js scripts/popup.js -->
+        <script src="scripts/soundmanager2.js"></script>
+        <script src="scripts/angular.min.js"></script>
+        <script src="scripts/app.js"></script>
         <script src="scripts/popup.js"></script>
         <!-- endbuild -->
     </body>
