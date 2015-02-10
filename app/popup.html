@@ -12,8 +12,12 @@
     </head>
     <body>
         <div ng-controller="MainController as ctrl">
-            <p>{{ctrl.track.title}}</p>
-            <button ng-click="ctrl.getTrack()">Get Track</button>
+            <ul>
+                <li ng-repeat="track in ctrl.tracks">
+                    {{track.title}}
+                    <button ng-click="ctrl.playTrack(track)">Play</button>
+                </li>
+            </ul>
         </div>
 
         <!-- build:js scripts/vendor.js -->
@@ -22,7 +26,7 @@
         <!-- endbuild -->
 
         <!-- build:js scripts/popup.js -->
-        <script src="scripts/soundmanager2.js"></script>
+        <script src="scripts/sdk-2.0.0.js"></script>
         <script src="scripts/angular.min.js"></script>
         <script src="scripts/app.js"></script>
         <script src="scripts/popup.js"></script>
