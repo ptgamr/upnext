@@ -39,6 +39,7 @@ plangular.directive('plangular', ['$http', 'plangularConfig', function ($http, p
     },
 
     play: function(index, playlistIndex) {
+      console.log("Play")
       this.i = index || 0;
       var track = this.tracks[this.i];
       if (track.tracks) {
@@ -158,10 +159,12 @@ plangular.directive('plangular', ['$http', 'plangularConfig', function ($http, p
         addKeys(scope.track);
       } else {
         $http.jsonp('https://api.soundcloud.com/resolve.json', { params: params }).success(function(data){
+          console.log(data);
           scope.track = data;
           addKeys(scope.track);
           player.data[src] = data;
           player.load(data, scope.index);
+          player.play();
         });
       }
 
@@ -280,7 +283,7 @@ plangular.filter('prettyTime', function() {
 });
 
 plangular.provider('plangularConfig', function() {
-  this.clientId = '0d33361983f16d2527b01fbf6408b7d7';
+  this.clientId = '849e84ac5f7843ce1cbc0e004ae4fb69';
   var _this = this;
   this.$get = function() {
     return {

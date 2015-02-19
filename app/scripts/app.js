@@ -2,7 +2,7 @@
 
 	'use strict';
 
-	var soundCloudify = angular.module('soundCloudify', []);
+	var soundCloudify = angular.module('soundCloudify', ['plangular']);
 
 	soundCloudify.value('CLIENT_ID', '849e84ac5f7843ce1cbc0e004ae4fb69');
 
@@ -24,21 +24,11 @@
 	});
 
 	soundCloudify.service('SDK', function($q, CLIENT_ID) {
-		SC.initialize({
-		  client_id: CLIENT_ID
-		});
-
 		var play = function() {
 			
 		};
 
 		var getTracks = function() {
-			var d = $q.defer();
-			SC.get('/tracks', function(tracks, error) {
-				d.resolve(tracks);
-			});
-
-			return d.promise;
 		};
 
 		return {
@@ -50,15 +40,15 @@
 
 	soundCloudify.controller('MainController', function(SDK, CLIENT_ID) {
 
-		var self = this;
+		// var self = this;
 
-		this.getTracks = function() {
-			SDK.getTracks().then(function(tracks) {
-				self.tracks = tracks;
-			});
-		};
+		// this.getTracks = function() {
+		// 	SDK.getTracks().then(function(tracks) {
+		// 		self.tracks = tracks;
+		// 	});
+		// };
 
-		this.getTracks();
+		// this.getTracks();
 	});
 
 }());
