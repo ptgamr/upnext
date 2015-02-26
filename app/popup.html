@@ -20,7 +20,16 @@
             </ul>
         </div>
 
-        <div plangular="https://soundcloud.com/dave-luxe/riff-raff-lil-mama-im-sorry"></div>
+        <div plangular="https://soundcloud.com/dave-luxe/riff-raff-lil-mama-im-sorry">
+            <a ng-href="{{ track.permalink_url }}">View on SoundCloud</a>
+            <img ng-src="{{ track.artwork_url  }}" alt="{{ track.title }}" />
+            <img ng-src="{{ track.waveform_url }}" alt="waveform" />
+
+            <svg plangular-icon="play" ng-click="play()" ng-if="player.playing != track"></svg>
+            <svg plangular-icon="pause" ng-click="pause()" ng-if="player.playing == track"></svg>
+            <progress value="{{ currentTime / duration || 0 }}">{{ currentTime / duration }}</progress>
+            <small>{{ currentTime | prettyTime }} | {{ duration | prettyTime }}</small>
+        </div>
 
         <!-- build:js scripts/vendor.js -->
         <!-- bower:js -->
