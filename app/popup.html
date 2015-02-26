@@ -7,6 +7,7 @@
         <!-- endbower -->
         <!-- endbuild -->
         <!-- build:css styles/main.css -->
+        <link href="styles/autobass.css" rel="stylesheet">
         <link href="styles/main.css" rel="stylesheet">
         <!-- endbuild -->
     </head>
@@ -20,7 +21,22 @@
             </ul>
         </div>
 
-        <div plangular="https://soundcloud.com/dave-luxe/riff-raff-lil-mama-im-sorry">
+        <div class="table" plangular="http://soundcloud.com/mrsjxn/bbb">
+            <div class="table-cell">
+                <button class="button-icon" ng-click="playPause()">
+                    <svg ng-if="player.playing != track" plangular-icon="play"></svg>
+                    <svg ng-if="player.playing == track" plangular-icon="pause"></svg>
+                </button>
+            </div>
+            <div class="table-cell px2 full-width">
+                <h3 class="m0">{{ user.username }} - {{ title }}</h3>
+                <progress value="{{ currentTime / duration || 0 }}" ng-click="seek($event)">
+                    {{ currentTime / duration }}
+                </progress>
+            </div>
+        </div>
+
+        <!-- <div plangular="https://soundcloud.com/dave-luxe/riff-raff-lil-mama-im-sorry">
             <a ng-href="{{ track.permalink_url }}">View on SoundCloud</a>
             <img ng-src="{{ track.artwork_url  }}" alt="{{ track.title }}" />
             <img ng-src="{{ track.waveform_url }}" alt="waveform" />
@@ -29,7 +45,7 @@
             <svg plangular-icon="pause" ng-click="pause()" ng-if="player.playing == track"></svg>
             <progress value="{{ currentTime / duration || 0 }}">{{ currentTime / duration }}</progress>
             <small>{{ currentTime | prettyTime }} | {{ duration | prettyTime }}</small>
-        </div>
+        </div> -->
 
         <!-- build:js scripts/vendor.js -->
         <!-- bower:js -->
