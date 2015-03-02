@@ -1,6 +1,9 @@
 {
   "name": "soundcloudify",
   "version": "0.0.0",
-  "dependencies": {},
+  "dependencies": {
+    "angular": "~1.3.0",
+    "angular-route": "~1.3.0"
+  },
   "devDependencies": {}
 }

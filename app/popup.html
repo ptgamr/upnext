@@ -7,57 +7,29 @@
         <!-- endbower -->
         <!-- endbuild -->
         <!-- build:css styles/main.css -->
+        <!-- <link href="styles/pure-min.css" rel="stylesheet"> -->
         <link href="styles/autobass.css" rel="stylesheet">
+        <link href="styles/loading.css" rel="stylesheet">
         <link href="styles/main.css" rel="stylesheet">
         <!-- endbuild -->
     </head>
     <body>
-        <div ng-controller="MainController as ctrl">
-            <ul>
-                <li ng-repeat="track in ctrl.tracks">
-                    {{track.title}}
-                    <button ng-click="ctrl.playTrack(track)">Play</button>
-                </li>
-            </ul>
-        </div>
 
-        <div class="table" plangular="http://soundcloud.com/mrsjxn/bbb">
-            <div class="table-cell">
-                <button class="button-icon" ng-click="playPause()">
-                    <svg ng-if="player.playing != track" plangular-icon="play"></svg>
-                    <svg ng-if="player.playing == track" plangular-icon="pause"></svg>
-                </button>
-            </div>
-            <div class="table-cell px2 full-width">
-                <h3 class="m0">{{ user.username }} - {{ title }}</h3>
-                <progress value="{{ currentTime / duration || 0 }}" ng-click="seek($event)">
-                    {{ currentTime / duration }}
-                </progress>
-            </div>
-        </div>
-
-        <!-- <div plangular="https://soundcloud.com/dave-luxe/riff-raff-lil-mama-im-sorry">
-            <a ng-href="{{ track.permalink_url }}">View on SoundCloud</a>
-            <img ng-src="{{ track.artwork_url  }}" alt="{{ track.title }}" />
-            <img ng-src="{{ track.waveform_url }}" alt="waveform" />
-
-            <svg plangular-icon="play" ng-click="play()" ng-if="player.playing != track"></svg>
-            <svg plangular-icon="pause" ng-click="pause()" ng-if="player.playing == track"></svg>
-            <progress value="{{ currentTime / duration || 0 }}">{{ currentTime / duration }}</progress>
-            <small>{{ currentTime | prettyTime }} | {{ duration | prettyTime }}</small>
-        </div> -->
-
-        <!-- build:js scripts/vendor.js -->
-        <!-- bower:js -->
-        <!-- endbower -->
-        <!-- endbuild -->
-
-        <!-- build:js scripts/popup.js -->
-        <script src="scripts/sdk-2.0.0.js"></script>
-        <script src="scripts/angular.min.js"></script>
-        <script src="scripts/ng-plangular.js"></script>
-        <script src="scripts/app.js"></script>
-        <script src="scripts/popup.js"></script>
-        <!-- endbuild -->
-    </body>
+        <div ng-view></div>
+        
+<!-- build:js scripts/vendor.js -->
+<!-- bower:js -->
+<!-- endbower -->
+<!-- endbuild -->
+<!-- build:js scripts/popup.js -->
+<script src="bower_components/angular/angular.min.js"></script>
+<script src="bower_components/angular-route/angular-route.min.js"></script>
+<script src="scripts/ng-plangular.js"></script>
+<script src="scripts/app.js"></script>
+<script src="scripts/controllers/MainController.js"></script>
+<script src="scripts/controllers/PlaylistController.js"></script>
+<script src="scripts/directives/loadingDirective.js"></script>
+<script src="scripts/popup.js"></script>
+<!-- endbuild -->
+</body>
 </html>

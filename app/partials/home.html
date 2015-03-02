@@ -1,0 +1,10 @@
+<div>
+    <loading ng-if="ctrl.isLoading"></loading>
+
+    <select ng-model="ctrl.selectedCategory">
+        <option ng-repeat="cat in ctrl.categories" ng-selected="$index==0">{{cat}}</option>
+    </select>
+    <br/>
+    <br/>
+    <button class="pure-button" ng-click="ctrl.start()">Start</button>
+</div>

@@ -134,39 +134,47 @@ plangular.directive('plangular', ['$http', 'plangularConfig', function ($http, p
 
     link: function (scope, elem, attrs) {
 
-      var src = attrs.plangular;
-      var params = { url: src, client_id: clientId, callback: 'JSON_CALLBACK' }
-
       scope.player = player;
       scope.audio = audio;
       scope.currentTime = 0;
       scope.duration = 0;
-      if (src) {
-        scope.index = index;
-        index++;
-      }
+        
+      attrs.$observe('plangular', function(val) {
 
-      function addKeys(track) {
-        for (var key in track) {
-          scope[key] = track[key];
+        if (!val) return;
+
+        var src = val;
+        var params = { url: src, client_id: clientId, callback: 'JSON_CALLBACK' }
+
+        if (src) {
+          scope.index = index;
+          index++;
         }
-      }
 
-      if (!src) {
-        //console.log('no src');
-      } else if (player.data[src]) {
-        scope.track = player.data[src];
-        addKeys(scope.track);
-      } else {
-        $http.jsonp('https://api.soundcloud.com/resolve.json', { params: params }).success(function(data){
-          console.log(data);
-          scope.track = data;
+        function addKeys(track) {
+          for (var key in track) {
+            scope[key] = track[key];
+          }
+        }
+
+        if (!src) {
+          console.log('no src');
+        } else if (player.data[src]) {
+          scope.track = player.data[src];
           addKeys(scope.track);
-          player.data[src] = data;
-          player.load(data, scope.index);
-          player.play();
-        });
-      }
+        } else {
+          $http.jsonp('https://api.soundcloud.com/resolve.json', { params: params }).success(function(data){
+            console.log(data);
+            scope.track = data;
+            addKeys(scope.track);
+            player.data[src] = data;
+            player.load(data, scope.index);
+            player.play();
+          });
+        }
+
+
+      });
 
       scope.play = function(playlistIndex) {
         player.play(scope.index, playlistIndex);

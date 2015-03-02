@@ -2,9 +2,26 @@
 
 	'use strict';
 
-	var soundCloudify = angular.module('soundCloudify', ['plangular']);
+	var soundCloudify = angular.module('soundCloudify', ['plangular', 'ngRoute']);
 
 	soundCloudify.value('CLIENT_ID', '849e84ac5f7843ce1cbc0e004ae4fb69');
+
+	soundCloudify.config(['$routeProvider',
+		function($routeProvider) {
+			$routeProvider.
+				when('/', {
+					templateUrl: 'partials/home.html',
+					controller: 'MainController as ctrl'
+				}).
+				when('/playlist/:category', {
+					templateUrl: 'partials/playlist.html',
+					controller: 'PlaylistController as ctrl'
+				}).
+				otherwise({
+					redirectTo: '/'
+				});
+		}
+	]);
 
 	soundCloudify.service('SoundCloudService', function($http, CLIENT_ID) {
 
@@ -37,18 +54,4 @@
 		}
 
 	});
-
-	soundCloudify.controller('MainController', function(SDK, CLIENT_ID) {
-
-		// var self = this;
-
-		// this.getTracks = function() {
-		// 	SDK.getTracks().then(function(tracks) {
-		// 		self.tracks = tracks;
-		// 	});
-		// };
-
-		// this.getTracks();
-	});
-
 }());
