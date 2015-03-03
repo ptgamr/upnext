@@ -13,12 +13,67 @@
 
 'use strict';
 
+var PortManager = (function() {
+
+  var api = {
+    registerTimeUpdateHandler: registerTimeUpdateHandler,
+    registerEndedHandler: registerEndedHandler,
+    sendPlayMessage: sendPlayMessage,
+    sendPauseMessage: sendPauseMessage,
+    sendSeekMessage: sendSeekMessage
+  };
+
+  var onTimeUpdate, onEnded;
+
+  var port = chrome.runtime.connect({name: "soundcloudify"});
+
+  port.onMessage.addListener(function(event) {
+    var data = event.data;
+
+    switch(event.message) {
+      case 'scd.timeupdate':
+        onTimeUpdate(data);
+        break;
+      case 'scd.ended':
+        onEnded(data);
+        break;
+    }
+  });
+
+
+  function registerTimeUpdateHandler(callback) {
+    onTimeUpdate = callback;
+  }
+
+  function registerEndedHandler(callback) {
+    onEnded = callback;
+  }
+
+  function sendPlayMessage(src) {
+    port.postMessage({message: 'scd.play', data: {
+        src: src
+    }});
+  }
+
+  function sendPauseMessage() {
+    port.postMessage({message: 'scd.pause', data: {}});
+  }
+
+  function sendSeekMessage(xpos) {
+    port.postMessage({message: 'scd.seek', data: {
+        xpos: xpos
+    }});
+  }
+
+  return api;
+
+})();
+
+
 var plangular = angular.module('plangular', []);
 
 plangular.directive('plangular', ['$http', 'plangularConfig', function ($http, plangularConfig) {
   var clientId = plangularConfig.clientId;
-
-  var audio = document.createElement('audio');
 
   var player = {
  
@@ -51,12 +106,11 @@ plangular.directive('plangular', ['$http', 'plangularConfig', function ($http, p
         var src = track.stream_url + '?client_id=' + clientId;
       }
       this.currentTrack = this.playing;
-      if (src != audio.src) audio.src = src;
-      audio.play();
+      PortManager.sendPlayMessage(src);
     },
 
     pause: function() {
-      audio.pause();
+      PortManager.sendPauseMessage(src);
       this.playing = false;
     },
 
@@ -108,22 +162,22 @@ plangular.directive('plangular', ['$http', 'plangularConfig', function ($http, p
     },
 
     seek: function(e) {
-      if (!audio.readyState) return false;
       var xpos = e.offsetX / e.target.offsetWidth;
-      audio.currentTime = (xpos * audio.duration);
+      PortManager.sendSeekMessage(xpos);
     }
 
   };
 
-  audio.addEventListener('timeupdate', function() {
-    player.currentTime = audio.currentTime;
-    player.duration = audio.duration;
-  }, false);
+  PortManager.registerTimeUpdateHandler(function(data) {
+    player.currentTime = data.currentTime;
+    player.duration = data.duration;
+  });
 
-  audio.addEventListener('ended', function() {
+  PortManager.registerEndedHandler(function() {
     if (player.tracks.length > 0) player.next();
     else player.pause();
-  }, false);
+  });
+
 
   var index = 0;
 
@@ -135,7 +189,6 @@ plangular.directive('plangular', ['$http', 'plangularConfig', function ($http, p
     link: function (scope, elem, attrs) {
 
       scope.player = player;
-      scope.audio = audio;
       scope.currentTime = 0;
       scope.duration = 0;
         
@@ -196,14 +249,14 @@ plangular.directive('plangular', ['$http', 'plangularConfig', function ($http, p
         player.previous();
       };
 
-      audio.addEventListener('timeupdate', function() {
-        if (scope.track == player.tracks[player.i]){
-          scope.$apply(function() {
-            scope.currentTime = player.currentTime;
-            scope.duration = player.duration;
-          });  
-        };
-      }, false);
+      // audio.addEventListener('timeupdate', function() {
+      //   if (scope.track == player.tracks[player.i]){
+      //     scope.$apply(function() {
+      //       scope.currentTime = player.currentTime;
+      //       scope.duration = player.duration;
+      //     });  
+      //   };
+      // }, false);
       
       scope.seek = function(e){
         if (player.tracks[player.i] == scope.track) {
