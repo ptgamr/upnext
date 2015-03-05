@@ -10,7 +10,8 @@
         <!-- <link href="styles/pure-min.css" rel="stylesheet"> -->
         <!-- <link href="styles/autobass.css" rel="stylesheet"> -->
         <link href="bower_components/angular/angular-csp.css" rel="stylesheet">
-        <link href="bower_components/angular-material/angular-material.min.css" rel="stylesheet">
+        <link href="bower_components/font-awesome/css/font-awesome.min.css" rel="stylesheet">
+        <link href="bower_components/angular-material/angular-material.css" rel="stylesheet">
         <link href="styles/loading.css" rel="stylesheet">
         <link href="styles/main.css" rel="stylesheet">
         <!-- endbuild -->
@@ -18,9 +19,7 @@
     <body id="soundcloudify">
         <div layout="row">
             <div id="player">
-                <div class="artwork">
-                    <img src="http://placehold.it/200x200" alt="Washed Out">
-                </div>
+                <scd-player></scd-player>
             </div>
             <div id="discovery" ng-controller="DiscoveryController as vm">
                 <md-tabs md-selected="vm.selectedIndex">
@@ -41,10 +40,10 @@
                         </div>
                     </div>
                   </md-tab>
-                  <md-tab id="tab3" label="Discover">
-                    <div class="demo-tab tab3" layout="column" layout-align="space-around center">
+                  <md-tab id="tab3" label="Explore">
+                    <div class="demo-tab tab3" layout="column" layout-align="start start">
                         <div>
-                            View for DISCOVER
+                            <explore></explore>
                         </div>
                     </div>
                   </md-tab>
@@ -69,7 +68,10 @@
 <script src="scripts/controllers/MainController.js"></script>
 <script src="scripts/controllers/DiscoveryController.js"></script>
 <script src="scripts/controllers/PlaylistController.js"></script>
+<script src="scripts/directives/scdPlayerDirective.js"></script>
+<script src="scripts/directives/exploreDirective.js"></script>
 <script src="scripts/directives/loadingDirective.js"></script>
+<script src="scripts/services/CategoryService.js"></script>
 <script src="scripts/popup.js"></script>
 <!-- endbuild -->
 </body>

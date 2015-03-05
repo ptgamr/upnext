@@ -1,0 +1,21 @@
+<div plangular class="artwork">
+    {{ player.currentTrack.title || '&nbsp;' }}
+    <img src="http://placehold.it/200x200" alt="Washed Out">
+</div>
+<progress value="{{ player.currentTime / player.duration || 0 }}"
+    ng-click="player.seek($event)">
+    {{ player.currentTime / duration }}
+</progress>
+<div class="player-controls">
+    <section layout="row" layout-margin layout-align="center center">
+        <md-button flex aria-label="Use Android">
+            <md-icon md-font-icon="fa fa-step-backward fa-2x" ng-style="{color: '#fff'}"></md-icon>
+        </md-button>
+        <md-button flex aria-label="Use Android">
+            <md-icon md-font-icon="fa fa-play fa-2x" ng-style="{color: '#fff'}"></md-icon>
+        </md-button>
+        <md-button flex aria-label="Use Android">
+            <md-icon md-font-icon="fa fa-step-forward fa-2x" ng-style="{color: '#fff'}"></md-icon>
+        </md-button>
+    </section>
+</div>

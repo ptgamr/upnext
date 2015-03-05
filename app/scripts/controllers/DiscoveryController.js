@@ -7,9 +7,9 @@
 
         var vm = this;
 
-        vm.selectedIndex = 0;
+        vm.selectedIndex = 2;
     }
 
     soundCloudify = angular.module('soundCloudify');
-    soundCloudify.controller('MainController', ['$http', '$location', 'CLIENT_ID', MainController]);
+    soundCloudify.controller('MainController', [DiscoveryController]);
 }());

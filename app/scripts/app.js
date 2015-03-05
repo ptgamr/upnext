@@ -6,8 +6,8 @@
 
 	soundCloudify.value('CLIENT_ID', '849e84ac5f7843ce1cbc0e004ae4fb69');
 
-	soundCloudify.config(['$routeProvider',
-		function($routeProvider) {
+	soundCloudify.config(['$routeProvider', '$mdThemingProvider',
+		function($routeProvider, $mdThemingProvider) {
 			$routeProvider.
 				when('/', {
 					templateUrl: 'partials/home.html',
@@ -20,6 +20,9 @@
 				otherwise({
 					redirectTo: '/'
 				});
+
+			$mdThemingProvider.theme('default')
+			    .primaryPalette('indigo');
 		}
 	]);
 

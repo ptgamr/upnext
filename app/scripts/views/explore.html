@@ -1,0 +1,22 @@
+<md-select ng-model="chosenCategory">
+    <md-option ng-repeat="cat in categories" ng-value="cat" ng-selected="$index==0">{{cat}}</md-option>
+</md-select>
+
+<md-content>
+    <md-list>
+        <md-item ng-repeat="track in tracks">
+            <md-item-content>
+                <div class="md-tile-left">
+                    <img ng-src="{{track.artwork_url}}" class="face" alt="{{track.title}}">
+                </div>
+                <div class="md-tile-content">
+                    <h3>{{track.title}}</h3>
+                    <h4>{{track.user.username}}</h4>
+                    <p>
+                        {{track.playback_count}} | {{track.likes_count}}
+                    </p>
+                </div>
+            </md-item-content>
+        </md-item>
+    </md-list>
+</md-content>
