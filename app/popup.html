@@ -8,14 +8,51 @@
         <!-- endbuild -->
         <!-- build:css styles/main.css -->
         <!-- <link href="styles/pure-min.css" rel="stylesheet"> -->
-        <link href="styles/autobass.css" rel="stylesheet">
+        <!-- <link href="styles/autobass.css" rel="stylesheet"> -->
+        <link href="bower_components/angular/angular-csp.css" rel="stylesheet">
+        <link href="bower_components/angular-material/angular-material.min.css" rel="stylesheet">
         <link href="styles/loading.css" rel="stylesheet">
         <link href="styles/main.css" rel="stylesheet">
         <!-- endbuild -->
     </head>
-    <body>
+    <body id="soundcloudify">
+        <div layout="row">
+            <div id="player">
+                <div class="artwork">
+                    <img src="http://placehold.it/200x200" alt="Washed Out">
+                </div>
+            </div>
+            <div id="discovery" ng-controller="DiscoveryController as vm">
+                <md-tabs md-selected="vm.selectedIndex">
+                  <md-tab id="tab1" label="Playing">
+                    <div class="demo-tab tab1" layout="column" layout-align="space-around center">
+                        <div>
+                            View for PLAYING
+                        </div>
+                        <md-button class="md-primary md-raised">
+                            Remove Tab
+                        </md-button>
+                    </div>
+                  </md-tab>
+                  <md-tab id="tab2" label="Playlist">
+                    <div class="demo-tab tab2" layout="column" layout-align="space-around center">
+                        <div>
+                            View for PLAYLIST
+                        </div>
+                    </div>
+                  </md-tab>
+                  <md-tab id="tab3" label="Discover">
+                    <div class="demo-tab tab3" layout="column" layout-align="space-around center">
+                        <div>
+                            View for DISCOVER
+                        </div>
+                    </div>
+                  </md-tab>
+                </md-tabs>
+            </div>
+        </div>
 
-        <div ng-view></div>
+        <!-- <div ng-view></div> -->
         
 <!-- build:js scripts/vendor.js -->
 <!-- bower:js -->
@@ -23,10 +60,14 @@
 <!-- endbuild -->
 <!-- build:js scripts/popup.js -->
 <script src="bower_components/angular/angular.min.js"></script>
+<script src="bower_components/angular-animate/angular-animate.min.js"></script>
+<script src="bower_components/angular-aria/angular-aria.min.js"></script>
+<script src="bower_components/angular-material/angular-material.min.js"></script>
 <script src="bower_components/angular-route/angular-route.min.js"></script>
 <script src="scripts/ng-plangular.js"></script>
 <script src="scripts/app.js"></script>
 <script src="scripts/controllers/MainController.js"></script>
+<script src="scripts/controllers/DiscoveryController.js"></script>
 <script src="scripts/controllers/PlaylistController.js"></script>
 <script src="scripts/directives/loadingDirective.js"></script>
 <script src="scripts/popup.js"></script>

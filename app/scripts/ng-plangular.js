@@ -110,7 +110,7 @@ plangular.directive('plangular', ['$http', 'plangularConfig', function ($http, p
     },
 
     pause: function() {
-      PortManager.sendPauseMessage(src);
+      PortManager.sendPauseMessage();
       this.playing = false;
     },
 

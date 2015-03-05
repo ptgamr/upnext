@@ -47,12 +47,11 @@ Player.prototype = {
     }
 };
 
+var backgroundPlayer = new Player();
 
 chrome.runtime.onConnect.addListener(function(port) {
 
     chrome.browserAction.setBadgeText({text: 'C'});
-
-    var backgroundPlayer = new Player();
 
     port.onMessage.addListener(function(event) {
 

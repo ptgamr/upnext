@@ -1,3 +1,25 @@
-body {
-  padding: 20px;
+#soundcloudify {
+	width: 600px;
+	height: 300px;
+}
+
+#player {
+	width: 190px;
+}
+
+#player .artwork {
+}
+
+#player .artwork > img{
+	width: 190px;
+	height: 190px;
+}
+
+#discovery {
+	width: 410px;
+}
+
+#discovery .demo-tab {
+  height: 200px;
+  text-align: center;
 }

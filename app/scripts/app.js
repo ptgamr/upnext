@@ -2,7 +2,7 @@
 
 	'use strict';
 
-	var soundCloudify = angular.module('soundCloudify', ['plangular', 'ngRoute']);
+	var soundCloudify = angular.module('soundCloudify', ['ngMaterial', 'plangular', 'ngRoute']);
 
 	soundCloudify.value('CLIENT_ID', '849e84ac5f7843ce1cbc0e004ae4fb69');
 
