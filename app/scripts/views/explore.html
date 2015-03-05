@@ -5,9 +5,9 @@
 <md-content>
     <md-list>
         <md-item ng-repeat="track in tracks">
-            <md-item-content>
+            <md-item-content layout="row" layout-align="start start">
                 <div class="md-tile-left">
-                    <img ng-src="{{track.artwork_url}}" class="face" alt="{{track.title}}">
+                    <img ng-src="{{track.artwork_url || fallbackArtwork}}" class="face" alt="{{track.title}}">
                 </div>
                 <div class="md-tile-content">
                     <h3>{{track.title}}</h3>

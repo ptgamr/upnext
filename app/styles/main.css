@@ -31,27 +31,41 @@ html {
 	width: 440px;
 }
 
-#discovery .md-tabs-content {
-    overflow-y: scroll;
+    #discovery .md-tabs-content {
+        overflow-y: scroll;
+    }
+
+    #discovery .demo-tab {
+      height: 240px;
+      padding: 15px;
+    }
+
+    #discovery md-tab {
+        width: 146.66px;
+    }
+
+    #discovery md-tabs, #discovery md-tabs .md-header {
+      border-bottom: 1px solid #D8D8D8;
+    }
+
+    #discovery md-select {
+        margin-top: 0;
+    }
+
+#explorer {
+
 }
 
-#discovery .demo-tab {
-  height: 240px;
-  padding: 15px;
-  text-align: center;
-}
+    #explorer .face {
+        border-radius: 30px;
+        border: 1px solid #ddd;
+        width: 48px;
+        margin: 8px;
+    }
 
-#discovery md-tab {
-    width: 146.66px;
-}
-
-#discovery md-tabs, #discovery md-tabs .md-header {
-  border-bottom: 1px solid #D8D8D8;
-}
-
-#discovery md-select {
-    margin-top: 0;
-}
+    #explorer .md-tile-content {
+        padding: 8px 16px;
+    }
 
 progress {
   display: block;

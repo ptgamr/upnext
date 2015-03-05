@@ -14,6 +14,8 @@
                     $scope.categories = categories['music'] || [];
                 });
 
+                $scope.fallbackArtwork = chrome.extension.getURL('images/artwork-bar.jpg');
+
                 $scope.$watch('chosenCategory', function(val) {
                     if (val) {
                         Category.getTracks(val).success(function(data) {
