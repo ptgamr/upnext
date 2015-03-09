@@ -1,13 +1,21 @@
 <div>
     <div class="artwork">
-        {{ player.state.currentTrack.title || '&nbsp;' }}
         <img ng-src="{{(player.state.currentTrack.artwork_url | scArtwork) || 'images/artwork-bar.jpg'}}" alt="player.state.currentTrack.title">
+        <div class="show-on-hover fadeIn">
+            <div class="track-title">
+                {{ player.state.currentTrack.title || '&nbsp;' }}
+            </div>
+            <div class="overlay"></div>
+            <div class="pretty-time" layout="row" layout-wrap>
+                <div flex="50" class="current-time">{{ player.state.currentTime | prettyTime }}</div>
+                <div flex="50" class="duration">{{ player.state.duration | prettyTime }}</div>
+            </div>
+        </div>
     </div>
     <progress value="{{ player.state.currentTime / player.state.duration || 0 }}"
         ng-click="player.seek($event)">
         {{ player.state.currentTime / player.state.duration }}
     </progress>
-    <p class="h6">{{ player.state.currentTime | prettyTime }} - {{ player.state.duration | prettyTime }}</p>
     <div class="player-controls">
         <section layout="row" layout-margin layout-align="center center">
             <md-button flex ng-click="player.previous()">

@@ -6,7 +6,7 @@
     <md-list>
         <md-item ng-repeat="track in tracks" ng-class="{'playing': $index === player.state.currentIndex && player.state.playing, 'pause': $index === player.state.currentIndex && !player.state.playing}">
             <md-item-content layout="row" layout-align="start start">
-                <div class="md-tile-left" ng-click="play($index)">
+                <div class="md-tile-left" ng-click="addTrack(track)">
                     <div class="face">
                         <img ng-src="{{track.artwork_url || 'images/artwork-bar.jpg'}}" alt="{{track.title}}">
                         <div class="overlay"></div>

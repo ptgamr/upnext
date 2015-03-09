@@ -30,12 +30,45 @@ html {
     height: 200px;
 }
 
+#player .artwork .show-on-hover {
+  display: none;
+}
+
+#player .artwork:hover .show-on-hover {
+  display: block;
+  -webkit-animation: fadeIn 1s infinite;
+}
+
 #player .artwork > img{
-    position: absolute;
-    top: 0;
-    left: 0;
+  position: absolute;
+  top: 0;
+  left: 0;
 	width: 200px;
 	height: 200px;
+}
+
+#player .artwork .track-title {
+  position: absolute;
+  top: 0;
+  left: 0;
+  padding: 10px;
+  color: #fff;
+  z-index: 1;
+  font-size: 18px;
+}
+
+#player .artwork .pretty-time {
+  position: absolute;
+  bottom: 0px;
+  color: #ffffff;
+  width: 100%;
+  padding: 5px;
+  font-size: 1.2em;
+  text-shadow: 1px 1px 1px #000;
+}
+
+#player .artwork .pretty-time .duration {
+  text-align: right;
 }
 
 #discovery {
@@ -167,4 +200,28 @@ progress {
 .md-fab.md-fab-small {
     width: 40px;
     height: 40px;
+}
+
+.fadeIn {
+  
+}
+
+@-webkit-keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+
+  100% {
+    opacity: 1;
+  }
 }
