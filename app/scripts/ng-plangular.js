@@ -13,257 +13,146 @@
 
 'use strict';
 
-var PortManager = (function() {
-
-  var api = {
-    registerTimeUpdateHandler: registerTimeUpdateHandler,
-    registerEndedHandler: registerEndedHandler,
-    sendPlayMessage: sendPlayMessage,
-    sendPauseMessage: sendPauseMessage,
-    sendSeekMessage: sendSeekMessage
-  };
-
-  var onTimeUpdate, onEnded;
-
-  var port = chrome.runtime.connect({name: "soundcloudify"});
-
-  port.onMessage.addListener(function(event) {
-    var data = event.data;
-
-    switch(event.message) {
-      case 'scd.timeupdate':
-        onTimeUpdate(data);
-        break;
-      case 'scd.ended':
-        onEnded(data);
-        break;
-    }
-  });
-
-
-  function registerTimeUpdateHandler(callback) {
-    onTimeUpdate = callback;
-  }
-
-  function registerEndedHandler(callback) {
-    onEnded = callback;
-  }
-
-  function sendPlayMessage(src) {
-    port.postMessage({message: 'scd.play', data: {
-        src: src
-    }});
-  }
-
-  function sendPauseMessage() {
-    port.postMessage({message: 'scd.pause', data: {}});
-  }
-
-  function sendSeekMessage(xpos) {
-    port.postMessage({message: 'scd.seek', data: {
-        xpos: xpos
-    }});
-  }
-
-  return api;
-
-})();
-
-
 var plangular = angular.module('plangular', []);
 
-plangular.directive('plangular', ['$http', 'plangularConfig', function ($http, plangularConfig) {
-  var clientId = plangularConfig.clientId;
+plangular.directive('corePlayer', function(Messaging, NowPlaying, CLIENT_ID) {
+  return {
+    restrict: 'EA',
+    controller: function() {
 
-  var player = {
- 
-    currentTrack: false,
-    playing: false,
-    tracks: [],
-    i: 0,
-    playlistIndex: 0,
-    data: {},
-    currentTime: 0,
-    duration: 0,
+      var self = this;
+      this.tracks = [];
 
-    load: function(track, index) {
-      this.tracks[index] = track;
-      if (!this.playing && !this.i && index == 0) {
-        this.currentTrack = this.tracks[0];
-      }
-    },
+      this.state = {
+        currentTrack: false,
+        currentIndex: 0,
+        playing: false,
+        currentTime: 0,
+        duration: 0
+      };
 
-    play: function(index, playlistIndex) {
-      console.log("Play")
-      this.i = index || 0;
-      var track = this.tracks[this.i];
-      if (track.tracks) {
-        this.playlistIndex = playlistIndex || 0;
-        this.playing = track.tracks[this.playlistIndex];
-        var src = track.tracks[this.playlistIndex].stream_url + '?client_id=' + clientId;
-      } else {
-        this.playing = track;
-        var src = track.stream_url + '?client_id=' + clientId;
-      }
-      this.currentTrack = this.playing;
-      PortManager.sendPlayMessage(src);
-    },
+      NowPlaying.getList(function(tracks) {
+        self.tracks = tracks;
+      });
 
-    pause: function() {
-      PortManager.sendPauseMessage();
-      this.playing = false;
-    },
+      NowPlaying.getState(function(savedState) {
+        self.state = savedState;
+      })
 
-    playPause: function(i, playlistIndex) {
-      var track = this.tracks[i];
-      if (track.tracks && this.playing != track.tracks[playlistIndex]) {
-        this.play(i, playlistIndex);
-      } else if (!track.tracks && this.playing != track) {
-        this.play(i);
-      } else {
-        this.pause();
-      }
-    },
+      this.add = function(track, andPlay) {
 
-    next: function() {
-      var playlist = this.tracks[this.i].tracks || null;
-      if (playlist && this.playlistIndex < playlist.length - 1) {
-        this.playlistIndex++;
-        this.play(this.i, this.playlistIndex);
-      } else if (this.i < this.tracks.length - 1) {
-        this.i++;
-        // Handle advancing to new playlist
-        if (this.tracks[this.i].tracks) {
-          var playlist = this.tracks[this.i].tracks || null;
-          this.playlistIndex = 0;
-          this.play(this.i, this.playlistIndex);
-        } else {
-          this.play(this.i);
+        if (track) {
+          this.tracks.push(track);
         }
-      } else if (this.i >= this.tracks.length -1) {
-        this.pause();
-      }
-    },
 
-    previous: function() {
-      var playlist = this.tracks[this.i].tracks || null;
-      if (playlist && this.playlistIndex > 0) {
-        this.playlistIndex--;
-        this.play(this.i, this.playlistIndex);
-      } else if (this.i > 0) {
-        this.i--;
-        if (this.tracks[this.i].tracks) {
-          this.playlistIndex = this.tracks[this.i].tracks.length - 1;
-          this.play(this.i, this.playlistIndex);
-        } else {
-          this.play(this.i);
+        if (andPlay) {
+          this.play(this.tracks.length - 1);
         }
-      }
-    },
 
-    seek: function(e) {
-      var xpos = e.offsetX / e.target.offsetWidth;
-      PortManager.sendSeekMessage(xpos);
+        NowPlaying.saveList(this.tracks);
+
+      };
+
+      this.play = function(index) {
+
+        index = index || 0;
+
+        var track = this.tracks[index];
+
+        if (!track) {
+          throw 'No track found for playing, index=' + index;
+        }
+
+        if (track) {
+          var src = track.stream_url + '?client_id=' + CLIENT_ID;
+          this.state.playing = true;
+          this.state.currentTrack = track;
+          this.state.currentIndex = index;
+          NowPlaying.saveState(this.state);
+          Messaging.sendPlayMessage(src);
+        }
+      };
+
+      this.pause = function() {
+        this.state.playing = false;
+        NowPlaying.saveState(this.state);
+        Messaging.sendPauseMessage();
+      };
+
+      this.resume = function() {
+        if(!this.state.currentTrack) {
+          this.play();
+          return;
+        }
+
+        this.state.playing = true;
+        NowPlaying.saveState(this.state);
+        Messaging.sendPlayMessage();
+      }
+
+      this.playPause = function() {
+        this.state.playing ? this.pause() : this.resume();
+      };
+
+      this.next = function() {
+        var nextIndex = this.state.currentIndex + 1;
+        if (nextIndex >= this.tracks.length) {
+          nextIndex = 0;
+        }
+        this.play(nextIndex);
+      };
+
+      this.previous = function() {
+        var nextIndex = this.state.currentIndex - 1;
+        if (nextIndex < 0) {
+          nextIndex = this.track.length - 1;
+        }
+        this.play(nextIndex);
+      };
+
+      this.seek = function(e) {
+        var xpos = e.offsetX / e.target.offsetWidth;
+        Messaging.sendSeekMessage(xpos);
+      };
+
+      this.updateState = function(data) {
+        if(!this.state.currentTrack) {
+          this.state.currentTrack = data.track;
+          this.state.playing = true;
+        }
+
+        this.state.currentTime = data.currentTime;
+        this.state.duration = data.duration;
+      }
     }
-
   };
+});
 
-  PortManager.registerTimeUpdateHandler(function(data) {
-    player.currentTime = data.currentTime;
-    player.duration = data.duration;
-  });
-
-  PortManager.registerEndedHandler(function() {
-    if (player.tracks.length > 0) player.next();
-    else player.pause();
-  });
-
-
-  var index = 0;
+plangular.directive('plangular', ['$http', '$rootScope', 'plangularConfig', 'Messaging', function ($http, $rootScope, plangularConfig, Messaging) {
+  
+  var CLIENT_ID = plangularConfig.clientId;
 
   return {
 
     restrict: 'A',
     scope: true,
+    require: '^corePlayer',
+    link: function (scope, elem, attrs, playerController) {
 
-    link: function (scope, elem, attrs) {
+      scope.player = playerController;
 
-      scope.player = player;
-      scope.currentTime = 0;
-      scope.duration = 0;
-        
-      attrs.$observe('plangular', function(val) {
-
-        if (!val) return;
-
-        var src = val;
-        var params = { url: src, client_id: clientId, callback: 'JSON_CALLBACK' }
-
-        if (src) {
-          scope.index = index;
-          index++;
-        }
-
-        function addKeys(track) {
-          for (var key in track) {
-            scope[key] = track[key];
-          }
-        }
-
-        if (!src) {
-          console.log('no src');
-        } else if (player.data[src]) {
-          scope.track = player.data[src];
-          addKeys(scope.track);
-        } else {
-          $http.jsonp('https://api.soundcloud.com/resolve.json', { params: params }).success(function(data){
-            console.log(data);
-            scope.track = data;
-            addKeys(scope.track);
-            player.data[src] = data;
-            player.load(data, scope.index);
-            player.play();
-          });
-        }
-
-
+      Messaging.registerTimeUpdateHandler(function(data) {
+        $rootScope.$apply(function () {
+          playerController.updateState.call(playerController, data);
+        });
       });
 
-      scope.play = function(playlistIndex) {
-        player.play(scope.index, playlistIndex);
-      };
-
-      scope.pause = function() {
-        player.pause();
-      };
-
-      scope.playPause = function(playlistIndex) {
-        player.playPause(scope.index, playlistIndex);
-      };
-
-      scope.next = function() {
-        player.next();
-      };
-
-      scope.previous = function() {
-        player.previous();
-      };
-
-      // audio.addEventListener('timeupdate', function() {
-      //   if (scope.track == player.tracks[player.i]){
-      //     scope.$apply(function() {
-      //       scope.currentTime = player.currentTime;
-      //       scope.duration = player.duration;
-      //     });  
-      //   };
-      // }, false);
-      
-      scope.seek = function(e){
-        if (player.tracks[player.i] == scope.track) {
-          player.seek(e);
-        }
-      };
-
+      // Messaging.registerEndedHandler(function() {
+      //   $rootScope.$apply(function () {
+      //     if (playerController.tracks.length > 0) playerController.next.call(playerController);
+      //     else playerController.pause.call(playerController);
+      //   });
+      // });
     }
 
   }
@@ -343,6 +232,13 @@ plangular.filter('prettyTime', function() {
   };
 });
 
+// Filter to convert milliseconds to hours, minutes, seconds
+plangular.filter('scArtwork', function() {
+  return function(value) {
+    return value ? value.replace('-large.', '-t200x200.') : '';
+  };
+});
+
 plangular.provider('plangularConfig', function() {
   this.clientId = '849e84ac5f7843ce1cbc0e004ae4fb69';
   var _this = this;
@@ -353,6 +249,58 @@ plangular.provider('plangularConfig', function() {
   };
 });
 
+plangular.factory("Messaging", function() {
+  var onTimeUpdate, onEnded;
+
+  var port = chrome.runtime.connect({name: "soundcloudify"});
+
+  port.onMessage.addListener(function(event) {
+    var data = event.data;
+
+    switch(event.message) {
+      case 'scd.timeupdate':
+        if(onTimeUpdate)
+          onTimeUpdate(data);
+        break;
+      case 'scd.ended':
+        if(onEnded)
+          onEnded(data);
+        break;
+    }
+  });
+    
+  return {
+      registerTimeUpdateHandler: registerTimeUpdateHandler,
+      registerEndedHandler: registerEndedHandler,
+      sendPlayMessage: sendPlayMessage,
+      sendPauseMessage: sendPauseMessage,
+      sendSeekMessage: sendSeekMessage
+  };
+
+  function registerTimeUpdateHandler(callback) {
+    onTimeUpdate = callback;
+  }
+
+  function registerEndedHandler(callback) {
+    onEnded = callback;
+  }
+
+  function sendPlayMessage(src) {
+    port.postMessage({message: 'scd.play', data: {
+        src: src
+    }});
+  }
+
+  function sendPauseMessage() {
+    port.postMessage({message: 'scd.pause', data: {}});
+  }
+
+  function sendSeekMessage(xpos) {
+    port.postMessage({message: 'scd.seek', data: {
+        xpos: xpos
+    }});
+  }
+});
 
 })();
 

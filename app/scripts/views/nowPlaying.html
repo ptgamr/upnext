@@ -1,10 +1,6 @@
-<md-select ng-model="chosenCategory">
-    <md-option ng-repeat="cat in categories" ng-value="cat" ng-selected="$index==0">{{cat}}</md-option>
-</md-select>
-
 <md-content>
     <md-list>
-        <md-item ng-repeat="track in tracks" ng-class="{'playing': $index === player.state.currentIndex && player.state.playing, 'pause': $index === player.state.currentIndex && !player.state.playing}">
+        <md-item ng-repeat="track in player.tracks track by $index" ng-class="{'playing': $index === player.state.currentIndex && player.state.playing, 'pause': $index === player.state.currentIndex && !player.state.playing}">
             <md-item-content layout="row" layout-align="start start">
                 <div class="md-tile-left" ng-click="play($index)">
                     <div class="face">
@@ -16,7 +12,7 @@
                     <span class="fa fa-pause fa-lg"></span>
                 </div>
                 <div class="md-tile-content">
-                    <h3 ng-click="addTrack(track)">{{track.title}}</h3>
+                    <h3 ng-click="play($index)">{{track.title}}</h3>
                     <h4>{{track.user.username}}</h4>
                     <p>
                         {{track.playback_count}} | {{track.likes_count}}

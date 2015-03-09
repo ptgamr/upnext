@@ -17,8 +17,8 @@
         <!-- endbuild -->
     </head>
     <body id="soundcloudify">
-        <div layout="row">
-            <div id="player">
+        <div layout="row" core-player>
+            <div id="player" plangular>
                 <scd-player></scd-player>
             </div>
             <div id="discovery" ng-controller="DiscoveryController as vm">
@@ -26,11 +26,8 @@
                   <md-tab id="tab1" label="Playing">
                     <div class="demo-tab tab1" layout="column" layout-align="space-around center">
                         <div>
-                            View for PLAYING
+                            <now-playing class="media-list"></now-playing>
                         </div>
-                        <md-button class="md-primary md-raised">
-                            Remove Tab
-                        </md-button>
                     </div>
                   </md-tab>
                   <md-tab id="tab2" label="Playlist">
@@ -43,7 +40,7 @@
                   <md-tab id="tab3" label="Explore">
                     <div class="demo-tab tab3" layout="column" layout-align="start start">
                         <div>
-                            <explore id="explorer"></explore>
+                            <explore class="media-list"></explore>
                         </div>
                     </div>
                   </md-tab>
@@ -70,8 +67,10 @@
 <script src="scripts/controllers/PlaylistController.js"></script>
 <script src="scripts/directives/scdPlayerDirective.js"></script>
 <script src="scripts/directives/exploreDirective.js"></script>
+<script src="scripts/directives/nowPlayingDirective.js"></script>
 <script src="scripts/directives/loadingDirective.js"></script>
 <script src="scripts/services/CategoryService.js"></script>
+<script src="scripts/services/NowPlayingService.js"></script>
 <script src="scripts/popup.js"></script>
 <!-- endbuild -->
 </body>

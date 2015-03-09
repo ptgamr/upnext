@@ -44,12 +44,13 @@
   ],
   "content_security_policy": "script-src 'self' https://api.soundcloud.com https://api-v2.soundcloud.com; object-src 'self'",
   "permissions": [
+    "storage",
     "tabs",
     "management",
     "https://api.soundcloud.com/*",
     "https://api-v2.soundcloud.com/*"
   ],
   "web_accessible_resources": [
-    "images/artwork-bar.jpg"
+    "images/*"
   ]
 }

@@ -9,7 +9,4 @@
 
         vm.selectedIndex = 2;
     }
-
-    soundCloudify = angular.module('soundCloudify');
-    soundCloudify.controller('MainController', [DiscoveryController]);
 }());

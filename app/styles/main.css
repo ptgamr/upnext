@@ -2,6 +2,17 @@ html {
     height: auto;
 }
 
+.overlay {
+  background-color: #12121A;
+  height: 100%;
+  left: 0;
+  position: absolute;
+  top: 0;
+  width: 100%;
+  filter: progid:DXImageTransform.Microsoft.Alpha(Opacity=65);
+  opacity: 0.65;
+}
+
 #soundcloudify {
     width: 640px;
     margin: 0;
@@ -52,20 +63,87 @@ html {
         margin-top: 0;
     }
 
-#explorer {
+.media-list {
 
 }
+    
+  .media-list .face {
+    position: relative;
+    border-radius: 30px;
+    border: 1px solid #ddd;
+    width: 48px;
+    height: 48px;
+    margin: 8px;
+    overflow: hidden;
+  }
 
-    #explorer .face {
-        border-radius: 30px;
-        border: 1px solid #ddd;
-        width: 48px;
-        margin: 8px;
-    }
+  .media-list .face .overlay {
+    border-radius: 30px;
+    display: none;
+  }
 
-    #explorer .md-tile-content {
-        padding: 8px 16px;
-    }
+  .media-list .face > img {
+    width: 100%;
+  }
+
+  .media-list .md-tile-content {
+      padding: 8px 16px;
+  }
+  .media-list .md-tile-left {
+    position: relative;
+  }
+
+  .media-list .md-tile-left:hover {
+    cursor: pointer;
+  }
+
+  .media-list .md-tile-left .icon, .media-list .md-tile-left .fa {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -6px;
+    margin-left: -6px;
+    display: none;
+    color: #fff;
+  }
+
+  .media-list md-item:hover .fa-play{
+    display: block;
+  }
+
+  .media-list md-item:hover .overlay ,.media-list .playing .overlay {
+    display: block;
+  }
+
+  .media-list .playing h3, .media-list .pause h3 {
+    font-weight: bold;
+  }
+  
+  .media-list .playing .md-tile-left .icon-playing{
+    display: block;
+  }
+
+  .media-list .playing:hover .md-tile-left .icon-playing {
+    display: none;
+  }
+
+  .media-list md-item.playing:hover .md-tile-left .fa-play {
+    display: none;
+  }
+
+  .media-list md-item.playing:hover .md-tile-left .fa-pause {
+    display: block;
+  }
+
+
+
+.icon {}
+  .icon.icon-playing {
+    background: url('../images/equalizer.white.gif') center no-repeat;
+    display: inline-block;
+    width: 12px;
+    height: 12px;
+  }
 
 progress {
   display: block;

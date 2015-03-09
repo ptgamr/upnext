@@ -8,9 +8,9 @@
         return {
             restrict: 'E',
             templateUrl: 'scripts/views/player.html',
-            scope: true,
-            link: function($scope) {
-
+            require: '^corePlayer',
+            link: function(scope, element, attrs, playerController) {
+                scope.player = playerController;
             }
         };
     }

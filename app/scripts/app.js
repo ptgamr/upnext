@@ -6,8 +6,8 @@
 
 	soundCloudify.value('CLIENT_ID', '849e84ac5f7843ce1cbc0e004ae4fb69');
 
-	soundCloudify.config(['$routeProvider', '$mdThemingProvider',
-		function($routeProvider, $mdThemingProvider) {
+	soundCloudify.config(['$routeProvider', '$mdThemingProvider', '$compileProvider',
+		function($routeProvider, $mdThemingProvider, $compileProvider) {
 			$routeProvider.
 				when('/', {
 					templateUrl: 'partials/home.html',
@@ -23,6 +23,8 @@
 
 			$mdThemingProvider.theme('default')
 			    .primaryPalette('indigo');
+
+			$compileProvider.imgSrcSanitizationWhitelist(/^\s*((https?|ftp|file|blob|chrome-extension):|data:image\/)/);
 		}
 	]);
 

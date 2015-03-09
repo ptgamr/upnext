@@ -9,7 +9,9 @@
             restrict: 'E',
             templateUrl: 'scripts/views/explore.html',
             scope: true,
-            link: function($scope) {
+            require: '^corePlayer',
+            link: function($scope, element, attrs, playerController) {
+
                 Category.getList().success(function(categories) {
                     $scope.categories = categories['music'] || [];
                 });
@@ -23,6 +25,10 @@
                         })
                     }
                 });
+
+                $scope.addTrack = function(track) {
+                    playerController.add(track, true);
+                };
             }
         };
     }
