@@ -1,21 +1,22 @@
 <div>
     <div class="artwork">
         <img ng-src="{{(player.state.currentTrack.artwork_url | scArtwork) || 'images/artwork-bar.jpg'}}" alt="player.state.currentTrack.title">
-        <div class="track-title">
-            {{ player.state.currentTrack.title || '&nbsp;' }}
-        </div>
-        <div class="overlay"></div>
         <div class="show-on-hover fadeIn">
-            <div class="pretty-time" layout="row" layout-wrap>
-                <div flex="50" class="current-time">{{ player.state.currentTime | prettyTime }}</div>
-                <div flex="50" class="duration">{{ player.state.duration | prettyTime }}</div>
-            </div>
+            <div class="overlay"></div>
         </div>
+    </div>
+    <div class="track-title">
+        <h3>{{ player.state.currentTrack.title || '&nbsp;' }}</h3>
+        <h4>{{player.state.currentTrack.user.username}}</h4>
     </div>
     <progress value="{{ player.state.currentTime / player.state.duration || 0 }}"
         ng-click="player.seek($event)">
         {{ player.state.currentTime / player.state.duration }}
     </progress>
+    <div class="pretty-time" layout="row" layout-wrap>
+        <div flex="50" class="current-time">{{ player.state.currentTime | prettyTime }}</div>
+        <div flex="50" class="duration">{{ player.state.duration | prettyTime }}</div>
+    </div>
     <div class="player-controls">
         <section layout="row" layout-margin layout-align="center center">
             <md-icon flex ng-click="player.previous()" md-font-icon="fa fa-step-backward fa-2x" ng-style="{color: '#fff'}"></md-icon>

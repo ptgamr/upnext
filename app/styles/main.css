@@ -20,8 +20,9 @@ html {
 }
 
 #player {
-	width: 200px;
-    background-color: #555;
+	width: 250px;
+  padding: 20px;
+  background-color: #1C1C1F;
 }
 
 #player .artwork {
@@ -30,12 +31,12 @@ html {
     height: 200px;
 }
 
-#player .show-on-hover {
+#player .artwork .show-on-hover {
   opacity: 0;
   -webkit-transition: all .25s ease-in-out;
 }
 
-#player:hover .show-on-hover {
+#player .artwork:hover .show-on-hover {
   opacity: 1;
 }
 
@@ -47,28 +48,31 @@ html {
 	height: 200px;
 }
 
-#player .artwork .track-title {
-  position: absolute;
-  top: 0;
-  left: 0;
-  padding: 10px;
-  color: #fff;
-  font-size: 18px;
-  text-shadow: 1px 1px 1px #000;
+#player .track-title {
+  padding: 15px 0px;
+  color: #FBFBFC;
+  text-align: center;
   z-index: 1;
 }
 
-#player .artwork .pretty-time {
-  position: absolute;
-  bottom: 0px;
+  #player .track-title > h3 {
+    font-size: 14px;
+  }
+
+  #player .track-title > h4 {
+    font-size: 12px;
+    margin: 10px 0;
+    font-weight: 100;
+  }
+
+#player .pretty-time {
   color: #ffffff;
   width: 100%;
   padding: 5px;
-  font-size: 1.2em;
-  text-shadow: 1px 1px 1px #000;
+  font-size: 12px;
 }
 
-#player .artwork .pretty-time .duration {
+#player .pretty-time .duration {
   text-align: right;
   z-index: 1;
 }
@@ -82,7 +86,7 @@ html {
     }
 
     #discovery .demo-tab {
-      height: 340px;
+      height: 400px;
       padding: 15px;
     }
 
