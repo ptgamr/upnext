@@ -1,8 +1,23 @@
-<md-select ng-model="chosenCategory">
-    <md-option ng-repeat="cat in categories" ng-value="cat" ng-selected="$index==0">{{cat}}</md-option>
-</md-select>
-
-<md-content>
+<md-content ng-hide="chosenCategory">
+    <md-list>
+        <md-item ng-repeat="cat in categories">
+            <md-item-content layout="row" layout-align="start start" ng-click="selectCategory(cat)">
+                <div class="md-tile-left">
+                    <img ng-src="images/artwork-bar.jpg" alt="{{cat}}">
+                </div>
+                <div class="md-tile-content">
+                    <h3>{{cat}}</h3>
+                </div>
+            </md-item-content>
+        </md-item>
+    </md-list>
+</md-content>
+<md-content ng-show="chosenCategory">
+    <md-button class="md-primary back-link" ng-click="backToTopChart()">
+        <md-icon md-svg-src="fonts/open-iconic/svg/arrow-left.svg"></md-icon>
+        Back
+    </md-button>
+    <loading ng-if="isLoading"></loading>
     <md-list>
         <md-item ng-repeat="track in tracks" ng-class="{'playing': $index === player.state.currentIndex && player.state.playing, 'pause': $index === player.state.currentIndex && !player.state.playing}">
             <md-item-content layout="row" layout-align="start start">

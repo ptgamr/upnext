@@ -21,32 +21,8 @@
             <div id="player" plangular>
                 <scd-player></scd-player>
             </div>
-            <div id="discovery" ng-controller="DiscoveryController as vm">
-                <md-tabs md-selected="vm.selectedIndex">
-                  <md-tab id="tab1" label="Playing">
-                    <div class="demo-tab tab1" layout="column" layout-align="start start">
-                        <div>
-                            <now-playing class="media-list"></now-playing>
-                        </div>
-                    </div>
-                  </md-tab>
-                  <md-tab id="tab2" label="Playlist">
-                    <div class="demo-tab tab2" layout="column" layout-align="space-around center">
-                        <div>
-                            View for PLAYLIST
-                        </div>
-                    </div>
-                  </md-tab>
-                  <md-tab id="tab3" label="Explore">
-                    <div class="demo-tab tab3" layout="column" layout-align="start start">
-                        <div>
-                            <explore class="media-list"></explore>
-                        </div>
-                    </div>
-                  </md-tab>
-                </md-tabs>
-            </div>
-        </div>
+
+            <div ui-view></div>
 
         <!-- <div ng-view></div> -->
         
@@ -60,6 +36,7 @@
 <script src="bower_components/angular-aria/angular-aria.min.js"></script>
 <script src="bower_components/angular-material/angular-material.min.js"></script>
 <script src="bower_components/angular-route/angular-route.min.js"></script>
+<script src="bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
 <script src="scripts/ng-plangular.js"></script>
 <script src="scripts/app.js"></script>
 <script src="scripts/controllers/MainController.js"></script>

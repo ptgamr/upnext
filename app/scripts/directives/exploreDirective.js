@@ -20,11 +20,22 @@
 
                 $scope.$watch('chosenCategory', function(val) {
                     if (val) {
+                        $scope.isLoading = true;
+                        $scope.tracks = [];
                         Category.getTracks(val).success(function(data) {
+                            $scope.isLoading = false;
                             $scope.tracks = data.tracks || [];
                         })
                     }
                 });
+
+                $scope.selectCategory = function(category) {
+                    $scope.chosenCategory = category;
+                };
+
+                $scope.backToTopChart = function() {
+                    $scope.chosenCategory = '';  
+                }
 
                 $scope.addTrack = function(track) {
                     playerController.add(track, true);

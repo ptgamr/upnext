@@ -2,27 +2,24 @@
 
 	'use strict';
 
-	var soundCloudify = angular.module('soundCloudify', ['ngMaterial', 'plangular', 'ngRoute']);
+	var soundCloudify = angular.module('soundCloudify', ['ngMaterial', 'plangular', 'ngRoute', 'ui.router']);
 
 	soundCloudify.value('CLIENT_ID', '849e84ac5f7843ce1cbc0e004ae4fb69');
 
-	soundCloudify.config(['$routeProvider', '$mdThemingProvider', '$compileProvider',
-		function($routeProvider, $mdThemingProvider, $compileProvider) {
-			$routeProvider.
-				when('/', {
-					templateUrl: 'partials/home.html',
-					controller: 'MainController as ctrl'
-				}).
-				when('/playlist/:category', {
-					templateUrl: 'partials/playlist.html',
-					controller: 'PlaylistController as ctrl'
-				}).
-				otherwise({
-					redirectTo: '/'
+	soundCloudify.config(['$stateProvider', '$urlRouterProvider', '$mdThemingProvider', '$compileProvider',
+		function($stateProvider, $urlRouterProvider, $mdThemingProvider, $compileProvider) {
+
+			$urlRouterProvider.otherwise("/topcharts");
+
+			$stateProvider
+				.state('topcharts', {
+					url: "/topcharts",
+					templateUrl: "partials/top-charts.html"
 				});
 
 			$mdThemingProvider.theme('default')
-			    .primaryPalette('indigo');
+			    .primaryPalette('blue')
+			    .accentPalette('blue');
 
 			$compileProvider.imgSrcSanitizationWhitelist(/^\s*((https?|ftp|file|blob|chrome-extension):|data:image\/)/);
 		}

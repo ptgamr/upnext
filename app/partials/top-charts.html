@@ -1,0 +1,69 @@
+<div id="discovery" ng-controller="DiscoveryController as vm">
+    <md-tabs md-selected="vm.selectedIndex">
+        <md-tab id="tab1" aria-controls="tab1-content">
+            <md-icon md-svg-src="fonts/open-iconic/svg/pulse.svg" alt="Top Charts"></md-icon>
+            Top charts
+        </md-tab>
+        <md-tab id="tab2" aria-controls="tab2-content" ng-disabled="data.secondLocked">
+            <md-icon md-svg-src="fonts/open-iconic/svg/magnifying-glass.svg" alt="Search"></md-icon>
+            Search
+        </md-tab>
+        <md-tab id="tab3" aria-controls="tab3-content">
+            <md-icon md-svg-src="fonts/open-iconic/svg/graph.svg" alt="Playlist"></md-icon>
+            Playlist
+        </md-tab>
+    </md-tabs>
+    <ng-switch on="vm.selectedIndex" class="tabpanel-container">
+        <div role="tabpanel"
+            id="tab1-content"
+            aria-labelledby="tab1"
+            ng-switch-when="0"
+            md-swipe-left="next()"
+            md-swipe-right="previous()" >
+
+            <explore class="media-list"></explore>
+        </div>
+        <div role="tabpanel"
+            id="tab2-content"
+            aria-labelledby="tab2"
+            ng-switch-when="1"
+            md-swipe-left="next()"
+            md-swipe-right="previous()" >
+
+            SEARCH
+        </div>
+        <div role="tabpanel"
+            id="tab3-content"
+            aria-labelledby="tab3"
+            ng-switch-when="2"
+            md-swipe-left="next()"
+            md-swipe-right="previous()" >
+
+            PLAYLIST
+        </div>
+    </ng-switch>
+    <!-- <md-tabs md-selected="vm.selectedIndex">
+      <md-tab id="tab1" label="Playing">
+        <div class="demo-tab tab1" layout="column" layout-align="start start">
+            <div>
+                <now-playing class="media-list"></now-playing>
+            </div>
+        </div>
+      </md-tab>
+      <md-tab id="tab2" label="Playlist">
+        <div class="demo-tab tab2" layout="column" layout-align="space-around center">
+            <div>
+                View for PLAYLIST
+            </div>
+        </div>
+      </md-tab>
+      <md-tab id="tab3" label="Explore">
+        <div class="demo-tab tab3" layout="column" layout-align="start start">
+            <div>
+                
+            </div>
+        </div>
+      </md-tab>
+    </md-tabs> -->
+</div>
+</div>

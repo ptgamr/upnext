@@ -4,9 +4,7 @@
             .controller('DiscoveryController', [DiscoveryController])
 
     function DiscoveryController() {
-
         var vm = this;
-
-        vm.selectedIndex = 2;
+        vm.selectedIndex = 0;
     }
 }());
