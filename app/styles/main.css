@@ -21,7 +21,7 @@ html {
 
 #player {
 	width: 250px;
-  padding: 20px;
+  padding: 20px 20px 0 20px;
   background-color: #1C1C1F;
 }
 
@@ -53,10 +53,12 @@ html {
   color: #FBFBFC;
   text-align: center;
   z-index: 1;
+  overflow: hidden;
 }
 
   #player .track-title > h3 {
     font-size: 14px;
+    white-space: nowrap;
   }
 
   #player .track-title > h4 {
@@ -76,6 +78,12 @@ html {
   text-align: right;
   z-index: 1;
 }
+
+.player-controls {margin: 15px;}
+.player-controls .player-control {color: #FBFBFC;}
+
+.player-sub-controls {margin-top: 30px; margin-bottom: 0}
+.player-sub-controls .player-control {color: #B0B0B0; width: 12px; height: 12px;}
 
 #discovery {
 	width: 440px;
@@ -188,7 +196,7 @@ progress {
   display: block;
   width: 100%;
   height: 0.5rem;
-  background-color: rgba(0, 0, 0, 0.125);
+  background-color: #fbfbfb;
   border: 0;
   -webkit-appearance: none;
   cursor: pointer; }

@@ -17,12 +17,15 @@
         <div flex="50" class="current-time">{{ player.state.currentTime | prettyTime }}</div>
         <div flex="50" class="duration">{{ player.state.duration | prettyTime }}</div>
     </div>
-    <div class="player-controls">
-        <section layout="row" layout-margin layout-align="center center">
-            <md-icon flex ng-click="player.previous()" md-font-icon="fa fa-step-backward fa-2x" ng-style="{color: '#fff'}"></md-icon>
-            <md-icon flex ng-click="player.playPause()" ng-if="!player.state.playing" md-font-icon="fa fa-play fa-2x" ng-style="{color: '#fff'}"></md-icon>
-            <md-icon flex ng-click="player.playPause()" ng-if="player.state.playing" md-font-icon="fa fa-pause fa-2x" ng-style="{color: '#fff'}"></md-icon>
-            <md-icon flex ng-click="player.next()" md-font-icon="fa fa-step-forward fa-2x" ng-style="{color: '#fff'}"></md-icon>
-        </section>
-    </div>
+    <section layout="row" layout-margin layout-align="center center" class="player-controls">
+        <md-icon md-svg-src="fonts/open-iconic/svg/media-step-backward.svg"            class="player-control control-back" alt="Previous" ng-click="player.previous()"></md-icon>
+        <md-icon md-svg-src="fonts/open-iconic/svg/media-pause.svg"            class="player-control control-pause" alt="Play" ng-if="player.state.playing" ng-click="player.playPause()"></md-icon>
+        <md-icon md-svg-src="fonts/open-iconic/svg/media-play.svg"            class="player-control control-play" alt="Play" ng-if="!player.state.playing" ng-click="player.playPause()"></md-icon>
+        <md-icon md-svg-src="fonts/open-iconic/svg/media-step-forward.svg"            class="player-control control-next" alt="Next" ng-click="player.next()"></md-icon>
+    </section>
+    <section layout="row" layout-margin layout-align="center center" class="player-sub-controls">
+        <md-icon md-svg-src="fonts/open-iconic/svg/random.svg" class="player-control control-shuffle" alt="Shuffle"></md-icon>
+        <md-icon md-svg-src="fonts/open-iconic/svg/loop.svg" class="player-control control-repeat" alt="Repeat"></md-icon>
+        <md-icon md-svg-src="fonts/open-iconic/svg/volume-high.svg" class="player-control control-volume" alt="Volume"></md-icon>
+    </section>
 </div>
