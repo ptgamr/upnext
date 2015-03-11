@@ -40,6 +40,10 @@
                 $scope.addTrack = function(track) {
                     playerController.add(track, true);
                 };
+
+                $scope.sanitizeCategory = function(category) {
+                    return unescape(category).replace(/\+/g, " ");
+                };
             }
         };
     }

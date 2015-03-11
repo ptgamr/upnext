@@ -1,4 +1,4 @@
-<md-content ng-hide="chosenCategory">
+<md-content class="list-hover" ng-hide="chosenCategory">
     <md-list>
         <md-item ng-repeat="cat in categories">
             <md-item-content layout="row" layout-align="start start" ng-click="selectCategory(cat)">
@@ -6,17 +6,24 @@
                     <img ng-src="images/artwork-bar.jpg" alt="{{cat}}">
                 </div>
                 <div class="md-tile-content">
-                    <h3>{{cat}}</h3>
+                    <h3>{{sanitizeCategory(cat)}}</h3>
                 </div>
             </md-item-content>
         </md-item>
     </md-list>
 </md-content>
 <md-content ng-show="chosenCategory">
-    <md-button class="md-primary back-link" ng-click="backToTopChart()">
-        <md-icon md-svg-src="fonts/open-iconic/svg/arrow-left.svg"></md-icon>
-        Back
-    </md-button>
+    <div layout="row" class="tab-heading">
+        <div flex>
+            <md-button class="back-link" ng-click="backToTopChart()">
+                <md-icon md-svg-src="fonts/open-iconic/svg/arrow-left.svg"></md-icon>
+                Back
+            </md-button>
+        </div>
+        <div flex>
+            <h3 class="chosen-category">{{sanitizeCategory(chosenCategory)}}</h3>
+        </div>
+    </div>
     <loading ng-if="isLoading"></loading>
     <md-list>
         <md-item ng-repeat="track in tracks" ng-class="{'playing': $index === player.state.currentIndex && player.state.playing, 'pause': $index === player.state.currentIndex && !player.state.playing}">
