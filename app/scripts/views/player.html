@@ -6,7 +6,7 @@
         </div>
     </div>
     <div class="track-title">
-        <h3>{{ player.state.currentTrack.title || '&nbsp;' }}</h3>
+        <h3 track-title>{{ player.state.currentTrack.title || '&nbsp;' }}</h3>
         <h4>{{player.state.currentTrack.user.username}}</h4>
     </div>
     <progress value="{{ player.state.currentTime / player.state.duration || 0 }}"

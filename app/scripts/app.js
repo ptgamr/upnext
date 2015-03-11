@@ -18,8 +18,8 @@
 				});
 
 			$mdThemingProvider.theme('default')
-			    .primaryPalette('orange')
-			    .accentPalette('deep-orange');
+			    .primaryPalette('deep-orange')
+			    .accentPalette('orange');
 
 			$compileProvider.imgSrcSanitizationWhitelist(/^\s*((https?|ftp|file|blob|chrome-extension):|data:image\/)/);
 		}
