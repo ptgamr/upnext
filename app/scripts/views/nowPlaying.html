@@ -1,4 +1,4 @@
-<md-content>
+<md-content class="md-padding">
     <md-list>
         <md-item ng-repeat="track in player.tracks track by $index" ng-class="{'playing': $index === player.state.currentIndex && player.state.playing, 'pause': $index === player.state.currentIndex && !player.state.playing}">
             <md-item-content layout="row" layout-align="start start">

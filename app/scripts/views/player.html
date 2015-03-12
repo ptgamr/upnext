@@ -1,4 +1,4 @@
-<div>
+<section>
     <div class="artwork">
         <img ng-src="{{(player.state.currentTrack.artwork_url | scArtwork) || 'images/artwork-bar.jpg'}}" alt="player.state.currentTrack.title">
         <div class="show-on-hover fadeIn">
@@ -18,14 +18,40 @@
         <div flex="50" class="duration">{{ player.state.duration | prettyTime }}</div>
     </div>
     <section layout="row" layout-margin layout-align="center center" class="player-controls">
-        <md-icon md-svg-src="fonts/open-iconic/svg/media-step-backward.svg"            class="player-control control-back" alt="Previous" ng-click="player.previous()"></md-icon>
-        <md-icon md-svg-src="fonts/open-iconic/svg/media-pause.svg"            class="player-control control-pause" alt="Play" ng-if="player.state.playing" ng-click="player.playPause()"></md-icon>
-        <md-icon md-svg-src="fonts/open-iconic/svg/media-play.svg"            class="player-control control-play" alt="Play" ng-if="!player.state.playing" ng-click="player.playPause()"></md-icon>
-        <md-icon md-svg-src="fonts/open-iconic/svg/media-step-forward.svg"            class="player-control control-next" alt="Next" ng-click="player.next()"></md-icon>
+        <md-button flex ng-click="player.previous()">
+            <md-icon md-svg-src="fonts/open-iconic/svg/media-step-backward.svg" class="player-control control-back" alt="Previous"></md-icon>
+        </md-button>
+        <md-button flex ng-click="player.playPause()">
+            <md-icon md-svg-src="fonts/open-iconic/svg/media-pause.svg" class="player-control control-pause" alt="Play" ng-if="player.state.playing"></md-icon>
+            <md-icon md-svg-src="fonts/open-iconic/svg/media-play.svg" class="player-control control-play" alt="Play" ng-if="!player.state.playing"></md-icon>
+        </md-button>
+        <md-button flex ng-click="player.next()">
+            <md-icon md-svg-src="fonts/open-iconic/svg/media-step-forward.svg" class="player-control control-next" alt="Next"></md-icon>
+        </md-button>
     </section>
     <section layout="row" layout-margin layout-align="center center" class="player-sub-controls">
-        <md-icon md-svg-src="fonts/open-iconic/svg/random.svg" class="player-control control-shuffle" alt="Shuffle"></md-icon>
-        <md-icon md-svg-src="fonts/open-iconic/svg/loop.svg" class="player-control control-repeat" alt="Repeat"></md-icon>
-        <md-icon md-svg-src="fonts/open-iconic/svg/volume-high.svg" class="player-control control-volume" alt="Volume"></md-icon>
+        <md-button class="player-control control-shuffle">
+            <md-icon md-svg-src="fonts/open-iconic/svg/random.svg" alt="Shuffle"></md-icon>
+        </md-button>
+        <md-button class="player-control control-repeat">
+            <md-icon md-svg-src="fonts/open-iconic/svg/loop.svg" alt="Repeat"></md-icon>
+        </md-button>
+        <md-button class="player-control control-volume">
+            <md-icon md-svg-src="fonts/open-iconic/svg/volume-high.svg" alt="Volume"></md-icon>
+        </md-button>
+        <md-button  class="player-control control-show-nowplaying" toggle-button="{{isNowPlayingOpen()}}" ng-click="toggleNowPlaying()">
+            <md-icon md-svg-src="fonts/open-iconic/svg/list.svg" alt="Now Playing"></md-icon>
+        </md-button>
     </section>
-</div>
+    <md-sidenav class="now-playing md-sidenav-right md-whiteframe-z2" md-component-id="right">
+        <md-toolbar class="md-theme-light">
+            <div class="md-toolbar-tools">
+                <h1>Now Playing</h1>
+                <md-button ng-click="closeNowPlaying()">
+                    <md-icon md-svg-src="fonts/open-iconic/svg/x.svg" class="player-control control-hide-nowplaying" alt="Now Playing" ng-click="toggleNowPlaying()"></md-icon>
+                </md-button>
+            </div>
+        </md-toolbar>
+        <now-playing class="media-list"></now-playing>
+    </md-sidenav>
+</section>
