@@ -13,6 +13,12 @@
 
                 var animateEl, textEl, textCloneEl, elementWidth, textWidth, animating, margin;
 
+                attrs.$observe('trackTitle', function(val) {
+                    if (animating) {
+                        clearAnimation();
+                    }
+                });
+
                 element.on('mouseover', function(e) {
                     if (animating) {
                         return;
@@ -35,15 +41,19 @@
                     }
                 });
 
+                function clearAnimation() {
+                    animating = false;
+                    textCloneEl.remove();
+                    element[0].style.marginLeft = 0;
+                }
+
                 function animate() {
-                    if (margin < textWidth) {
+                    if (animating && margin < textWidth) {
                         $timeout(animate, 30);
                         element[0].style.marginLeft = -margin + 'px';
                         margin ++;
                     } else {
-                        animating = false;
-                        textCloneEl.remove();
-                        element[0].style.marginLeft = 0;
+                        clearAnimation();
                     }
                 }
             }
