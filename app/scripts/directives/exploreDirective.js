@@ -44,6 +44,8 @@
                 $scope.sanitizeCategory = function(category) {
                     return unescape(category).replace(/\+/g, " ");
                 };
+
+                $scope.player = playerController;
             }
         };
     }

@@ -4,9 +4,35 @@ chrome.runtime.onInstalled.addListener(function (details) {
   console.log('previousVersion', details.previousVersion);
 });
 
-//chrome.browserAction.setBadgeText({text: '\'Allo'});
-
-//console.log('\'Allo \'Allo! Event Page for Browser Action');
+/**
+ * Notification show only one if we don't change the priority
+ * http://stackoverflow.com/questions/26350747/chrome-notifications-update-or-create/26358154#26358154
+ */
+var Utils = {
+    createOrUpdateNotification: function(id, options, callback) {
+      // Try to lower priority to minimal "shown" priority
+      chrome.notifications.update(id, {priority: 0}, function(existed) {
+        if(existed) {
+          console.log("notification existed, update priority");
+          var targetPriority = options.priority || 0;
+          options.priority = 1;
+          // Update with higher priority
+          chrome.notifications.update(id, options, function() {
+            console.log("notification shown");
+            console.log(options);
+            callback(true);
+            // chrome.notifications.update(id, {priority: targetPriority}, function() {
+            //   callback(true); // Updated
+            // });
+          });
+        } else {
+          chrome.notifications.create(id, options, function() {
+            callback(false); // Created
+          });
+        }
+      });
+    }
+};
 
 var CLIENT_ID = '849e84ac5f7843ce1cbc0e004ae4fb69';
 var currentPort;
@@ -24,6 +50,7 @@ Player.prototype = {
 
         self.tracks = [];
         self.state = {};
+        self.notificationId = '';
 
         this.audio.addEventListener('timeupdate', function() {
             if (!currentPort) return;
@@ -34,7 +61,7 @@ Player.prototype = {
         }, false);
 
         this.audio.addEventListener('ended', function() {
-            selft.next.call(self);
+            self.next.call(self);
         }, false);
 
 
@@ -53,7 +80,20 @@ Player.prototype = {
             }
 
             if (changes['nowPlayingState']) {
+
+                var lastTrackId = self.state.currentTrack.id;
+
                 self.state = changes['nowPlayingState'].newValue;
+
+                if (lastTrackId !== self.state.currentTrack.id) {
+                    var notificationOptions = {
+                        type: "basic",
+                        title: "Playing Track",
+                        message: self.state.currentTrack.title,
+                        iconUrl: self.state.currentTrack.artwork_url
+                    };
+                    Utils.createOrUpdateNotification('track-change', notificationOptions, function() {});
+                }
             }
         });
 
@@ -61,9 +101,9 @@ Player.prototype = {
 
     next: function() {
         var currentIndex = this.state.currentIndex;
-        nextIndex = currentIndex + 1;
+        var nextIndex = currentIndex + 1;
 
-        if (nextIndex > this.tracks.length) {
+        if (nextIndex >= this.tracks.length) {
             nextIndex = 0;
         }
 
@@ -76,6 +116,7 @@ Player.prototype = {
                 currentTrack: nextTrack,
                 playing: true   
             }
+
             chrome.storage.local.set({'nowPlayingState': newState});
         }
     },

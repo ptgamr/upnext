@@ -1,10 +1,43 @@
-<div>
-    <loading ng-if="ctrl.isLoading"></loading>
+<div id="discovery" ng-controller="DiscoveryController as vm">
+    <md-tabs md-selected="vm.selectedIndex">
+        <md-tab id="tab1" aria-controls="tab1-content">
+            Top charts
+        </md-tab>
+        <md-tab id="tab2" aria-controls="tab2-content">
+            Search
+        </md-tab>
+        <md-tab id="tab3" aria-controls="tab3-content">
+            Playlist
+        </md-tab>
+        <md-tab id="tab4" aria-controls="tab4-content">
+            Now Playing
+        </md-tab>
+    </md-tabs>
+    <ng-switch on="vm.selectedIndex" class="tabpanel-container">
+        <div role="tabpanel"
+            id="tab1-content"
+            aria-labelledby="tab1"
+            ng-switch-when="0">
+            <explore class="media-list"></explore>
+        </div>
+        <div role="tabpanel"
+            id="tab2-content"
+            aria-labelledby="tab2"
+            ng-switch-when="1" >
 
-    <select ng-model="ctrl.selectedCategory">
-        <option ng-repeat="cat in ctrl.categories" ng-selected="$index==0">{{cat}}</option>
-    </select>
-    <br/>
-    <br/>
-    <button class="pure-button" ng-click="ctrl.start()">Start</button>
+            SEARCH
+        </div>
+        <div role="tabpanel"
+            id="tab3-content"
+            aria-labelledby="tab3"
+            ng-switch-when="2">
+
+            PLAYLIST
+        </div>
+        <div role="tabpanel"
+            id="tab4-content"
+            ng-switch-when="3">
+            <now-playing class="media-list"></now-playing>
+        </div>
+    </ng-switch>
 </div>

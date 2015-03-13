@@ -47,6 +47,7 @@
     "storage",
     "tabs",
     "management",
+    "notifications",
     "https://api.soundcloud.com/*",
     "https://api-v2.soundcloud.com/*"
   ],

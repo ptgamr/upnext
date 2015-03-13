@@ -26,7 +26,7 @@
     </div>
     <loading ng-if="isLoading"></loading>
     <md-list>
-        <md-item ng-repeat="track in tracks" ng-class="{'playing': $index === player.state.currentIndex && player.state.playing, 'pause': $index === player.state.currentIndex && !player.state.playing}">
+        <md-item ng-repeat="track in tracks" ng-class="{'playing': player.state.currentTrack.id === track.id && player.state.playing, 'pause': player.state.currentTrack.id === track.id && !player.state.playing}">
             <md-item-content layout="row" layout-align="start start">
                 <div class="md-tile-left" ng-click="addTrack(track)">
                     <div class="face">

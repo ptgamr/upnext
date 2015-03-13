@@ -9,12 +9,12 @@
 	soundCloudify.config(['$stateProvider', '$urlRouterProvider', '$mdThemingProvider', '$compileProvider',
 		function($stateProvider, $urlRouterProvider, $mdThemingProvider, $compileProvider) {
 
-			$urlRouterProvider.otherwise("/topcharts");
+			$urlRouterProvider.otherwise("/home");
 
 			$stateProvider
-				.state('topcharts', {
-					url: "/topcharts",
-					templateUrl: "partials/top-charts.html"
+				.state('home', {
+					url: "/home",
+					templateUrl: "partials/home.html"
 				});
 
 			$mdThemingProvider.theme('default')

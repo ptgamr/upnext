@@ -61,6 +61,9 @@ plangular.directive('corePlayer', function(Messaging, NowPlaying, CLIENT_ID) {
         } else if (index < this.state.currentIndex){
           this.state.currentIndex --;
         }
+
+        NowPlaying.saveList(this.tracks);
+        NowPlaying.saveState(this.state);
       };
 
       this.play = function(index) {
@@ -143,6 +146,12 @@ plangular.directive('corePlayer', function(Messaging, NowPlaying, CLIENT_ID) {
 
         this.state.currentTime = data.currentTime;
         this.state.duration = data.duration;
+      }
+
+      this.isPlaying = function(trackId) {
+        if (!this.state.currentTrack) return false;
+        console.log('check track ' + this.state.currentTrack.id === trackId);
+        return this.state.currentTrack.id === trackId;
       }
     }
   };
