@@ -44,11 +44,11 @@ plangular.directive('corePlayer', function(Messaging, NowPlaying, CLIENT_ID) {
         andPlay = andPlay || true;
 
         if (track) {
-          this.tracks.push(track);
+          this.tracks.unshift(track);
         }
 
         if (andPlay) {
-          this.play(this.tracks.length - 1);
+          this.play(0);
         }
 
         NowPlaying.saveList(this.tracks);

@@ -2,9 +2,9 @@
     'use strict';
 
     angular.module('soundCloudify')
-        .directive('search', musicExploreDirective);
+        .directive('search', searchDirective);
 
-    function musicExploreDirective(SearchService) {
+    function searchDirective(SearchService) {
         return {
             restrict: 'E',
             templateUrl: 'scripts/views/search.html',

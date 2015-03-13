@@ -20,7 +20,7 @@ html {
 
 .md-tile-content h3 {
   font-size: 14px;
-  line-height: 14px;
+  line-height: 16px;
   max-width: 100%;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -161,7 +161,7 @@ md-icon.control-hide-nowplaying {width: 15px; height: 15px;}
 }
 
     #discovery [role="tabpanel"] {
-      height: 400px;
+      height: 440px;
       padding: 15px;
       overflow-y: scroll;
     }

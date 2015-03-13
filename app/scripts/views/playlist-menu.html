@@ -1,0 +1,16 @@
+<md-content id="playlist-menu">
+    <md-input-container>
+        <label>New Playlist</label>
+        <input ng-model="newPlaylistName" type="text" placeholder="Enter playlist name" ng-keypress="addNew($event)">
+    </md-input-container>
+    <md-list>
+        <md-item ng-repeat="playlist in playlists track by $index">
+            <md-item-content>
+                <div class="md-tile-content">
+                    <h3>{{playlist.name}}</h3>
+                </div>
+            </md-item-content>
+            <md-divider ng-if="!$last"></md-divider>
+        </md-item>
+    </md-list>
+</md-content>
