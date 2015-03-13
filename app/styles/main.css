@@ -63,6 +63,8 @@ md-divider.md-default-theme {
   border-top-color: #f2f2f2;
 }
 
+.search-btn { min-width: 10em; line-height: 25px;}
+
 .list-hover md-item:hover  { cursor: pointer;}
 .list-hover md-item:hover md-item-content h3{ font-weight: bold; }
 

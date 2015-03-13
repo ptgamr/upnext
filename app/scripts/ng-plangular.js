@@ -41,6 +41,8 @@ plangular.directive('corePlayer', function(Messaging, NowPlaying, CLIENT_ID) {
 
       this.add = function(track, andPlay) {
 
+        andPlay = andPlay || true;
+
         if (track) {
           this.tracks.push(track);
         }

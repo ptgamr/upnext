@@ -90,7 +90,7 @@ Player.prototype = {
                         type: "basic",
                         title: "Playing Track",
                         message: self.state.currentTrack.title,
-                        iconUrl: self.state.currentTrack.artwork_url
+                        iconUrl: self.state.currentTrack.artwork_url || 'images/artwork-bar.jpg'
                     };
                     Utils.createOrUpdateNotification('track-change', notificationOptions, function() {});
                 }
