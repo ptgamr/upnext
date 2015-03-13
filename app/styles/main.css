@@ -20,13 +20,37 @@ html {
 
 .md-tile-content h3 {
   font-size: 14px;
-  line-height: 28px;
+  line-height: 14px;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+md-item .md-tile-hover{
+  float: right;
+  right: 0;
+  margin-top: 18px;
+  display: none;
+}
+
+md-item:hover .md-tile-hover{
+  display: block;
+}
+
+md-item .md-button md-icon{
+  width: 16px;
+  height: 16px;
+  color: #555;
 }
 
 md-item-content {
   padding: 5px 0;
 }
 
+md-tab {
+  padding: 20px 10px;
+}
 md-tab md-icon {
   width: 15px;
   height: 15px;
@@ -34,6 +58,10 @@ md-tab md-icon {
 
 md-tabs { border-bottom: 1px solid #f2f2f2; }
 md-tabs.md-default-theme  md-tabs-ink-bar { background-color: rgb(255,87,34);}
+
+md-divider.md-default-theme {
+  border-top-color: #f2f2f2;
+}
 
 .list-hover md-item:hover  { cursor: pointer;}
 .list-hover md-item:hover md-item-content h3{ font-weight: bold; }
@@ -55,14 +83,14 @@ md-tabs.md-default-theme  md-tabs-ink-bar { background-color: rgb(255,87,34);}
 
 #player {
 	width: 250px;
-  padding: 20px 20px 0 20px;
+  padding: 15px;
   background-color: #1C1C1F;
 }
 
 #player .artwork {
     position: relative;
-    width: 200px;
-    height: 200px;
+    width: 220px;
+    height: 220px;
 }
 
 #player .artwork .show-on-hover {
@@ -78,8 +106,8 @@ md-tabs.md-default-theme  md-tabs-ink-bar { background-color: rgb(255,87,34);}
   position: absolute;
   top: 0;
   left: 0;
-	width: 200px;
-	height: 200px;
+	width: 100%;
+	height: 100%;
 }
 
 #player .track-title {
@@ -200,22 +228,25 @@ md-icon.control-hide-nowplaying {width: 15px; height: 15px;}
     display: none;
   }
 
-  .media-list md-item.playing:hover .md-tile-left .fa-play {
+  .media-list .playing:hover .md-tile-left .fa-play {
     display: none;
   }
 
-  .media-list md-item.playing:hover .md-tile-left .fa-pause {
+  .media-list .playing:hover .md-tile-left .fa-pause {
     display: block;
   }
 
 
 
 .icon {}
-  .icon.icon-playing {
+  .icon.icon-playing, .icon.icon-playing-blue {
     background: url('../images/equalizer.white.gif') center no-repeat;
     display: inline-block;
     width: 12px;
     height: 12px;
+  }
+  .icon.icon-playing-blue {
+    background: url('../images/equalizer.primary.gif') center no-repeat;
   }
 
 progress {

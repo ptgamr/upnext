@@ -12,10 +12,6 @@
             require: '^corePlayer',
             link: function($scope, element, attrs, playerController) {
                 $scope.player = playerController;
-
-                $scope.play = function(index) {
-                    playerController.play(index);
-                }
             }
         };
     }
