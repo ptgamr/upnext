@@ -1,12 +1,12 @@
 #TODO LIST
 
 ### General
-[] Queue up track
-[] When track stream error, auto next()
-[] Paging / endless scrolling
-    [] Search
-    [] Top charts
-    []
+* [] Queue up track
+* [] When track stream error, auto next()
+* [] Paging / endless scrolling
+   ** [] Search
+    **[] Top charts
+    **[]
 
 ### Playlist
 [] Play all tracks
