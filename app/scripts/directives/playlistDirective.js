@@ -23,6 +23,7 @@
 
         $scope.newPlaylistName = '';
 
+
         $scope.addNew = function(keyEvent) {
 
             if (keyEvent.which !== 13) {
@@ -37,6 +38,14 @@
 
         $scope.remove = function(index) {
             PlaylistService.removePlaylist(index);
-        }
+        };
+
+        $scope.selectPlaylist = function(playlist) {
+            $scope.selectedPlaylist = playlist;
+        };
+
+        $scope.backToPlaylist = function() {
+            $scope.selectedPlaylist = null;  
+        };
     }
 }());

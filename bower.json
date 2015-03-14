@@ -7,7 +7,8 @@
     "angular-material": "~0.8.3",
     "font-awesome": "~4.3.0",
     "angular-ui-router": "~0.2.13",
-    "underscore": "~1.8.2"
+    "underscore": "~1.8.2",
+    "ionicons": "~2.0.1"
   },
   "devDependencies": {}
 }

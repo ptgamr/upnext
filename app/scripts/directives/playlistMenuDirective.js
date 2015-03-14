@@ -5,11 +5,10 @@
         .directive('playlistMenu', playlistMenuDirective)
         .directive('playlistChoser', playlistChoserDirective);
 
-    function playlistMenuDirective(PlaylistService) {
+    function playlistMenuDirective($rootScope, PlaylistService, $mdToast) {
         return {
             restrict: 'E',
             templateUrl: 'scripts/views/playlist-menu.html',
-            scope: {},
             controller: function($scope, PlaylistService) {
                 
                 PlaylistService
@@ -34,52 +33,104 @@
 
                 $scope.remove = function(index) {
                     PlaylistService.removePlaylist(index);
-                }
+                };
 
+                $scope.addTrackToPlaylist = function(playlistIndex) {
+
+                    if (!$rootScope.trackToAdd) {
+                        throw new Error('No track to add');
+                    }
+
+                    //$scope.trackToAdd is taken from the playlistChoser directive's scope
+                    PlaylistService.addTrackToPlaylist($rootScope.trackToAdd, playlistIndex);
+
+                    $rootScope.$broadcast('playlist.menu.close');
+
+                    $mdToast.show(
+                      $mdToast.simple()
+                        .content('Track has been added to playlist successfully')
+                        .position('bottom right')
+                        .hideDelay(2000)
+                    );
+                };
             }
         };
     }
 
-    function playlistChoserDirective($compile, $document) {
+    function playlistChoserDirective($rootScope, $document, $animate) {
         
-        var singletonMenu,
-            menuTemplate = '<playlist-menu id="singleton-playlist-menu"></playlist-menu>';
+        var singletonMenu;
 
         return {
             restrict: 'A',
+            scope: {
+                trackToAdd: '='
+            },
             link: function($scope, element, attrs) {
 
                 if (!singletonMenu) {
-                    singletonMenu = $compile(menuTemplate)($scope, function(singletonMenu, scope) {
-                        angular.element(document).find('body').eq(0).append(singletonMenu);
-                    });
+                    singletonMenu = angular.element(document.getElementById('singleton-playlist-menu'));
                 }
 
-                //FIXME
-                var container =  element.parent().parent();
+                var isMenuActive = false;
+
+                var backdrop;
 
                 element.on('click', function(event) {
+                    if (!singletonMenu) {
+                        throw new Error('Menu not found for showing');
+                    }
+
                     if (singletonMenu.hasClass('open')) {
-                        close(event);
+                        closeMenu();
                     } else {
-                        open(event);
+                        openMenu(event);
                     }
                 });
 
-                function determinePosition(container) {
+                $scope.$on('playlist.menu.close', function() {
+                    if (isMenuActive) {
+                        closeMenu();
+                    }
+                });
+
+
+                function openMenu(event) {
+                    
+                    backdrop = angular.element('<md-backdrop class="md-dialog-backdrop md-opaque md-default-theme">');
+                    angular.element(document).find('body').append(backdrop);
+
+                    backdrop.on('click', closeMenu);
+
+                    singletonMenu.addClass('open');
+
+                    var position = determinePosition();
+
+                    singletonMenu.css('top', position.top + 'px');
+                    singletonMenu.css('left', position.left + 'px');
+
+                    isMenuActive = true;
+                    element.parent().addClass('active');
+                    $rootScope.trackToAdd = $scope.trackToAdd;
+                }
+
+                function closeMenu() {
+                    singletonMenu.removeClass('open');
+                    backdrop.remove();
+                    isMenuActive = false;
+                    element.parent().removeClass('active');
+                }
+
+                function determinePosition() {
 
                     var position = '';
 
                     var documentRect = $document[0].documentElement.getBoundingClientRect(),
                         elementRect = element[0].getBoundingClientRect(),
-                        containerRect = container[0].getBoundingClientRect(),
                         menuRect = singletonMenu[0].getBoundingClientRect(),
 
                         menuWidth = menuRect.width,
-                        menuHeight = menuRect.height,
-
-                        elementRelativeLeft = elementRect.left - containerRect.left,
-                        elementRelativeTop = elementRect.top - containerRect.top;
+                        menuHeight = menuRect.height;
 
                     if (elementRect.top - menuHeight >= 0) {
                         position += 'top';
@@ -97,50 +148,42 @@
 
                     switch(position) {
                         case 'topleft':
-                            top = elementRelativeTop - menuHeight;
-                            left = elementRelativeLeft - menuWidth;
+                            top = elementRect.top - menuHeight;
+                            left = elementRect.left - menuWidth;
                             break;
                         case 'topright':
-                            top = elementRelativeTop - menuHeight;
-                            left = elementRelativeLeft + elementRect.width;
+                            top = elementRect.top - menuHeight;
+                            left = elementRect.left + elementRect.width;
                             break;
                         case 'bottomleft':
-                            top = elementRelativeTop + elementRect.height;
-                            left = elementRelativeLeft - menuWidth;
+                            top = elementRect.top + elementRect.height;
+                            left = elementRect.left - menuWidth;
+
+                            if (top + menuHeight > documentRect.height) {
+                                top -= (top + menuHeight - documentRect.height) + 10;
+                            }
                             break;
                         case 'bottomright':
-                            top = elementRelativeTop + elementRect.height;
-                            left = elementRelativeLeft + elementRect.width;
+                            top = elementRect.top + elementRect.height;
+                            left = elementRect.left + elementRect.width;
+
+                            if (top + menuHeight > documentRect.height) {
+                                top -= (top + menuHeight - documentRect.height) + 10;
+                            }
                             break;
                     }
 
                     return {top: top, left: left};
                 }
 
-                function open(event) {
-                    singletonMenu.addClass('open');
+                // $scope.closeMenu = function() {
+                //     closeMenu();
+                // };
 
-                    container.append(singletonMenu);
-
-                    var position = determinePosition(container);
-
-                    singletonMenu.css('top', position.top + 'px');
-                    singletonMenu.css('left', position.left + 'px');
-                }
-
-                function close() {
-                    singletonMenu.removeClass('open');
-                }
-
-
-                $scope.$on('$destroy', function() {
-                    singletonMenu = null;
-                });
-
-                // $document.bind('click', function(event) {
-                //     console.log('close menu');
-                //     close();    
+                // $scope.$on('$destroy', function() {
+                //     singletonMenu = null;
                 // });
+
             }
         }
     }

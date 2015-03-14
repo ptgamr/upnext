@@ -8,21 +8,23 @@
         if (!name)
             throw new Error('You have to specify a name when create a playlist');
 
-        this.songs = [];
+        this.tracks = [];
         this.name = name;
         this.id = Date.now();
     }
 
-    Playlist.prototype = {
-        constructor: Playlist,
-        addSong: function(song) {
-            this.songs.push(song);
-        },
-        removeSong: function(index) {
-            if (typeof index === 'undefined' || isNaN(index))
-                throw new Error('Error when remove song: index must be specified as number');
-            this.songs.splice(index, 1);
-        }
+    function _addTrackToPlaylist(track, playlist) {
+        playlist.tracks.push(track);
+    }
+
+    function _addTracksToPlaylist(tracks, playlist) {
+        playlist.tracks = playlist.tracks.concat(tracks);
+    }
+
+    function _removeTrackFromPlaylist(trackIndex) {
+        if (typeof trackIndex === 'undefined' || isNaN(trackIndex))
+            throw new Error('Error when remove track: trackIndex must be specified as number');
+        playlist.tracks.splice(trackIndex, 1);
     }
 
     function PlaylistService($q){
@@ -35,7 +37,8 @@
             getList: getList,
             newPlaylist: newPlaylist,
             removePlaylist: removePlaylist,
-            addSongToPlaylist: addSongToPlaylist,
+            addTrackToPlaylist: addTrackToPlaylist,
+            addTracksToPlaylist: addTracksToPlaylist
         };
 
         function getList() {
@@ -58,6 +61,7 @@
             var playlist = new Playlist(name);
             playlistStore.unshift(playlist);
             updateStorage();
+            return playlist;
         }
 
         function removePlaylist(index) {
@@ -68,25 +72,37 @@
             updateStorage();
         }
 
-        function addSongToPlaylist(song, index) {
+        function addTrackToPlaylist(track, index) {
 
             var playlist = playlistStore[index];
 
             if(!playlist)
-                throw new Error('Error when adding song: Playlist not found.');
+                throw new Error('Error when adding track: Playlist not found.');
 
-            playlist.addSong(song);
+            _addTrackToPlaylist(track, playlist);
             updateStorage();
         }
 
-        function removeSongFromPlaylist(songIndex, playlistIndex) {
+        function addTracksToPlaylist(tracks, playlist) {
+            
+            if(!tracks)
+                throw new Error('Error when adding tracks: Track is undefined');
+
+            if(!playlist)
+                throw new Error('Error when adding track: Playlist not found.');
+
+            _addTracksToPlaylist(tracks, playlist);
+            updateStorage();
+        }
+
+        function removeTrackFromPlaylist(trackIndex, playlistIndex) {
 
             var playlist = playlistStore[playlistIndex];
 
             if(!playlist)
-                throw new Error('Error when adding song: Playlist not found.');
+                throw new Error('Error when adding track: Playlist not found.');
 
-            playlist.removeSong(songIndex);
+            _removeTrackFromPlaylist(trackIndex);
             updateStorage();
         }
 

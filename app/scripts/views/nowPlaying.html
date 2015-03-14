@@ -1,4 +1,4 @@
-<md-content>
+<md-content class="tab-content md-padding">
     <md-list>
         <md-item ng-repeat="track in player.tracks track by $index" ng-class="{'playing': $index === player.state.currentIndex && player.state.playing, 'pause': $index === player.state.currentIndex && !player.state.playing}">
             <md-item-content layout="row" layout-align="start start">
@@ -19,14 +19,14 @@
                     </p>
                 </div>
                 <div class="md-tile-hover" layout="row" layout-margin layout-align="center center" >
-                    <md-button aria-label="Remove song" ng-click="player.remove($index)">
-                        <md-icon md-svg-src="fonts/open-iconic/svg/trash.svg" alt="Remove"></md-icon>
+                    <md-button title="Like" aria-label="Like">
+                        <md-icon md-font-icon="icon ion-android-star" alt="Love It"></md-icon>
                     </md-button>
-                    <md-button playlist-choser aria-label="Add Song To Playlist">
-                        <md-icon md-svg-src="fonts/open-iconic/svg/plus.svg" alt="Add To"></md-icon>
+                    <md-button playlist-choser track-to-add="track" title="Add to playlist" aria-label="Add to playlist">
+                        <md-icon md-font-icon="icon ion-android-add" alt="Add To"></md-icon>
                     </md-button>
-                    <md-button aria-label="Like the song">
-                        <md-icon md-svg-src="fonts/open-iconic/svg/heart.svg" alt="Love It"></md-icon>
+                    <md-button title="Remove from stream" aria-label="Remove" ng-click="player.remove($index)">
+                        <md-icon md-font-icon="icon ion-android-delete" alt="Remove"></md-icon>
                     </md-button>
                 </div>
             </md-item-content>
@@ -34,3 +34,13 @@
         </md-item>
     </md-list>
 </md-content>
+<md-toolbar class="bottom-toolbar">
+    <div class="md-toolbar-tools">
+        <span></span>
+        <span flex></span>
+        <span>
+            <md-button ng-click="saveStream($event)"><md-icon md-font-icon="icon ion-android-archive"></md-icon></md-button>
+            <md-button ng-click="clearStream($event)"><md-icon md-font-icon="icon ion-android-delete"></md-icon></md-button>
+        </span>
+    </div>
+</md-toolbar>

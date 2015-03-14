@@ -1,5 +1,5 @@
 <div id="discovery" ng-controller="DiscoveryController as vm">
-    <md-tabs md-selected="vm.selectedIndex">
+    <md-tabs class="main-nav" md-selected="vm.selectedIndex">
         <md-tab id="tab1" aria-controls="tab1-content">
             Top charts
         </md-tab>
@@ -40,4 +40,5 @@
             <now-playing class="media-list"></now-playing>
         </div>
     </ng-switch>
+    <playlist-menu id="singleton-playlist-menu"></playlist-menu>
 </div>

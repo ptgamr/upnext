@@ -27,6 +27,8 @@ html {
   white-space: nowrap;
 }
 
+md-icon { font-size: 24px; line-height: 24px;}
+
 md-item .md-tile-hover{
   float: right;
   right: 0;
@@ -34,13 +36,11 @@ md-item .md-tile-hover{
   display: none;
 }
 
-md-item:hover .md-tile-hover{
+md-item:hover .md-tile-hover, md-item .md-tile-hover.active{
   display: block;
 }
 
 md-item .md-button md-icon{
-  width: 16px;
-  height: 16px;
   color: #555;
 }
 
@@ -48,16 +48,38 @@ md-item-content {
   padding: 5px 0;
 }
 
-md-tab {
-  padding: 20px 10px;
+
+
+md-tabs.main-nav md-tab,
+md-tabs.main-nav .md-header {
+    background-color: #444444 !important;
 }
-md-tab md-icon {
+
+md-tabs.main-nav md-tab-label {
+    color: #ccc !important;
+}
+
+md-tabs.main-nav .active md-tab-label {
+    color: #fff !important;
+}
+
+md-tabs.main-nav md-tab {
+    padding: 20px 10px;
+}
+md-tabs.main-nav md-tab md-itemcon {
   width: 15px;
   height: 15px;
 }
 
+md-toolbar.bottom-toolbar { background-color: #fff; min-height: 44px; }
+md-toolbar.bottom-toolbar .md-toolbar-tools { height: 44px; max-height: 44px;}
+md-toolbar.bottom-toolbar .md-toolbar-tools .md-button {color: #555;}
+md-toolbar.bottom-toolbar .md-toolbar-tools .md-button md-icon {font-size: 24px; line-height: 24px;}
+
+/*
 md-tabs { border-bottom: 1px solid #f2f2f2; }
 md-tabs.md-default-theme  md-tabs-ink-bar { background-color: rgb(255,87,34);}
+*/
 
 md-divider.md-default-theme {
   border-top-color: #f2f2f2;
@@ -162,8 +184,11 @@ md-icon.control-hide-nowplaying {width: 15px; height: 15px;}
 
     #discovery [role="tabpanel"] {
       height: 440px;
-      padding: 15px;
-      overflow-y: scroll;
+      overflow: hidden;
+    }
+
+    #discovery .tab-content {
+      height: 400px;
     }
 
 .media-list {
@@ -244,17 +269,23 @@ md-icon.control-hide-nowplaying {width: 15px; height: 15px;}
 .playlist md-item .md-tile-hover {margin: 0 10px 0 0;}
 
 #singleton-playlist-menu {
-  border: 1px solid #ccc;
-  position: absolute;
-  display: none;
+  position: fixed;
   width: 175px;
-  max-height: 250px;
   overflow-y: scroll;
-  z-index: 1;
+  z-index: 100;
+  display: none;
+  animation: fadeOut .25s;
+  box-shadow: 0px 2px 5px 0 rgba(0, 0, 0, 0.26); 
 }
-#singleton-playlist-menu.open {display: block;}
+
+#singleton-playlist-menu.open {
+  display: block;
+  -webkit-animation: fadeIn .25s;
+}
+
+#singleton-playlist-menu md-input-container {padding-bottom: 0; background-color: #fff;}
+#singleton-playlist-menu md-content { max-height: 200px;}
 #singleton-playlist-menu .md-tile-content {padding: 5px;}
-#singleton-playlist-menu md-input-container {padding-bottom: 0;}
 #singleton-playlist-menu md-item-content {padding: 5px 10px;}
 #singleton-playlist-menu md-item:hover md-item-content { background-color: #F4F4F4; cursor: pointer;}
 #singleton-playlist-menu md-input-container {padding: 10px;}

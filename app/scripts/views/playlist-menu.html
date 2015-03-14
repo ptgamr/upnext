@@ -1,9 +1,10 @@
+<md-input-container md-no-float>
+    <input ng-model="newPlaylistName" type="text" placeholder="New Playlist" ng-keypress="addNew($event)">
+</md-input-container>
+
 <md-content>
-    <md-input-container md-no-float>
-        <input ng-model="newPlaylistName" type="text" placeholder="New Playlist" ng-keypress="addNew($event)">
-    </md-input-container>
     <md-list class="playlist-menu">
-        <md-item ng-repeat="playlist in playlists track by $index">
+        <md-item ng-repeat="playlist in playlists track by $index" ng-click="addTrackToPlaylist($index)">
             <md-item-content>
                 <div class="md-tile-content">
                     <h3>{{playlist.name}}</h3>

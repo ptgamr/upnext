@@ -17,13 +17,13 @@
 					templateUrl: "partials/home.html"
 				});
 
-			$mdThemingProvider.theme('default')
-			    .primaryPalette('deep-orange')
-			    .accentPalette('orange');
+			// $mdThemingProvider.theme('default')
+			//     .primaryPalette('deep-orange')
+			//     .accentPalette('orange');
 
-			$mdThemingProvider.theme('docs-dark', 'default')
-		        .primaryPalette('yellow')
-		        .dark();
+			// $mdThemingProvider.theme('docs-dark', 'default')
+		 //        .primaryPalette('yellow')
+		 //        .dark();
 
 			$compileProvider.imgSrcSanitizationWhitelist(/^\s*((https?|ftp|file|blob|chrome-extension):|data:image\/)/);
 		}

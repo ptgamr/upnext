@@ -1,4 +1,4 @@
-<md-content class="list-hover" ng-hide="chosenCategory">
+<md-content class="list-hover tab-content md-padding" ng-hide="chosenCategory">
     <md-list>
         <md-item ng-repeat="cat in categories">
             <md-item-content layout="row" layout-align="start start" ng-click="selectCategory(cat)">
@@ -12,7 +12,7 @@
         </md-item>
     </md-list>
 </md-content>
-<md-content ng-show="chosenCategory">
+<md-content class="tab-content md-padding" ng-show="chosenCategory">
     <div layout="row" class="tab-heading">
         <div flex>
             <md-button class="back-link" ng-click="backToTopChart()">
@@ -44,8 +44,29 @@
                         {{track.playback_count}} | {{track.likes_count}}
                     </p>
                 </div>
+                <div class="md-tile-hover" layout="row" layout-margin layout-align="center center" >
+                    <md-button aria-label="Play Next">
+                        <md-icon md-font-icon="icon ion-ios-paperplane" alt="Play next"></md-icon>
+                    </md-button>
+                    <md-button aria-label="Like the song">
+                        <md-icon md-svg-src="fonts/open-iconic/svg/heart.svg" alt="Love It"></md-icon>
+                    </md-button>
+                    <md-button playlist-choser track-to-add="track" aria-label="Add Song To Playlist">
+                        <md-icon md-font-icon="icon ion-android-add" alt="Add To"></md-icon>
+                    </md-button>
+                </div>
             </md-item-content>
             <md-divider ng-if="!$last"></md-divider>
         </md-item>
     </md-list>
 </md-content>
+<md-toolbar class="bottom-toolbar" ng-show="chosenCategory">
+    <div class="md-toolbar-tools">
+        <span></span>
+        <span flex></span>
+        <span>
+            <md-button><md-icon md-font-icon="icon ion-android-archive"></md-icon></md-button>
+            <md-button><md-icon md-font-icon="icon ion-android-delete"></md-icon></md-button>
+        </span>
+    </div>
+</md-toolbar>

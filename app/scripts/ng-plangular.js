@@ -68,6 +68,19 @@ plangular.directive('corePlayer', function(Messaging, NowPlaying, CLIENT_ID) {
         NowPlaying.saveState(this.state);
       };
 
+      this.clear = function() {
+        this.tracks = [];
+        this.state = {
+          currentTrack: false,
+          currentIndex: 0,
+          playing: false,
+          currentTime: 0,
+          duration: 0
+        };
+        NowPlaying.saveList(this.tracks);
+        NowPlaying.saveState(this.state);
+      }
+
       this.play = function(index) {
 
         index = index || 0;

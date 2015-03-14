@@ -1,18 +1,18 @@
-<md-content>
+<md-content class="tab-content md-padding" ng-hide="selectedPlaylist">
     <md-input-container>
         <label>New Playlist</label>
         <input ng-model="newPlaylistName" type="text" placeholder="Enter playlist name" ng-keypress="addNew($event)">
     </md-input-container>
     <md-list class="playlist">
-        <md-item ng-repeat="playlist in playlists track by $index">
+        <md-item ng-repeat="playlist in playlists track by $index" ng-click="selectPlaylist(playlist)">
             <md-item-content>
                 <div class="md-tile-content">
                     <h3>{{playlist.name}}</h3>
-                    <h4>{{playlist.songs.length}} tracks</h4>
+                    <h4>{{playlist.tracks.length}} tracks</h4>
                 </div>
                 <div class="md-tile-hover" layout="row" layout-margin layout-align="center center" >
                     <md-button aria-label="Remove Playlist" ng-click="remove($index)">
-                        <md-icon md-svg-src="fonts/open-iconic/svg/trash.svg" alt="Remove"></md-icon>
+                        <md-button><md-icon md-font-icon="icon ion-android-delete"></md-icon></md-button>
                     </md-button>
                 </div>
             </md-item-content>
@@ -20,3 +20,54 @@
         </md-item>
     </md-list>
 </md-content>
+<md-content class="tab-content md-padding" ng-show="selectedPlaylist">
+    <div layout="row" class="tab-heading">
+        <div flex>
+            <md-button class="back-link" ng-click="backToPlaylist()">
+                <md-icon md-svg-src="fonts/open-iconic/svg/arrow-left.svg"></md-icon>
+                Back
+            </md-button>
+        </div>
+        <div flex="33">
+            <h3 class="chosen-category">{{selectedPlaylist.name}}</h3>
+        </div>
+    </div>
+    <md-list class="media-list">
+        <md-item ng-repeat="track in selectedPlaylist.tracks" ng-class="{'playing': player.state.currentTrack.id === track.id && player.state.playing, 'pause': player.state.currentTrack.id === track.id && !player.state.playing}">
+            <md-item-content layout="row" layout-align="start start">
+                <div class="md-tile-left" ng-click="addTrack(track)">
+                    <div class="face">
+                        <img ng-src="{{track.artwork_url || 'images/artwork-bar.jpg'}}" alt="{{track.title}}">
+                        <div class="overlay"></div>
+                    </div>
+                    <span class="icon icon-playing"></span>
+                    <span class="fa fa-play fa-lg"></span>
+                    <span class="fa fa-pause fa-lg"></span>
+                </div>
+                <div class="md-tile-content">
+                    <h3 ng-click="addTrack(track)">{{track.title}}</h3>
+                    <h4>{{track.user.username}}</h4>
+                    <p>
+                        {{track.playback_count}} | {{track.likes_count}}
+                    </p>
+                </div>
+                <div class="md-tile-hover" layout="row" layout-margin layout-align="center center" >
+                    <md-button aria-label="Play Next">
+                        <md-icon md-font-icon="icon ion-ios-paperplane" alt="Play next"></md-icon>
+                    </md-button>
+                </div>
+            </md-item-content>
+            <md-divider ng-if="!$last"></md-divider>
+        </md-item>
+    </md-list>
+</md-content>
+<md-toolbar class="bottom-toolbar">
+    <div class="md-toolbar-tools">
+        <span></span>
+        <span flex></span>
+        <span>
+            <md-button><md-icon md-font-icon="icon ion-android-archive"></md-icon></md-button>
+            <md-button><md-icon md-font-icon="icon ion-android-delete"></md-icon></md-button>
+        </span>
+    </div>
+</md-toolbar>
