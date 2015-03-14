@@ -1,0 +1,22 @@
+<md-content>
+    <md-input-container>
+        <label>New Playlist</label>
+        <input ng-model="newPlaylistName" type="text" placeholder="Enter playlist name" ng-keypress="addNew($event)">
+    </md-input-container>
+    <md-list class="playlist">
+        <md-item ng-repeat="playlist in playlists track by $index">
+            <md-item-content>
+                <div class="md-tile-content">
+                    <h3>{{playlist.name}}</h3>
+                    <h4>{{playlist.songs.length}} tracks</h4>
+                </div>
+                <div class="md-tile-hover" layout="row" layout-margin layout-align="center center" >
+                    <md-button aria-label="Remove Playlist" ng-click="remove($index)">
+                        <md-icon md-svg-src="fonts/open-iconic/svg/trash.svg" alt="Remove"></md-icon>
+                    </md-button>
+                </div>
+            </md-item-content>
+            <md-divider ng-if="!$last"></md-divider>
+        </md-item>
+    </md-list>
+</md-content>

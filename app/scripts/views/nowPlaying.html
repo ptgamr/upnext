@@ -19,13 +19,13 @@
                     </p>
                 </div>
                 <div class="md-tile-hover" layout="row" layout-margin layout-align="center center" >
-                    <md-button ng-click="player.remove($index)">
+                    <md-button aria-label="Remove song" ng-click="player.remove($index)">
                         <md-icon md-svg-src="fonts/open-iconic/svg/trash.svg" alt="Remove"></md-icon>
                     </md-button>
-                    <md-button>
+                    <md-button playlist-choser aria-label="Add Song To Playlist">
                         <md-icon md-svg-src="fonts/open-iconic/svg/plus.svg" alt="Add To"></md-icon>
                     </md-button>
-                    <md-button>
+                    <md-button aria-label="Like the song">
                         <md-icon md-svg-src="fonts/open-iconic/svg/heart.svg" alt="Love It"></md-icon>
                     </md-button>
                 </div>

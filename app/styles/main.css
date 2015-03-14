@@ -238,6 +238,26 @@ md-icon.control-hide-nowplaying {width: 15px; height: 15px;}
     display: block;
   }
 
+.playlist {}
+.playlist .md-tile-content { padding: 5px 10px;}
+.playlist md-item:hover md-item-content { background-color: #F4F4F4; cursor: pointer;}
+.playlist md-item .md-tile-hover {margin: 0 10px 0 0;}
+
+#singleton-playlist-menu {
+  border: 1px solid #ccc;
+  position: absolute;
+  display: none;
+  width: 175px;
+  max-height: 250px;
+  overflow-y: scroll;
+  z-index: 1;
+}
+#singleton-playlist-menu.open {display: block;}
+#singleton-playlist-menu .md-tile-content {padding: 5px;}
+#singleton-playlist-menu md-input-container {padding-bottom: 0;}
+#singleton-playlist-menu md-item-content {padding: 5px 10px;}
+#singleton-playlist-menu md-item:hover md-item-content { background-color: #F4F4F4; cursor: pointer;}
+#singleton-playlist-menu md-input-container {padding: 10px;}
 
 
 .icon {}

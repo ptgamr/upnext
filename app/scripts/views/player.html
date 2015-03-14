@@ -18,25 +18,25 @@
         <div flex="50" class="duration">{{ player.state.duration | prettyTime }}</div>
     </div>
     <section layout="row" layout-margin layout-align="center center" class="player-controls">
-        <md-button flex ng-click="player.previous()">
+        <md-button aria-label="Previous Song" flex ng-click="player.previous()">
             <md-icon md-svg-src="fonts/open-iconic/svg/media-step-backward.svg" class="player-control control-back" alt="Previous"></md-icon>
         </md-button>
-        <md-button flex ng-click="player.playPause()">
+        <md-button aria-label="Play Pause" flex ng-click="player.playPause()">
             <md-icon md-svg-src="fonts/open-iconic/svg/media-pause.svg" class="player-control control-pause" alt="Play" ng-if="player.state.playing"></md-icon>
             <md-icon md-svg-src="fonts/open-iconic/svg/media-play.svg" class="player-control control-play" alt="Play" ng-if="!player.state.playing"></md-icon>
         </md-button>
-        <md-button flex ng-click="player.next()">
+        <md-button aria-label="Next Song" flex ng-click="player.next()">
             <md-icon md-svg-src="fonts/open-iconic/svg/media-step-forward.svg" class="player-control control-next" alt="Next"></md-icon>
         </md-button>
     </section>
     <section layout="row" layout-margin layout-align="center center" class="player-sub-controls">
-        <md-button class="player-control control-shuffle">
+        <md-button aria-label="Toggle Shuffle" class="player-control control-shuffle">
             <md-icon md-svg-src="fonts/open-iconic/svg/random.svg" alt="Shuffle"></md-icon>
         </md-button>
-        <md-button class="player-control control-repeat">
+        <md-button aria-label="Toggle Repeat" class="player-control control-repeat">
             <md-icon md-svg-src="fonts/open-iconic/svg/loop.svg" alt="Repeat"></md-icon>
         </md-button>
-        <md-button class="player-control control-volume">
+        <md-button aria-label="Adjust Volume" class="player-control control-volume">
             <md-icon md-svg-src="fonts/open-iconic/svg/volume-high.svg" alt="Volume"></md-icon>
         </md-button>
     </section>

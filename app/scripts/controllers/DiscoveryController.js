@@ -11,7 +11,6 @@
         $scope.$watch(angular.bind(vm, function () {
 			return this.selectedIndex; // `this` IS the `this` above!!
 		}), function (newVal, oldVal) {
-			console.log("tab change " + newVal);
 			localStorage.setItem('activeTab', newVal);
 		});
     }
