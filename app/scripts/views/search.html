@@ -1,7 +1,12 @@
 <md-content class="md-padding tab-content">
 	<md-input-container>
-        <label>Search</label>
-		<input ng-model="searchTerm" type="text" placeholder="Enter song name ..." ng-keypress="onKeyPress($event)">
+        <label>Search SoundCloud</label>
+		<input ng-model="searchTerm" type="text" placeholder="Enter a name ..." ng-keypress="onKeyPress($event)">
+	</md-input-container>
+
+	<md-input-container>
+        <label>Search Youtube</label>
+		<input ng-model="searchTermYoutube" type="text" placeholder="Enter a name ..." ng-keypress="onKeyPressYoutube($event)">
 	</md-input-container>
 	<!-- <md-button class="md-raised md-primary search-btn" ng-click="doSearch()">Search</md-button> -->
 	<loading ng-if="isLoading"></loading>
