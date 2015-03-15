@@ -35,11 +35,12 @@
         <md-icon md-font-icon="icon ion-android-volume-up" alt="Volume"></md-icon>
     </section>
     <section layout="row" layout-margin layout-align="center center" class="player-sub-controls">
-        <md-button aria-label="Toggle Shuffle" class="player-control control-shuffle">
-            SHUFFLE
+        <md-button ng-class="{'md-warn': player.state.repeat !== 0}" aria-label="Toggle Repeat" class="player-control control-repeat" ng-click="player.toggleRepeat()">
+            <span ng-if="player.state.repeat !== 2">REPEAT ALL</span>
+            <span ng-if="player.state.repeat === 2">REPEAT ONE</span>
         </md-button>
-        <md-button aria-label="Toggle Repeat" class="player-control control-repeat">
-            REPEAT
+        <md-button ng-class="{'md-warn': player.state.shuffle}" aria-label="Toggle Shuffle" class="player-control control-shuffle" ng-click="player.toggleShuffle()">
+            SHUFFLE
         </md-button>
     </section>
 </section>

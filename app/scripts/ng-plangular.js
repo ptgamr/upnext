@@ -36,7 +36,7 @@ plangular.directive('corePlayer', function(Messaging, NowPlaying, CLIENT_ID) {
     duration: 0,
     volume: 0.5,
     repeat: 0,
-    shuffle: 0
+    shuffle: false
   };
 
   return {
@@ -153,19 +153,11 @@ plangular.directive('corePlayer', function(Messaging, NowPlaying, CLIENT_ID) {
       };
 
       this.next = function() {
-        var nextIndex = this.state.currentIndex + 1;
-        if (nextIndex >= this.tracks.length) {
-          nextIndex = 0;
-        }
-        this.play(nextIndex);
+        Messaging.sendNextMessage();
       };
 
       this.previous = function() {
-        var nextIndex = this.state.currentIndex - 1;
-        if (nextIndex < 0) {
-          nextIndex = this.track.length - 1;
-        }
-        this.play(nextIndex);
+        Messaging.sendPrevMessage();
       };
 
       this.seek = function(e) {
@@ -196,6 +188,22 @@ plangular.directive('corePlayer', function(Messaging, NowPlaying, CLIENT_ID) {
       this.setVolume = function(volume) {
         Messaging.sendVolumeMessage(volume/100);
         deboundSaveVolume();
+      }
+
+      this.toggleRepeat = function() {
+        if (this.state.repeat === 0) {
+          this.state.repeat = 1; // repeat all
+        } else if (this.state.repeat === 1) {
+          this.state.repeat = 2; // repeat one
+        } else {
+          this.state.repeat = 0; // no repeat
+        }
+        NowPlaying.saveState(this.state);
+      }
+
+      this.toggleShuffle = function() {
+        this.state.shuffle = !this.state.shuffle;
+        NowPlaying.saveState(this.state);
       }
     }
   };
@@ -357,6 +365,8 @@ plangular.factory("Messaging", function() {
       registerEndedHandler: registerEndedHandler,
       registerTrackChangedFromBackgroundHandler: registerTrackChangedFromBackgroundHandler,
       sendPlayMessage: sendPlayMessage,
+      sendNextMessage: sendNextMessage,
+      sendPrevMessage: sendPrevMessage,
       sendPauseMessage: sendPauseMessage,
       sendSeekMessage: sendSeekMessage,
       sendVolumeMessage: sendVolumeMessage
@@ -378,6 +388,14 @@ plangular.factory("Messaging", function() {
     port.postMessage({message: 'scd.play', data: {
         src: src
     }});
+  }
+
+  function sendNextMessage() {
+    port.postMessage({message: 'scd.next'});
+  }
+
+  function sendPrevMessage() {
+    port.postMessage({message: 'scd.prev'}); 
   }
 
   function sendPauseMessage() {

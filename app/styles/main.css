@@ -165,7 +165,7 @@ md-divider.md-default-theme {
   z-index: 1;
 }
 
-.player-controls {margin: 10px;}
+.player-controls {margin: 0px;}
 .player-controls .player-control {color: #FBFBFC;}
 
 .player-sub-controls {margin-bottom: 10px;}

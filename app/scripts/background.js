@@ -31,6 +31,9 @@ var Utils = {
           });
         }
       });
+    },
+    random: function(min, max) {
+        return Math.floor(Math.random() * (max - min)) + min;
     }
 };
 
@@ -62,7 +65,15 @@ Player.prototype = {
         }, false);
 
         this.audio.addEventListener('ended', function() {
-            self.next.call(self);
+
+            if (self.state.repeat === 0) {
+                //do-nothing
+            } else if (self.state.repeat === 1) {
+                self.next.call(self);
+            } else {
+                self.replay();
+            }
+
         }, false);
 
 
@@ -86,7 +97,8 @@ Player.prototype = {
 
             if (changes['nowPlayingState']) {
 
-                var lastTrackId = self.state.currentTrack.id;
+                var oldValue = changes['nowPlayingState'].oldValue,
+                    lastTrackId = oldValue ?  oldValue.currentTrack.id : null;
 
                 self.state = changes['nowPlayingState'].newValue;
 
@@ -105,11 +117,20 @@ Player.prototype = {
     },
 
     next: function() {
-        var currentIndex = this.state.currentIndex;
-        var nextIndex = currentIndex + 1;
 
-        if (nextIndex >= this.tracks.length) {
-            nextIndex = 0;
+        var nextIndex;
+
+        if (this.state.shuffle) {
+            
+            nextIndex = Utils.random(0, this.tracks.length - 1);
+
+        } else {
+            
+            nextIndex = this.state.currentIndex + 1;
+
+            if (nextIndex >= this.tracks.length) {
+                nextIndex = 0;
+            }
         }
 
         var nextTrack = this.tracks[nextIndex];
@@ -121,8 +142,32 @@ Player.prototype = {
             this.state.currentTrack = nextTrack;
             this.state.playing = true;
 
-            currentPort.postMessage({message: 'scd.trackChangedFromBackground', data: this.state});
+            if (currentPort) {
+                currentPort.postMessage({message: 'scd.trackChangedFromBackground', data: this.state});
+            }
 
+            chrome.storage.local.set({'nowPlayingState': this.state});
+        }
+    },
+
+    prev: function() {
+        var currentIndex = this.state.currentIndex;
+        var nextIndex = currentIndex - 1;
+
+        if (nextIndex < 0) {
+            nextIndex = this.tracks.length -1;
+        }
+
+        var nextTrack = this.tracks[nextIndex];
+
+        if (nextTrack) {
+            this.play(nextTrack.stream_url + '?client_id=' + CLIENT_ID);
+            this.state.currentIndex = nextIndex;
+            this.state.currentTrack = nextTrack;
+            this.state.playing = true;
+            if (currentPort) {
+                currentPort.postMessage({message: 'scd.trackChangedFromBackground', data: this.state});
+            }
             chrome.storage.local.set({'nowPlayingState': this.state});
         }
     },
@@ -141,6 +186,12 @@ Player.prototype = {
 
     pause: function() {
         this.audio.pause();
+    },
+
+    replay: function() {
+        this.audio.pause();
+        this.audio.currentTime = 0;
+        this.audio.play();
     },
 
     clear: function() {
@@ -178,6 +229,12 @@ chrome.runtime.onConnect.addListener(function(port) {
                 break;
             case 'scd.pause':
                 backgroundPlayer.pause();
+                break;
+            case 'scd.next':
+                backgroundPlayer.next();
+                break;
+            case 'scd.prev':
+                backgroundPlayer.prev();
                 break;
             case 'scd.seek':
                 backgroundPlayer.seek(data.xpos);

@@ -15,7 +15,7 @@
 * [] Rename
 
 ### Player
-* [] Volume
+* [x] Volume
 * [] Repeat / Repeat One
 * [] Shuffle
 
