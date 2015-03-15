@@ -38,6 +38,7 @@ var CLIENT_ID = '849e84ac5f7843ce1cbc0e004ae4fb69';
 var currentPort;
 var Player = function() {
     this.audio = document.createElement('audio');
+    this.audio.volume = 0.5;
     this.init();
 };
 
@@ -140,6 +141,10 @@ Player.prototype = {
     seek: function(xpos) {
         if (!this.audio.readyState) return false;
         this.audio.currentTime = (xpos * this.audio.duration);
+    },
+
+    setVolume: function(volume) {
+        this.audio.volume = volume;
     }
 };
 
@@ -164,6 +169,9 @@ chrome.runtime.onConnect.addListener(function(port) {
                 break;
             case 'scd.seek':
                 backgroundPlayer.seek(data.xpos);
+                break;
+            case 'scd.volume':
+                backgroundPlayer.setVolume(data.volume);
                 break;
         }
     });

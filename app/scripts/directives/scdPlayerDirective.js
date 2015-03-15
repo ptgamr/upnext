@@ -10,6 +10,7 @@
             templateUrl: 'scripts/views/player.html',
             require: '^corePlayer',
             link: function(scope, element, attrs, playerController) {
+                
                 scope.player = playerController;
 
                 scope.toggleNowPlaying = function() {

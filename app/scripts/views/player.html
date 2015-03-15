@@ -29,15 +29,17 @@
             <md-icon md-svg-src="fonts/open-iconic/svg/media-step-forward.svg" class="player-control control-next" alt="Next"></md-icon>
         </md-button>
     </section>
+    <section layout="row" class="volume-controls">
+        <md-icon md-font-icon="icon ion-android-volume-down" alt="Volume"></md-icon>
+        <md-slider flex min="0" max="100" ng-model="player.state.volume" aria-label="volume" id="volume-slider" class="md-warn"></md-slider>
+        <md-icon md-font-icon="icon ion-android-volume-up" alt="Volume"></md-icon>
+    </section>
     <section layout="row" layout-margin layout-align="center center" class="player-sub-controls">
         <md-button aria-label="Toggle Shuffle" class="player-control control-shuffle">
-            <md-icon md-svg-src="fonts/open-iconic/svg/random.svg" alt="Shuffle"></md-icon>
+            SHUFFLE
         </md-button>
         <md-button aria-label="Toggle Repeat" class="player-control control-repeat">
-            <md-icon md-svg-src="fonts/open-iconic/svg/loop.svg" alt="Repeat"></md-icon>
-        </md-button>
-        <md-button aria-label="Adjust Volume" class="player-control control-volume">
-            <md-icon md-svg-src="fonts/open-iconic/svg/volume-high.svg" alt="Volume"></md-icon>
+            REPEAT
         </md-button>
     </section>
 </section>
