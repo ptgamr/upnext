@@ -1,0 +1,34 @@
+<md-list class="media-list">
+    <md-item ng-repeat="track in tracks track by $index" ng-class="{'playing': player.state.currentTrack.id === track.id && player.state.playing, 'pause': player.state.currentTrack.id === track.id && !player.state.playing}">
+        <md-item-content layout="row" layout-align="start start">
+            <div class="md-tile-left" ng-click="handleTrackClick($index)">
+                <div class="face">
+                    <img ng-src="{{track.artwork_url || track.user.avatar_url || 'images/artwork-bar.jpg'}}" alt="{{track.title}}">
+                    <div class="overlay"></div>
+                </div>
+                <span class="icon icon-playing"></span>
+                <span class="fa fa-play fa-lg"></span>
+                <span class="fa fa-pause fa-lg"></span>
+            </div>
+            <div class="md-tile-content">
+                <h3 ng-click="handleTrackClick($index)">{{track.title}}</h3>
+                <h4>{{track.user.username}}</h4>
+                <p>
+                    {{track.playback_count}} | {{track.likes_count}}
+                </p>
+            </div>
+            <div class="md-tile-hover" layout="row" layout-margin layout-align="center center" >
+                <md-button title="Like" aria-label="Like">
+                    <md-icon md-font-icon="icon ion-android-star" alt="Love It"></md-icon>
+                </md-button>
+                <md-button playlist-choser track-to-add="track" title="Add to playlist" aria-label="Add to playlist">
+                    <md-icon md-font-icon="icon ion-android-add" alt="Add To"></md-icon>
+                </md-button>
+                <md-button title="Remove from stream" aria-label="Remove" ng-click="player.remove($index)">
+                    <md-icon md-font-icon="icon ion-android-delete" alt="Remove"></md-icon>
+                </md-button>
+            </div>
+        </md-item-content>
+        <md-divider ng-if="!$last"></md-divider>
+    </md-item>
+</md-list>

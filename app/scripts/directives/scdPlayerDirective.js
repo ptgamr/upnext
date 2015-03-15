@@ -10,7 +10,7 @@
             templateUrl: 'scripts/views/player.html',
             require: '^corePlayer',
             link: function(scope, element, attrs, playerController) {
-                
+
                 scope.player = playerController;
 
                 scope.toggleNowPlaying = function() {
@@ -22,11 +22,15 @@
 
                 scope.isNowPlayingOpen = function() {
                     return $mdSidenav('right').isOpen();
-                }
+                };
 
                 scope.closeNowPlaying = function() {
                     $mdSidenav('right').toggle()
-                }
+                };
+
+                scope.$watch('player.state.volume', function(val) {
+                    scope.player.setVolume(val);
+                });
             }
         };
     }

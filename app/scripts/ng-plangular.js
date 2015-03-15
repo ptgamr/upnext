@@ -16,6 +16,29 @@
 var plangular = angular.module('plangular', []);
 
 plangular.directive('corePlayer', function(Messaging, NowPlaying, CLIENT_ID) {
+
+  function debounce(fn, delay) {
+    var timer = null;
+    return function () {
+      var context = this, args = arguments;
+      clearTimeout(timer);
+      timer = setTimeout(function () {
+        fn.apply(context, args);
+      }, delay);
+    };
+  }
+
+  var DEFAULT_STATE = {
+    currentTrack: false,
+    currentIndex: 0,
+    playing: false,
+    currentTime: 0,
+    duration: 0,
+    volume: 0.5,
+    repeat: 0,
+    shuffle: 0
+  };
+
   return {
     restrict: 'EA',
     controller: function() {
@@ -23,23 +46,17 @@ plangular.directive('corePlayer', function(Messaging, NowPlaying, CLIENT_ID) {
       var self = this;
       this.tracks = [];
 
-      this.state = {
-        currentTrack: false,
-        currentIndex: 0,
-        playing: false,
-        currentTime: 0,
-        duration: 0
-      };
-
       NowPlaying.getList(function(tracks) {
         self.tracks = tracks;
       });
 
       NowPlaying.getState(function(savedState) {
-        self.state = savedState;
-      })
+        self.state = savedState || DEFAULT_STATE;
+      });
 
       this.add = function(track, andPlay) {
+
+        console.log(track);
 
         andPlay = andPlay || true;
 
@@ -70,13 +87,16 @@ plangular.directive('corePlayer', function(Messaging, NowPlaying, CLIENT_ID) {
 
       this.clear = function() {
         this.tracks = [];
-        this.state = {
+
+        angular.extend(this.state, {
           currentTrack: false,
           currentIndex: 0,
           playing: false,
           currentTime: 0,
           duration: 0
-        };
+        });
+
+        //Messaging.sendStopMessage();
         NowPlaying.saveList(this.tracks);
         NowPlaying.saveState(this.state);
       }
@@ -168,6 +188,15 @@ plangular.directive('corePlayer', function(Messaging, NowPlaying, CLIENT_ID) {
         console.log('check track ' + this.state.currentTrack.id === trackId);
         return this.state.currentTrack.id === trackId;
       }
+
+      var deboundSaveVolume = debounce(function() {
+        NowPlaying.saveState(self.state);
+      }, 500);
+
+      this.setVolume = function(volume) {
+        Messaging.sendVolumeMessage(volume/100);
+        deboundSaveVolume();
+      }
     }
   };
 });
@@ -197,6 +226,11 @@ plangular.directive('plangular', ['$http', '$rootScope', 'plangularConfig', 'Mes
       //     else playerController.pause.call(playerController);
       //   });
       // });
+  
+      Messaging.registerTrackChangedFromBackgroundHandler(function(data) {
+        console.log('tack changed from background');
+        scope.player.state = data;
+      });
     }
 
   }
@@ -294,7 +328,8 @@ plangular.provider('plangularConfig', function() {
 });
 
 plangular.factory("Messaging", function() {
-  var onTimeUpdate, onEnded;
+
+  var onTimeUpdate, onEnded, onTrackChanged;
 
   var port = chrome.runtime.connect({name: "soundcloudify"});
 
@@ -310,15 +345,21 @@ plangular.factory("Messaging", function() {
         if(onEnded)
           onEnded(data);
         break;
+      case 'scd.trackChangedFromBackground':
+        if(onTrackChanged)
+          onTrackChanged(data);
+        break;
     }
   });
     
   return {
       registerTimeUpdateHandler: registerTimeUpdateHandler,
       registerEndedHandler: registerEndedHandler,
+      registerTrackChangedFromBackgroundHandler: registerTrackChangedFromBackgroundHandler,
       sendPlayMessage: sendPlayMessage,
       sendPauseMessage: sendPauseMessage,
-      sendSeekMessage: sendSeekMessage
+      sendSeekMessage: sendSeekMessage,
+      sendVolumeMessage: sendVolumeMessage
   };
 
   function registerTimeUpdateHandler(callback) {
@@ -327,6 +368,10 @@ plangular.factory("Messaging", function() {
 
   function registerEndedHandler(callback) {
     onEnded = callback;
+  }
+
+  function registerTrackChangedFromBackgroundHandler(callback) {
+    onTrackChanged = callback;
   }
 
   function sendPlayMessage(src) {
@@ -342,6 +387,11 @@ plangular.factory("Messaging", function() {
   function sendSeekMessage(xpos) {
     port.postMessage({message: 'scd.seek', data: {
         xpos: xpos
+    }});
+  }
+  function sendVolumeMessage(volume) {
+    port.postMessage({message: 'scd.volume', data: {
+        volume: volume
     }});
   }
 });

@@ -30,7 +30,8 @@
           registerEndedHandler: registerEndedHandler,
           sendPlayMessage: sendPlayMessage,
           sendPauseMessage: sendPauseMessage,
-          sendSeekMessage: sendSeekMessage
+          sendSeekMessage: sendSeekMessage,
+          sendVolumeMessage: sendVolumeMessage
       };
 
       function registerTimeUpdateHandler(callback) {
@@ -54,6 +55,12 @@
       function sendSeekMessage(xpos) {
         port.postMessage({message: 'scd.seek', data: {
             xpos: xpos
+        }});
+      }
+
+      function sendVolumeMessage(volume) {
+        port.postMessage({message: 'scd.volume', data: {
+            volume: volume
         }});
       }
     };

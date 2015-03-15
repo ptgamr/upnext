@@ -67,7 +67,6 @@ Player.prototype = {
 
 
         chrome.storage.local.get('nowPlaying', function(data) {
-            console.log("getNowPlaying");
             self.tracks = data['nowPlaying'] || [];
         });
 
@@ -76,8 +75,13 @@ Player.prototype = {
         });
 
         chrome.storage.onChanged.addListener(function (changes, areaName) {
+
             if (changes['nowPlaying']) {
                 self.tracks = changes['nowPlaying'].newValue;
+
+                if(!self.tracks.length) {
+                    self.clear.call(self);
+                }
             }
 
             if (changes['nowPlayingState']) {
@@ -91,7 +95,7 @@ Player.prototype = {
                         type: "basic",
                         title: "Playing Track",
                         message: self.state.currentTrack.title,
-                        iconUrl: self.state.currentTrack.artwork_url || 'images/artwork-bar.jpg'
+                        iconUrl: self.state.currentTrack.artwork_url || self.state.currentTrack.user.avatar_url || 'images/artwork-bar.jpg'
                     };
                     Utils.createOrUpdateNotification('track-change', notificationOptions, function() {});
                 }
@@ -112,13 +116,14 @@ Player.prototype = {
 
         if (nextTrack) {
             this.play(nextTrack.stream_url + '?client_id=' + CLIENT_ID);
-            var newState = {
-                currentIndex: nextIndex,
-                currentTrack: nextTrack,
-                playing: true   
-            }
 
-            chrome.storage.local.set({'nowPlayingState': newState});
+            this.state.currentIndex = nextIndex;
+            this.state.currentTrack = nextTrack;
+            this.state.playing = true;
+
+            currentPort.postMessage({message: 'scd.trackChangedFromBackground', data: this.state});
+
+            chrome.storage.local.set({'nowPlayingState': this.state});
         }
     },
 
@@ -138,12 +143,19 @@ Player.prototype = {
         this.audio.pause();
     },
 
+    clear: function() {
+        this.audio.pause();
+        this.audio.currentTime = 0;
+        this.audio.src = null;
+    },
+
     seek: function(xpos) {
         if (!this.audio.readyState) return false;
         this.audio.currentTime = (xpos * this.audio.duration);
     },
 
     setVolume: function(volume) {
+        console.log('set volume ' + volume);
         this.audio.volume = volume;
     }
 };

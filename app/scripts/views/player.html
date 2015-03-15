@@ -1,6 +1,6 @@
 <section>
     <div class="artwork">
-        <img ng-src="{{(player.state.currentTrack.artwork_url | scArtwork) || 'images/artwork-bar.jpg'}}" alt="player.state.currentTrack.title">
+        <img ng-src="{{(player.state.currentTrack.artwork_url || player.state.currentTrack.user.avatar_url | scArtwork) || 'images/artwork-bar.jpg'}}" alt="player.state.currentTrack.title">
         <div class="show-on-hover fadeIn">
             <div class="overlay"></div>
         </div>

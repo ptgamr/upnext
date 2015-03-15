@@ -32,34 +32,7 @@
             <h3 class="chosen-category">{{selectedPlaylist.name}}</h3>
         </div>
     </div>
-    <md-list class="media-list">
-        <md-item ng-repeat="track in selectedPlaylist.tracks" ng-class="{'playing': player.state.currentTrack.id === track.id && player.state.playing, 'pause': player.state.currentTrack.id === track.id && !player.state.playing}">
-            <md-item-content layout="row" layout-align="start start">
-                <div class="md-tile-left" ng-click="addTrack(track)">
-                    <div class="face">
-                        <img ng-src="{{track.artwork_url || 'images/artwork-bar.jpg'}}" alt="{{track.title}}">
-                        <div class="overlay"></div>
-                    </div>
-                    <span class="icon icon-playing"></span>
-                    <span class="fa fa-play fa-lg"></span>
-                    <span class="fa fa-pause fa-lg"></span>
-                </div>
-                <div class="md-tile-content">
-                    <h3 ng-click="addTrack(track)">{{track.title}}</h3>
-                    <h4>{{track.user.username}}</h4>
-                    <p>
-                        {{track.playback_count}} | {{track.likes_count}}
-                    </p>
-                </div>
-                <div class="md-tile-hover" layout="row" layout-margin layout-align="center center" >
-                    <md-button aria-label="Play Next">
-                        <md-icon md-font-icon="icon ion-ios-paperplane" alt="Play next"></md-icon>
-                    </md-button>
-                </div>
-            </md-item-content>
-            <md-divider ng-if="!$last"></md-divider>
-        </md-item>
-    </md-list>
+    <track-list tracks="selectedPlaylist.tracks" on-track-click="playnow"></track-list>
 </md-content>
 <md-toolbar class="bottom-toolbar">
     <div class="md-toolbar-tools">
