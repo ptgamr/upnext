@@ -5,7 +5,7 @@
                 <div ng-switch-when="yt">
                     <div class="md-tile-left" ng-click="handleTrackClick($index)">
                         <div class="face">
-                            <img  ng-src="{{'images/artwork-bar.jpg'}}" alt="{{track.snippet.title}}">
+                            <img  ng-src="{{track.snippet.thumbnails.default.url || 'images/artwork-bar.jpg'}}" alt="{{track.snippet.title}}">
                             <div class="overlay"></div>
                         </div>
                         <span class="icon icon-playing"></span>
