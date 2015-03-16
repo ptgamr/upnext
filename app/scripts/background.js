@@ -211,6 +211,7 @@ Player.prototype = {
     }
 };
 
+var youtubePlayer, youtubePlayerReady = false;
 var backgroundPlayer = new Player();
 
 chrome.runtime.onConnect.addListener(function(port) {
@@ -225,7 +226,19 @@ chrome.runtime.onConnect.addListener(function(port) {
 
         switch(event.message) {
             case 'scd.play':
-                backgroundPlayer.play(data.src);
+                var track =data.track;
+
+                if (track.origin === 'yt') {
+
+                    if (youtubePlayerReady) {
+                        youtubePlayer.loadVideoById({videoId: track.id});
+                    }
+
+                } else {
+                    var streamUrl = track.stream_url + '?client_id=' + CLIENT_ID;
+                    backgroundPlayer.play(streamUrl);
+                }
+
                 break;
             case 'scd.pause':
                 backgroundPlayer.pause();
@@ -249,3 +262,12 @@ chrome.runtime.onConnect.addListener(function(port) {
         currentPort = null;
     })
 });
+
+/**
+ * ===================================================
+ *                      YOUTUBE
+ * ===================================================
+ */
+
+
+

@@ -36,11 +36,16 @@
                     $scope.isLoading = true;
 
                     SearchService.searchYoutube($scope.searchTermYoutube).success(function(results) {
-                        console.log(results);
-                        // $scope.results = results.collection || [];
-                        // $scope.isLoading = false;
-                    });
 
+                        $scope.isLoading = false;
+
+                        if (!results || !results.items) return;
+
+                        $scope.results = (results.items || []).map(function(item) {
+                            item.origin = 'yt';
+                            return item;
+                        });
+                    });
                 };
 
                 $scope.onKeyPress = function(keyEvent) {

@@ -9,10 +9,7 @@
   },
   "default_locale": "en",
   "background": {
-    "scripts": [
-      "scripts/chromereload.js",
-      "scripts/background.js"
-    ]
+    "page": "scripts/background.html"
   },
   "browser_action": {
     "default_icon": {

@@ -17,9 +17,6 @@
         }
 
         function searchYoutube(term) {
-
-            console.log("Search Youtube");
-
             var params = {
                 key: 'AIzaSyDGbUJxAkFnaJqlTD4NwDmzWxXAk55gFh4',
                 type: 'video',
@@ -31,7 +28,7 @@
 
             return $http.get('https://www.googleapis.com/youtube/v3/search', {
                 params: params
-            })
+            });
         }
     };
 

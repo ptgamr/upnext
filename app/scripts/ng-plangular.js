@@ -112,12 +112,11 @@ plangular.directive('corePlayer', function(Messaging, NowPlaying, CLIENT_ID) {
         }
 
         if (track) {
-          var src = track.stream_url + '?client_id=' + CLIENT_ID;
           this.state.playing = true;
           this.state.currentTrack = track;
           this.state.currentIndex = index;
           NowPlaying.saveState(this.state);
-          Messaging.sendPlayMessage(src);
+          Messaging.sendPlayMessage(track);
         }
       };
 
@@ -384,9 +383,9 @@ plangular.factory("Messaging", function() {
     onTrackChanged = callback;
   }
 
-  function sendPlayMessage(src) {
+  function sendPlayMessage(track) {
     port.postMessage({message: 'scd.play', data: {
-        src: src
+        track: track
     }});
   }
 

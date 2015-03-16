@@ -1,21 +1,40 @@
 <md-list class="media-list">
     <md-item ng-repeat="track in tracks track by $index" ng-class="{'playing': player.state.currentTrack.id === track.id && player.state.playing, 'pause': player.state.currentTrack.id === track.id && !player.state.playing}">
         <md-item-content layout="row" layout-align="start start">
-            <div class="md-tile-left" ng-click="handleTrackClick($index)">
-                <div class="face">
-                    <img ng-src="{{track.artwork_url || track.user.avatar_url || 'images/artwork-bar.jpg'}}" alt="{{track.title}}">
-                    <div class="overlay"></div>
+            <div ng-switch="track.origin">
+                <div ng-switch-when="yt">
+                    <div class="md-tile-left" ng-click="handleTrackClick($index)">
+                        <div class="face">
+                            <img  ng-src="{{'images/artwork-bar.jpg'}}" alt="{{track.snippet.title}}">
+                            <div class="overlay"></div>
+                        </div>
+                        <span class="icon icon-playing"></span>
+                        <span class="fa fa-play fa-lg"></span>
+                        <span class="fa fa-pause fa-lg"></span>
+                    </div>
+                    <div class="md-tile-content">
+                        <h3 ng-click="handleTrackClick($index)">{{track.snippet.title}}</h3>
+                        <h4>Youtube</h4>
+                    </div>
                 </div>
-                <span class="icon icon-playing"></span>
-                <span class="fa fa-play fa-lg"></span>
-                <span class="fa fa-pause fa-lg"></span>
-            </div>
-            <div class="md-tile-content">
-                <h3 ng-click="handleTrackClick($index)">{{track.title}}</h3>
-                <h4>{{track.user.username}}</h4>
-                <p>
-                    {{track.playback_count}} | {{track.likes_count}}
-                </p>
+                <div ng-switch-default>
+                    <div class="md-tile-left" ng-click="handleTrackClick($index)">
+                        <div class="face">
+                            <img  ng-src="{{track.artwork_url || track.user.avatar_url || 'images/artwork-bar.jpg'}}" alt="{{track.title}}">
+                            <div class="overlay"></div>
+                        </div>
+                        <span class="icon icon-playing"></span>
+                        <span class="fa fa-play fa-lg"></span>
+                        <span class="fa fa-pause fa-lg"></span>
+                    </div>
+                    <div class="md-tile-content">
+                        <h3 ng-click="handleTrackClick($index)">{{track.title}}</h3>
+                        <h4>{{track.user.username}}</h4>
+                        <p>
+                            {{track.playback_count}} | {{track.likes_count}}
+                        </p>
+                    </div>
+                </div>
             </div>
             <div class="md-tile-hover" layout="row" layout-margin layout-align="center center" >
                 <md-button title="Like" aria-label="Like">
