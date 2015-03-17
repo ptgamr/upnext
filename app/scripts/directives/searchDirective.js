@@ -23,8 +23,8 @@
                     $scope.isLoading = true;
 
                     SearchService.search($scope.searchTerm).success(function(results) {
-                        $scope.results = results.collection || [];
                         $scope.isLoading = false;
+                        $scope.results = results;
                     });
 
                 };
@@ -35,16 +35,12 @@
 
                     $scope.isLoading = true;
 
-                    SearchService.searchYoutube($scope.searchTermYoutube).success(function(results) {
-
+                    SearchService.searchYoutube($scope.searchTermYoutube).then(function(results) {
                         $scope.isLoading = false;
-
-                        if (!results || !results.items) return;
-
-                        $scope.results = (results.items || []).map(function(item) {
-                            item.origin = 'yt';
-                            return item;
-                        });
+                        $scope.results = results;
+                    }, function() {
+                        //FIXME
+                        console.log("ERROR");
                     });
                 };
 

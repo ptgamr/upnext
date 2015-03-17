@@ -12,6 +12,7 @@
             link: function(scope, element, attrs, playerController) {
 
                 scope.player = playerController;
+                scope.volume = scope.player.state.volume * 100;
 
                 scope.toggleNowPlaying = function() {
                     $mdSidenav('right').toggle()
@@ -28,8 +29,10 @@
                     $mdSidenav('right').toggle()
                 };
 
-                scope.$watch('player.state.volume', function(val) {
-                    scope.player.setVolume(val);
+                scope.$watch('volume', function(val) {
+                    if (val) {
+                        scope.player.setVolume(val/100);
+                    }
                 });
             }
         };

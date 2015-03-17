@@ -45,18 +45,19 @@ plangular.directive('corePlayer', function(Messaging, NowPlaying, CLIENT_ID) {
 
       var self = this;
       this.tracks = [];
+      this.state = DEFAULT_STATE;
 
       NowPlaying.getList(function(tracks) {
         self.tracks = tracks;
       });
 
       NowPlaying.getState(function(savedState) {
-        self.state = savedState || DEFAULT_STATE;
+        if (savedState && typeof savedState.volume !== 'undefined') {
+          self.state = savedState;
+        }
       });
 
       this.add = function(track, andPlay) {
-
-        console.log(track);
 
         andPlay = andPlay || true;
 
@@ -185,7 +186,8 @@ plangular.directive('corePlayer', function(Messaging, NowPlaying, CLIENT_ID) {
       }, 500);
 
       this.setVolume = function(volume) {
-        Messaging.sendVolumeMessage(volume/100);
+        this.state.volume = volume;
+        Messaging.sendVolumeMessage(volume);
         deboundSaveVolume();
       }
 
@@ -320,7 +322,15 @@ plangular.filter('prettyTime', function() {
 // Filter to convert milliseconds to hours, minutes, seconds
 plangular.filter('scArtwork', function() {
   return function(value) {
-    return value ? value.replace('-large.', '-t250x250.') : '';
+
+    if (!value) return '';
+
+    if (value.indexOf('-large') !== -1) {
+      return value.replace('-large.', '-t250x250.');
+    } else if (value.indexOf('default.jpg') !== -1) {
+      return value.replace('default.jpg', 'hqdefault.jpg');
+    }
+
   };
 });
 

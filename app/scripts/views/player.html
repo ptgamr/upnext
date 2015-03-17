@@ -1,6 +1,6 @@
 <section>
     <div class="artwork">
-        <img ng-src="{{(player.state.currentTrack.artwork_url || player.state.currentTrack.user.avatar_url | scArtwork) || 'images/artwork-bar.jpg'}}" alt="player.state.currentTrack.title">
+        <img ng-src="{{player.state.currentTrack.artworkUrl | scArtwork}}" alt="{{player.state.currentTrack.title}}">
         <div class="show-on-hover fadeIn">
             <div class="overlay"></div>
         </div>
@@ -31,7 +31,7 @@
     </section>
     <section layout="row" class="volume-controls">
         <md-icon md-font-icon="icon ion-android-volume-down" alt="Volume"></md-icon>
-        <md-slider flex min="0" max="100" ng-model="player.state.volume" aria-label="volume" id="volume-slider" class="md-warn"></md-slider>
+        <md-slider flex min="0" max="100" ng-model="volume" aria-label="volume" id="volume-slider" class="md-warn"></md-slider>
         <md-icon md-font-icon="icon ion-android-volume-up" alt="Volume"></md-icon>
     </section>
     <section layout="row" layout-margin layout-align="center center" class="player-sub-controls">

@@ -19,6 +19,21 @@
                 //onTrackClick can be 'playpause || queue || playnow';
                 $scope.onTrackClick = $scope.onTrackClick || 'play';
 
+                $scope.isTrackPlaying = function(track) {
+                    if (!playerController.state.playing) {
+                        return false;
+                    }
+                    return playerController.state.currentTrack.id === track.id;
+                }
+
+                $scope.isTrackPaused = function(track) {
+                    
+                    if (playerController.state.playing) {
+                        return false;
+                    }
+                    return playerController.state.currentTrack.id === track.id;
+                }
+
                 $scope.handleTrackClick = function($index) {
 
                     if ($scope.onTrackClick === 'playpause') {

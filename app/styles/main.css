@@ -240,6 +240,7 @@ md-slider:not([md-discrete]):not([disabled]):focus .md-focus-ring, md-slider:not
 
   .media-list .face > img {
     width: 100%;
+    height: 100%;
   }
 
   .media-list .md-tile-content {

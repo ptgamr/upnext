@@ -107,7 +107,7 @@ Player.prototype = {
                         type: "basic",
                         title: "Playing Track",
                         message: self.state.currentTrack.title,
-                        iconUrl: self.state.currentTrack.artwork_url || self.state.currentTrack.user.avatar_url || 'images/artwork-bar.jpg'
+                        iconUrl: self.state.currentTrack.artworkUrl
                     };
                     Utils.createOrUpdateNotification('track-change', notificationOptions, function() {});
                 }
@@ -136,7 +136,7 @@ Player.prototype = {
         var nextTrack = this.tracks[nextIndex];
 
         if (nextTrack) {
-            this.play(nextTrack.stream_url + '?client_id=' + CLIENT_ID);
+            this.play(nextTrack.streamUrl + '?client_id=' + CLIENT_ID);
 
             this.state.currentIndex = nextIndex;
             this.state.currentTrack = nextTrack;
@@ -161,7 +161,7 @@ Player.prototype = {
         var nextTrack = this.tracks[nextIndex];
 
         if (nextTrack) {
-            this.play(nextTrack.stream_url + '?client_id=' + CLIENT_ID);
+            this.play(nextTrack.streamUrl + '?client_id=' + CLIENT_ID);
             this.state.currentIndex = nextIndex;
             this.state.currentTrack = nextTrack;
             this.state.playing = true;
@@ -178,7 +178,7 @@ Player.prototype = {
         }
         
         if (!this.audio.src && this.state.currentTrack) {
-            this.audio.src = this.state.currentTrack.stream_url + '?client_id=' + CLIENT_ID;
+            this.audio.src = this.state.currentTrack.streamUrl + '?client_id=' + CLIENT_ID;
         }
 
         this.audio.play();
@@ -212,7 +212,7 @@ Player.prototype = {
 };
 
 var youtubePlayer, youtubePlayerReady = false;
-var backgroundPlayer = new Player();
+var soundcloudPlayer = new Player();
 
 chrome.runtime.onConnect.addListener(function(port) {
 
@@ -226,34 +226,34 @@ chrome.runtime.onConnect.addListener(function(port) {
 
         switch(event.message) {
             case 'scd.play':
-                var track =data.track;
+                var track = data.track;
 
                 if (track.origin === 'yt') {
-
-                    if (youtubePlayerReady) {
-                        youtubePlayer.loadVideoById({videoId: track.id});
-                    }
+                    console.log(track);
+                    soundcloudPlayer.clear();
+                    youtubePlayer.loadVideoById({videoId: track.id});
 
                 } else {
-                    var streamUrl = track.stream_url + '?client_id=' + CLIENT_ID;
-                    backgroundPlayer.play(streamUrl);
+                    youtubePlayer.stopVideo();
+                    var streamUrl = track.streamUrl + '?client_id=' + CLIENT_ID;
+                    soundcloudPlayer.play(streamUrl);
                 }
 
                 break;
             case 'scd.pause':
-                backgroundPlayer.pause();
+                soundcloudPlayer.pause();
                 break;
             case 'scd.next':
-                backgroundPlayer.next();
+                soundcloudPlayer.next();
                 break;
             case 'scd.prev':
-                backgroundPlayer.prev();
+                soundcloudPlayer.prev();
                 break;
             case 'scd.seek':
-                backgroundPlayer.seek(data.xpos);
+                soundcloudPlayer.seek(data.xpos);
                 break;
             case 'scd.volume':
-                backgroundPlayer.setVolume(data.volume);
+                soundcloudPlayer.setVolume(data.volume);
                 break;
         }
     });
@@ -265,9 +265,69 @@ chrome.runtime.onConnect.addListener(function(port) {
 
 /**
  * ===================================================
- *                      YOUTUBE
+ *                YOUTUBE PLAYER
  * ===================================================
  */
+// 3. This function creates an <iframe> (and YouTube player)
+//    after the API code downloads.
+function onYouTubeIframeAPIReady() {
+  console.log('onYouTubeIframeAPIReady')
+  youtubePlayer = new YT.Player('player', {
+    height: '390',
+    width: '640',
+    events: {
+      'onReady': onPlayerReady,
+      'onStateChange': onPlayerStateChange
+    }
+  });
+}
+
+// 4. The API will call this function when the video player is ready.
+function onPlayerReady(event) {
+  console.log('onPlayerReady');
+  youtubePlayer.playVideo();
+}
+
+// 5. The API calls this function when the player's state changes.
+//    The function indicates that when playing a video (state=1),
+//    the player should play for six seconds and then stop.
+var done = false;
+var youtubeProgressTimer;
+function onPlayerStateChange(event) {
+
+    clearTimeout(youtubeProgressTimer);
+
+    switch(event.data) {
+        case YT.PlayerState.PLAYING:
+            youtubeProgressTimer = setInterval(function() {
+                console.log('playing');
+                if (currentPort) {
+                    currentPort.postMessage({message: 'scd.timeupdate', data: {
+                        currentTime: youtubePlayer.getCurrentTime(),
+                        duration: youtubePlayer.getDuration()
+                    }});
+                }
+            }, 1000);
+            break;
+        case YT.PlayerState.ENDED:
+            break;
+        case YT.PlayerState.PAUSED:
+            break;
+        case YT.PlayerState.BUFFERING:
+            break;
+        case YT.PlayerState.CUED:
+            break;
+    }
+
+
+  if (event.data == YT.PlayerState.PLAYING && !done) {
+    setTimeout(stopVideo, 6000);
+    done = true;
+  }
+}
+
+function stopVideo() {
+};
 
 
 
