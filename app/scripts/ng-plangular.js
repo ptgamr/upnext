@@ -135,7 +135,7 @@ plangular.directive('corePlayer', function(Messaging, NowPlaying, CLIENT_ID) {
 
         this.state.playing = true;
         NowPlaying.saveState(this.state);
-        Messaging.sendPlayMessage();
+        Messaging.sendPlayMessage(this.state.currentTrack);
       }
 
       this.playPause = function(index) {

@@ -22,7 +22,7 @@
             <md-icon md-svg-src="fonts/open-iconic/svg/media-step-backward.svg" class="player-control control-back" alt="Previous"></md-icon>
         </md-button>
         <md-button aria-label="Play Pause" flex ng-click="player.playPause()">
-            <md-icon md-svg-src="fonts/open-iconic/svg/media-pause.svg" class="player-control control-pause" alt="Play" ng-if="player.state.playing"></md-icon>
+            <md-icon md-svg-src="fonts/open-iconic/svg/media-pause.svg" class="player-control control-pause" alt="Pause" ng-if="player.state.playing"></md-icon>
             <md-icon md-svg-src="fonts/open-iconic/svg/media-play.svg" class="player-control control-play" alt="Play" ng-if="!player.state.playing"></md-icon>
         </md-button>
         <md-button aria-label="Next Song" flex ng-click="player.next()">

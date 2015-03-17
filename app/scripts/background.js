@@ -39,6 +39,29 @@ var Utils = {
 
 var CLIENT_ID = '849e84ac5f7843ce1cbc0e004ae4fb69';
 var currentPort;
+
+
+var SoundCloudEngine = function() {
+    this.audio = document.createElement('audio');
+    this.audio.volume = 0.5;
+};
+
+SoundCloudEngine.prototype = {
+    
+    constructor SoundCloudEngine,
+
+    play: function(track) {
+
+    },
+    pause: function() {
+
+    },
+    stop: function() {
+
+    }
+}
+
+
 var Player = function() {
     this.audio = document.createElement('audio');
     this.audio.volume = 0.5;
@@ -46,6 +69,7 @@ var Player = function() {
 };
 
 Player.prototype = {
+
     constructor: Player,
 
     init: function() {
@@ -242,6 +266,7 @@ chrome.runtime.onConnect.addListener(function(port) {
                 break;
             case 'scd.pause':
                 soundcloudPlayer.pause();
+                youtubePlayer.pauseVideo();
                 break;
             case 'scd.next':
                 soundcloudPlayer.next();
@@ -254,6 +279,7 @@ chrome.runtime.onConnect.addListener(function(port) {
                 break;
             case 'scd.volume':
                 soundcloudPlayer.setVolume(data.volume);
+                youtubePlayer.setVolume(data.volume * 100);
                 break;
         }
     });
