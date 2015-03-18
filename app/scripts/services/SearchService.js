@@ -4,15 +4,6 @@
     angular.module('soundCloudify')
         .service("SearchService", SearchService);
 
-    function appendTransform(defaults, transform) {
-
-        // We can't guarantee that the default transformation is an array
-        defaults = angular.isArray(defaults) ? defaults : [defaults];
-
-        // Append the new transformation to the defaults
-        return defaults.concat(transform);
-    }
-
     var DEFAULT_LIMIT = 20;
 
 
@@ -30,7 +21,7 @@
                 url: 'https://api-v2.soundcloud.com/search/tracks',
                 method: 'GET',
                 params: params,
-                transformResponse: appendTransform($http.defaults.transformResponse, function(result) {
+                transformResponse: ServiceHelpers.appendTransform($http.defaults.transformResponse, function(result) {
                     if (!result || !result.collection) return [];
                     return TrackAdapter.adaptMultiple(result.collection, 'sc');
                 })
@@ -84,7 +75,7 @@
                     url: 'https://www.googleapis.com/youtube/v3/videos',
                     method: 'GET',
                     params: secondRequestParams,
-                    transformResponse: appendTransform($http.defaults.transformResponse, function(result) {
+                    transformResponse: ServiceHelpers.appendTransform($http.defaults.transformResponse, function(result) {
                         if (!result || !result.items) return [];
                         return TrackAdapter.adaptMultiple(result.items, 'yt');
                     })

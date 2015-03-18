@@ -2,6 +2,17 @@
 
 	'use strict';
 
+	window.ServiceHelpers = window.ServiceHelpers || {};
+
+    window.ServiceHelpers.appendTransform = function appendTransform(defaults, transform) {
+
+        // We can't guarantee that the default transformation is an array
+        defaults = angular.isArray(defaults) ? defaults : [defaults];
+
+        // Append the new transformation to the defaults
+        return defaults.concat(transform);
+    };
+
 	var soundCloudify = angular.module('soundCloudify', ['ngMaterial', 'plangular', 'ngRoute', 'ui.router']);
 
 	soundCloudify.value('CLIENT_ID', '849e84ac5f7843ce1cbc0e004ae4fb69');

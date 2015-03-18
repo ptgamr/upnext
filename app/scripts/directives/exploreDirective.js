@@ -22,9 +22,9 @@
                     if (val) {
                         $scope.isLoading = true;
                         $scope.tracks = [];
-                        Category.getTracks(val).success(function(data) {
+                        Category.getTracks(val).success(function(tracks) {
                             $scope.isLoading = false;
-                            $scope.tracks = data.tracks || [];
+                            $scope.tracks = tracks;
                         })
                     }
                 });
