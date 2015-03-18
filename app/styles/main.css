@@ -78,8 +78,8 @@ md-toolbar.bottom-toolbar .md-toolbar-tools .md-button md-icon {font-size: 24px;
 
 /*
 md-tabs { border-bottom: 1px solid #f2f2f2; }
-md-tabs.md-default-theme  md-tabs-ink-bar { background-color: rgb(255,87,34);}
 */
+md-tabs.md-default-theme  md-tabs-ink-bar { color: rgb(255,87,34); background-color: rgb(255,87,34);}
 
 md-divider.md-default-theme {
   border-top-color: #f2f2f2;

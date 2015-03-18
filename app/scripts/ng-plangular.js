@@ -128,18 +128,12 @@ plangular.directive('corePlayer', function(Messaging, NowPlaying, CLIENT_ID) {
       };
 
       this.resume = function() {
-        if(!this.state.currentTrack) {
-          this.play();
-          return;
-        }
-
         this.state.playing = true;
         NowPlaying.saveState(this.state);
-        Messaging.sendPlayMessage(this.state.currentTrack);
+        Messaging.sendResumeMessage();
       }
 
       this.playPause = function(index) {
-
         if (typeof index !== 'undefined') {
           if (index === this.state.currentIndex) {
             this.state.playing ? this.pause() : this.resume();
@@ -377,6 +371,7 @@ plangular.factory("Messaging", function() {
       sendNextMessage: sendNextMessage,
       sendPrevMessage: sendPrevMessage,
       sendPauseMessage: sendPauseMessage,
+      sendResumeMessage: sendResumeMessage,
       sendSeekMessage: sendSeekMessage,
       sendVolumeMessage: sendVolumeMessage
   };
@@ -408,7 +403,11 @@ plangular.factory("Messaging", function() {
   }
 
   function sendPauseMessage() {
-    port.postMessage({message: 'scd.pause', data: {}});
+    port.postMessage({message: 'scd.pause'});
+  }
+
+  function sendResumeMessage() {
+    port.postMessage({message: 'scd.resume'});
   }
 
   function sendSeekMessage(xpos) {

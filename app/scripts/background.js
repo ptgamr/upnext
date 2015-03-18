@@ -38,33 +38,132 @@ var Utils = {
 };
 
 var CLIENT_ID = '849e84ac5f7843ce1cbc0e004ae4fb69';
+var ORIGIN_YOUTUBE = 'yt';
+var ORIGIN_SOUNDCLOUD = 'sc';
+
 var currentPort;
 
+/**
+ * =====================================
+ *          SOUNDCLOUD PLAYER
+ * =====================================
+ */
+var SoundCloudPlayer = function(opts) {
+    var self = this;
 
-var SoundCloudEngine = function() {
     this.audio = document.createElement('audio');
     this.audio.volume = 0.5;
+
+    this.onTimeUpdate = opts.onTimeUpdate;
+    this.onEnded = opts.onEnded;
+
+    this.audio.addEventListener('timeupdate', function() {
+        self.onTimeUpdate(self.audio.currentTime, self.audio.duration);
+    }, false);
+
+    this.audio.addEventListener('ended', this.onEnded, false);
 };
 
-SoundCloudEngine.prototype = {
+SoundCloudPlayer.prototype = {
     
-    constructor SoundCloudEngine,
+    constructor: SoundCloudPlayer,
 
     play: function(track) {
+        var src = track.streamUrl + '?client_id=' + CLIENT_ID;
 
+        if (src === this.audio.src) {
+            this.replay();
+        } else {
+            this.audio.src = src;
+            this.audio.play();
+        }
+
+    },
+    resume: function() {
+        this.audio.play();
     },
     pause: function() {
-
+        this.audio.pause();
     },
     stop: function() {
-
+        this.audio.pause();
+        this.audio.currentTime = 0;
+    },
+    replay: function() {
+        this.stop();
+        this.resume();
+    },
+    seek: function(xpos) {
+        if (!this.audio.readyState) return false;
+        this.audio.currentTime = (xpos * this.audio.duration);
+    },
+    clear: function() {
+        this.stop();
+        this.audio.src = null;  
+    },
+    setVolume: function(volume) {
+        this.audio.volume = volume;
     }
-}
+};
 
+/**
+ * =====================================
+ *          YOUTUBE PLAYER
+ * =====================================
+ */
+var YoutubePlayer = function(opts) {
+    this.player = null;
+    this.playerReady = false;
+    this.onTimeUpdate = opts.onTimeUpdate;
+    this.onEnded = opts.onEnded;
+};
 
-var Player = function() {
-    this.audio = document.createElement('audio');
-    this.audio.volume = 0.5;
+YoutubePlayer.prototype = {
+    
+    constructor: YoutubePlayer,
+
+    setPlayer: function(player) {
+        this.player = player;
+    },
+
+    play: function(track) {
+        if(this.playerReady) {
+            this.player.loadVideoById({videoId: track.id});
+        }
+    },
+    resume: function() {
+        this.player.playVideo();
+    },
+    pause: function() {
+        this.player.pauseVideo();
+    },
+    stop: function() {
+        this.player.stopVideo();
+    },
+    replay: function() {
+        this.player.stop();
+        this.player.playVideo();
+    },
+    seek: function(xpos) {
+
+    },
+    clear: function() {
+        this.stop();
+        this.player.clearVideo();
+    },
+    setVolume: function(volume) {
+        this.player.setVolume(volume * 100);
+    }
+};
+
+/**
+ * =====================================
+ *          MAIN PLAYER
+ * =====================================
+ */
+var Player = function(soundcloudPlayer, youtubePlayer) {
+    this.soundcloudPlayer = soundcloudPlayer;
+    this.youtubePlayer = youtubePlayer;
     this.init();
 };
 
@@ -79,27 +178,7 @@ Player.prototype = {
         self.tracks = [];
         self.state = {};
         self.notificationId = '';
-
-        this.audio.addEventListener('timeupdate', function() {
-            if (!currentPort) return;
-            currentPort.postMessage({message: 'scd.timeupdate', data: {
-                currentTime: self.audio.currentTime,
-                duration: self.audio.duration
-            }});
-        }, false);
-
-        this.audio.addEventListener('ended', function() {
-
-            if (self.state.repeat === 0) {
-                //do-nothing
-            } else if (self.state.repeat === 1) {
-                self.next.call(self);
-            } else {
-                self.replay();
-            }
-
-        }, false);
-
+        self.activePlayer = null;
 
         chrome.storage.local.get('nowPlaying', function(data) {
             self.tracks = data['nowPlaying'] || [];
@@ -160,7 +239,8 @@ Player.prototype = {
         var nextTrack = this.tracks[nextIndex];
 
         if (nextTrack) {
-            this.play(nextTrack.streamUrl + '?client_id=' + CLIENT_ID);
+
+            this.play(nextTrack);
 
             this.state.currentIndex = nextIndex;
             this.state.currentTrack = nextTrack;
@@ -185,10 +265,13 @@ Player.prototype = {
         var nextTrack = this.tracks[nextIndex];
 
         if (nextTrack) {
-            this.play(nextTrack.streamUrl + '?client_id=' + CLIENT_ID);
+
+            this.play(nextTrack);
+
             this.state.currentIndex = nextIndex;
             this.state.currentTrack = nextTrack;
             this.state.playing = true;
+
             if (currentPort) {
                 currentPort.postMessage({message: 'scd.trackChangedFromBackground', data: this.state});
             }
@@ -196,47 +279,134 @@ Player.prototype = {
         }
     },
 
-    play: function(src) {
-        if (src && src !== this.audio.src) {
-            this.audio.src = src;
+    play: function(track) {
+        if (track.origin === ORIGIN_YOUTUBE) {
+            this.soundcloudPlayer.clear();
+            this.youtubePlayer.play(track);
+            this.activePlayer = youtubePlayer;
+        } else {
+            this.youtubePlayer.clear();
+            this.soundcloudPlayer.play(track);
+            this.activePlayer = soundcloudPlayer;
         }
-        
-        if (!this.audio.src && this.state.currentTrack) {
-            this.audio.src = this.state.currentTrack.streamUrl + '?client_id=' + CLIENT_ID;
-        }
-
-        this.audio.play();
     },
 
     pause: function() {
-        this.audio.pause();
+        if(this.activePlayer) {
+            this.activePlayer.pause();
+        }
+    },
+
+    resume: function() {
+
+        if (!this.activePlayer) {
+            this.play(this.state.currentTrack);
+            return;
+        }
+
+        this.activePlayer.resume();
     },
 
     replay: function() {
-        this.audio.pause();
-        this.audio.currentTime = 0;
-        this.audio.play();
+        if (this.activePlayer) {
+            this.activePlayer.replay();
+        }
     },
 
     clear: function() {
-        this.audio.pause();
-        this.audio.currentTime = 0;
-        this.audio.src = null;
+        if(this.activePlayer) {
+            this.activePlayer.clear();
+        }
     },
 
     seek: function(xpos) {
-        if (!this.audio.readyState) return false;
-        this.audio.currentTime = (xpos * this.audio.duration);
+        this.activePlayer.seek(xpos);
     },
 
     setVolume: function(volume) {
-        console.log('set volume ' + volume);
-        this.audio.volume = volume;
+        this.soundcloudPlayer.setVolume(volume);
+        this.youtubePlayer.setVolume(volume);
     }
 };
 
-var youtubePlayer, youtubePlayerReady = false;
-var soundcloudPlayer = new Player();
+
+var soundcloudPlayer = new SoundCloudPlayer({
+    onTimeUpdate: onTimeUpdate,
+    onEnded: onEnded
+});
+
+var youtubePlayer = new YoutubePlayer({
+    onTimeUpdate: onTimeUpdate,
+    onEnded: onEnded
+});
+
+var mainPlayer = new Player(soundcloudPlayer, youtubePlayer);
+
+function onTimeUpdate(currentTime, duration) {
+    if (!currentPort) return;
+    currentPort.postMessage({message: 'scd.timeupdate', data: {
+        currentTime: currentTime,
+        duration: duration
+    }});
+}
+
+function onEnded() {
+    if (mainPlayer.state.repeat === 0) {
+        //do-nothing
+    } else if (mainPlayer.state.repeat === 1) {
+        mainPlayer.next.call(mainPlayer);
+    } else {
+        mainPlayer.replay().call(mainPlayer);
+    }
+}
+
+
+
+/**
+ * ===================================================
+ *                YOUTUBE IFRAME API
+ * ===================================================
+ */
+function onYouTubeIframeAPIReady() {
+    youtubePlayer.player = new YT.Player('player', {
+            height: '390',
+            width: '640',
+            events: {
+                'onReady': onPlayerReady,
+                'onStateChange': onPlayerStateChange
+            }
+        });
+}
+
+function onPlayerReady(event) {
+  console.log('onPlayerReady');
+  youtubePlayer.playerReady = true;
+}
+
+var youtubeProgressTimer;
+function onPlayerStateChange(event) {
+
+    clearTimeout(youtubeProgressTimer);
+
+    switch(event.data) {
+        case YT.PlayerState.PLAYING:
+            youtubeProgressTimer = setInterval(function() {
+                youtubePlayer.onTimeUpdate(youtubePlayer.player.getCurrentTime(), youtubePlayer.player.getDuration());
+            }, 1000);
+            break;
+
+        case YT.PlayerState.ENDED:
+            youtubePlayer.onEnded();
+            break;
+
+        case YT.PlayerState.PAUSED:
+            break;
+        case YT.PlayerState.BUFFERING:
+            break;
+        case YT.PlayerState.CUED:
+            break;
+    }
+}
 
 chrome.runtime.onConnect.addListener(function(port) {
 
@@ -250,36 +420,25 @@ chrome.runtime.onConnect.addListener(function(port) {
 
         switch(event.message) {
             case 'scd.play':
-                var track = data.track;
-
-                if (track.origin === 'yt') {
-                    console.log(track);
-                    soundcloudPlayer.clear();
-                    youtubePlayer.loadVideoById({videoId: track.id});
-
-                } else {
-                    youtubePlayer.stopVideo();
-                    var streamUrl = track.streamUrl + '?client_id=' + CLIENT_ID;
-                    soundcloudPlayer.play(streamUrl);
-                }
-
+                mainPlayer.play(data.track);
+                break;
+            case 'scd.resume':
+                mainPlayer.resume();
                 break;
             case 'scd.pause':
-                soundcloudPlayer.pause();
-                youtubePlayer.pauseVideo();
+                mainPlayer.pause();
                 break;
             case 'scd.next':
-                soundcloudPlayer.next();
+                mainPlayer.next();
                 break;
             case 'scd.prev':
-                soundcloudPlayer.prev();
+                mainPlayer.prev();
                 break;
             case 'scd.seek':
-                soundcloudPlayer.seek(data.xpos);
+                mainPlayer.seek(data.xpos);
                 break;
             case 'scd.volume':
-                soundcloudPlayer.setVolume(data.volume);
-                youtubePlayer.setVolume(data.volume * 100);
+                mainPlayer.setVolume(data.volume);
                 break;
         }
     });
@@ -288,72 +447,5 @@ chrome.runtime.onConnect.addListener(function(port) {
         currentPort = null;
     })
 });
-
-/**
- * ===================================================
- *                YOUTUBE PLAYER
- * ===================================================
- */
-// 3. This function creates an <iframe> (and YouTube player)
-//    after the API code downloads.
-function onYouTubeIframeAPIReady() {
-  console.log('onYouTubeIframeAPIReady')
-  youtubePlayer = new YT.Player('player', {
-    height: '390',
-    width: '640',
-    events: {
-      'onReady': onPlayerReady,
-      'onStateChange': onPlayerStateChange
-    }
-  });
-}
-
-// 4. The API will call this function when the video player is ready.
-function onPlayerReady(event) {
-  console.log('onPlayerReady');
-  youtubePlayer.playVideo();
-}
-
-// 5. The API calls this function when the player's state changes.
-//    The function indicates that when playing a video (state=1),
-//    the player should play for six seconds and then stop.
-var done = false;
-var youtubeProgressTimer;
-function onPlayerStateChange(event) {
-
-    clearTimeout(youtubeProgressTimer);
-
-    switch(event.data) {
-        case YT.PlayerState.PLAYING:
-            youtubeProgressTimer = setInterval(function() {
-                console.log('playing');
-                if (currentPort) {
-                    currentPort.postMessage({message: 'scd.timeupdate', data: {
-                        currentTime: youtubePlayer.getCurrentTime(),
-                        duration: youtubePlayer.getDuration()
-                    }});
-                }
-            }, 1000);
-            break;
-        case YT.PlayerState.ENDED:
-            break;
-        case YT.PlayerState.PAUSED:
-            break;
-        case YT.PlayerState.BUFFERING:
-            break;
-        case YT.PlayerState.CUED:
-            break;
-    }
-
-
-  if (event.data == YT.PlayerState.PLAYING && !done) {
-    setTimeout(stopVideo, 6000);
-    done = true;
-  }
-}
-
-function stopVideo() {
-};
-
 
 
