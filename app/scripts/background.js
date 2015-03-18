@@ -145,7 +145,7 @@ YoutubePlayer.prototype = {
         this.player.playVideo();
     },
     seek: function(xpos) {
-
+        this.player.seekTo(xpos * this.player.getDuration());
     },
     clear: function() {
         this.stop();

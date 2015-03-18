@@ -10,7 +10,7 @@
         <h4>{{player.state.currentTrack.user.username}}</h4>
     </div>
     <progress value="{{ player.state.currentTime / player.state.duration || 0 }}"
-        ng-click="player.seek($event)">
+        ng-click="doSeek($event)">
         {{ player.state.currentTime / player.state.duration }}
     </progress>
     <div class="pretty-time" layout="row" layout-wrap>

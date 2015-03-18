@@ -114,6 +114,8 @@ plangular.directive('corePlayer', function(Messaging, NowPlaying, CLIENT_ID) {
 
         if (track) {
           this.state.playing = true;
+          this.state.currentTime = 0;
+          this.state.duration = 0;
           this.state.currentTrack = track;
           this.state.currentIndex = index;
           NowPlaying.saveState(this.state);
@@ -154,8 +156,8 @@ plangular.directive('corePlayer', function(Messaging, NowPlaying, CLIENT_ID) {
         Messaging.sendPrevMessage();
       };
 
-      this.seek = function(e) {
-        var xpos = e.offsetX / e.target.offsetWidth;
+      this.seek = function(xpos) {
+        this.state.currentTime = xpos * this.state.duration;
         Messaging.sendSeekMessage(xpos);
       };
 

@@ -29,6 +29,11 @@
                     $mdSidenav('right').toggle()
                 };
 
+                scope.doSeek = function(e) {
+                    var xpos = e.offsetX / e.target.offsetWidth;
+                    playerController.seek(xpos);
+                }
+
                 scope.$watch('volume', function(val) {
                     if (val) {
                         scope.player.setVolume(val/100);
