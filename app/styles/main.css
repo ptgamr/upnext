@@ -320,6 +320,9 @@ md-slider:not([md-discrete]):not([disabled]):focus .md-focus-ring, md-slider:not
 #singleton-playlist-menu md-input-container {padding: 10px;}
 
 
+#search md-input-container { padding-bottom: 0;}
+#search md-checkbox:first-child {margin-left: 0;}
+
 .icon {}
   .icon.icon-playing, .icon.icon-playing-blue {
     background: url('../images/equalizer.white.gif') center no-repeat;

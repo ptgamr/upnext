@@ -68,6 +68,10 @@
                         $scope.getMore(true);
                     }
                 }
+
+                $scope.hasMoreRow = function() {
+                    return soundcloudPaginator && youtubePaginator && soundcloudPaginator.hasMoreRow && youtubePaginator.hasMoreRow;
+                }
             }
         };
     }
