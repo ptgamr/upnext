@@ -1,16 +1,20 @@
 <div id="discovery" ng-controller="DiscoveryController as vm">
     <md-tabs class="main-nav md-primary" md-selected="vm.selectedIndex">
         <md-tab id="tab1" aria-controls="tab1-content">
-            Top charts
+            <md-icon md-font-icon="icon ion-stats-bars"></md-icon>
+            <span>charts</span>
         </md-tab>
         <md-tab id="tab2" aria-controls="tab2-content">
-            Search
+            <md-icon md-font-icon="icon ion-search"></md-icon>
+            <span>search</span>
         </md-tab>
         <md-tab id="tab3" aria-controls="tab3-content">
-            Playlist
+            <md-icon md-font-icon="icon ion-film-marker"></md-icon>
+            <span>playlist</span>
         </md-tab>
         <md-tab id="tab4" aria-controls="tab4-content">
-            Now Playing
+            <md-icon md-font-icon="icon ion-ios-musical-notes"></md-icon>
+            <span>now playing</span>
         </md-tab>
     </md-tabs>
     <ng-switch on="vm.selectedIndex" class="tabpanel-container">

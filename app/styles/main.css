@@ -29,6 +29,10 @@ html {
 
 md-icon { font-size: 24px; line-height: 24px;}
 
+.md-tile-content .statistic {font-size: 12px;}
+.md-tile-content .statistic > md-icon {font-size: 12px; line-height: 12px; color: #555; width: 12px; height: 12px;}
+.md-tile-content .statistic > span {margin-right: 10px; vertical-align: middle;}
+
 md-item .md-tile-hover{
   float: right;
   right: 0;
@@ -71,6 +75,10 @@ md-tabs.main-nav md-tab md-itemcon {
   height: 15px;
 }
 
+.md-header-items-container { font-size: 12px; line-height: 12px;}
+
+md-tab-label > span { vertical-align: bottom; line-height: 18px; }
+
 md-toolbar.bottom-toolbar { background-color: #fff; min-height: 44px; }
 md-toolbar.bottom-toolbar .md-toolbar-tools { height: 44px; max-height: 44px;}
 md-toolbar.bottom-toolbar .md-toolbar-tools .md-button {color: #555;}
@@ -106,8 +114,7 @@ md-divider.md-default-theme {
 }
 
 #player {
-	width: 250px;
-  padding: 15px;
+	width: 220px;
   background-color: #1C1C1F;
 }
 
@@ -115,6 +122,10 @@ md-divider.md-default-theme {
     position: relative;
     width: 220px;
     height: 220px;
+}
+
+#player .padding {
+  padding: 0 15px;
 }
 
 #player .artwork .show-on-hover {
@@ -135,7 +146,6 @@ md-divider.md-default-theme {
 }
 
 #player .track-title {
-  padding: 15px 0px;
   color: #FBFBFC;
   text-align: center;
   z-index: 1;
@@ -222,9 +232,9 @@ md-slider:not([md-discrete]):not([disabled]):focus .md-focus-ring, md-slider:not
 .media-list {
 
 }
-  .media-list .brand-icon {font-size: 18px;}
-  .media-list .brand-icon.fa-soundcloud {color: #ff8800;}
-  .media-list .brand-icon.fa-youtube {color: #e52d27;}
+  .media-list .brand-icon {font-size: 18px; line-height: 18px;}
+  .media-list .brand-icon .fa-soundcloud {color: #ff8800;}
+  .media-list .brand-icon .ion-social-youtube {color: #e52d27;}
     
   .media-list .face {
     position: relative;
@@ -341,6 +351,11 @@ progress {
   display: block;
   width: 100%;
   height: 0.5rem;
+
+  position: absolute;
+  z-index: 2;
+  bottom: 0;
+
   background-color: #fbfbfb;
   border: 0;
   -webkit-appearance: none;
