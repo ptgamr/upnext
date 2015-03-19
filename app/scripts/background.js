@@ -368,9 +368,39 @@ function onEnded() {
  * ===================================================
  */
 function onYouTubeIframeAPIReady() {
+    var iframeUrlPattern = 'https://www.youtube.com/embed/J1Ol6M0d9sg?enablejsapi=1&origin=chrome-extension%3A%2F%2F' + chrome.runtime.id;
+    chrome.webRequest.onBeforeSendHeaders.addListener(function(info) {
+
+        var refererRequestHeader;
+        var referer = 'https://www.youtube.com/';
+
+        info.requestHeaders.forEach(function(header) {
+            if (header.name === 'Referer') {
+                refererRequestHeader = header;
+            }
+        });
+
+        if (typeof refererRequestHeader === 'undefined') {
+            info.requestHeaders.push({
+                name: 'Referer',
+                value: referer
+            });
+        } else {
+            refererRequestHeader.value = referer;
+        }
+
+        console.log('after addded');
+        return { requestHeaders: info.requestHeaders };
+
+    }, {
+        urls: [iframeUrlPattern]
+    }, ['blocking', 'requestHeaders']);
+
+
     youtubePlayer.player = new YT.Player('player', {
             height: '390',
             width: '640',
+            videoId: 'J1Ol6M0d9sg',
             events: {
                 'onReady': onPlayerReady,
                 'onStateChange': onPlayerStateChange

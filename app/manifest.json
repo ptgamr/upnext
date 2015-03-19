@@ -41,12 +41,15 @@
   ],
   "content_security_policy": "script-src 'self' 'unsafe-eval' https://api.soundcloud.com https://api-v2.soundcloud.com; object-src 'self'",
   "permissions": [
+    "webRequest",
+    "webRequestBlocking",
     "storage",
     "tabs",
     "management",
     "notifications",
     "https://api.soundcloud.com/*",
-    "https://api-v2.soundcloud.com/*"
+    "https://api-v2.soundcloud.com/*",
+    "*://*.youtube.com/*"
   ],
   "web_accessible_resources": [
     "images/*"
