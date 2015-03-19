@@ -1,14 +1,21 @@
 <md-content class="md-padding tab-content">
 	<md-input-container>
-        <label>Search SoundCloud</label>
+        <label>Search anything</label>
 		<input ng-model="searchTerm" type="text" placeholder="Enter a name ..." ng-keypress="onKeyPress($event)">
 	</md-input-container>
+	<section layout="row">
+		<h3 flex>Results</h3>
+		<md-checkbox flex class="md-primary" ng-model="toggle.soundcloud" aria-label="Toggle Soundcloud">
+			SoundCloud
+		</md-checkbox>
+		<md-checkbox class="md-primary" ng-model="toggle.youtube" aria-label="Toggle Youtbe">
+			Youtube
+		</md-checkbox>
+	</section>
 
-	<md-input-container>
-        <label>Search Youtube</label>
-		<input ng-model="searchTermYoutube" type="text" placeholder="Enter a name ..." ng-keypress="onKeyPressYoutube($event)">
-	</md-input-container>
-	<!-- <md-button class="md-raised md-primary search-btn" ng-click="doSearch()">Search</md-button> -->
-	<loading ng-if="isLoading"></loading>
-    <track-list ng-hide="isLoading" tracks="results" on-track-click="playnow"></track-list>
+    <track-list tracks="mixedResults" on-track-click="playnow" origin-toggle="toggle"></track-list>
+
+    <section layout="row" layout-align="center center">
+    	<md-button class="md-primary" ng-click="getMore(false)">Load more</md-button>
+    </section>
 </md-content>

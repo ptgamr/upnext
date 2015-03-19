@@ -4,7 +4,7 @@
     angular.module('soundCloudify')
         .directive('search', searchDirective);
 
-    function searchDirective(SearchService) {
+    function searchDirective(SearchService, Paginator) {
         return {
             restrict: 'E',
             templateUrl: 'scripts/views/search.html',
@@ -12,48 +12,61 @@
             require: '^corePlayer',
             link: function($scope, element, attrs, playerController) {
                 
-                $scope.searchTerm = '';
+                var soundcloudPaginator, youtubePaginator;
+
+                $scope.searchTerm = localStorage.getItem('lastSearchTerm') || '';
+                $scope.toggle = {
+                    soundcloud: true,
+                    youtube: true
+                };
 
                 $scope.player = playerController;
+                $scope.mixedResults = [];
 
-                $scope.doSearch = function() {
+                function soundcloudPagingFunction(paginationModel) {
+                    return SearchService.search($scope.searchTerm, paginationModel);
+                }
 
-                    if (!$scope.searchTerm) return;
+                function soundCloudPagingSuccess(data) {
+                    $scope.mixedResults = $scope.mixedResults.concat(data);
+                }
 
-                    $scope.isLoading = true;
+                function youtubePagingFunction(paginationModel) {
+                    return SearchService.searchYoutube($scope.searchTerm, paginationModel);
+                }
 
-                    SearchService.search($scope.searchTerm).success(function(results) {
-                        $scope.isLoading = false;
-                        $scope.results = results;
-                    });
+                function youtubePagingSucces(data) {
+                    $scope.mixedResults = $scope.mixedResults.concat(data);
+                }
 
-                };
+                $scope.getMore = function(newSearch) {
+                    if (!newSearch && soundcloudPaginator && youtubePaginator) {
+                        soundcloudPaginator.moreRows();
+                        youtubePaginator.moreRows();
+                    } else {
+                        
+                        $scope.mixedResults = [];
 
-                $scope.doSearchYoutube = function() {
+                        localStorage.setItem('lastSearchTerm', $scope.searchTerm);
 
-                    if (!$scope.searchTermYoutube) return;
+                        soundcloudPaginator = Paginator.getInstance({
+                            limit: 10,
+                            pagingFunction: soundcloudPagingFunction,
+                            pagingSuccess: soundCloudPagingSuccess
+                        });
 
-                    $scope.isLoading = true;
-
-                    SearchService.searchYoutube($scope.searchTermYoutube).then(function(results) {
-                        $scope.isLoading = false;
-                        $scope.results = results;
-                    }, function() {
-                        //FIXME
-                        console.log("ERROR");
-                    });
-                };
-
-                $scope.onKeyPress = function(keyEvent) {
-                    if (keyEvent.which === 13) {
-                        $scope.doSearch();
+                        youtubePaginator = Paginator.getInstance({
+                            limit: 10,
+                            pagingFunction: youtubePagingFunction,
+                            pagingSuccess: youtubePagingSucces
+                        });
                     }
                 }
 
-                $scope.onKeyPressYoutube = function(keyEvent) {
+                $scope.onKeyPress = function(keyEvent) {
                     if (keyEvent.which === 13) {
-                        $scope.doSearchYoutube();
-                    }   
+                        $scope.getMore(true);
+                    }
                 }
             }
         };

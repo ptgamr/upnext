@@ -14,32 +14,43 @@
             searchYoutube: searchYoutube
         };
 
-        function search(term){
-            var params = { q: term, limit: DEFAULT_LIMIT, offset: 0, linked_partitioning: 1, client_id: CLIENT_ID };
+        function search(term, pagingObject){
+            var params = { q: term, limit: pagingObject.limit, offset: pagingObject.skip, linked_partitioning: 1, client_id: CLIENT_ID };
 
-            return $http({
-                url: 'https://api-v2.soundcloud.com/search/tracks',
-                method: 'GET',
-                params: params,
-                transformResponse: ServiceHelpers.appendTransform($http.defaults.transformResponse, function(result) {
-                    if (!result || !result.collection) return [];
-                    return TrackAdapter.adaptMultiple(result.collection, 'sc');
-                })
-            });
+            return $q(function(resolve, reject) {
+                $http({
+                    url: 'https://api-v2.soundcloud.com/search/tracks',
+                    method: 'GET',
+                    params: params,
+                    transformResponse: ServiceHelpers.appendTransform($http.defaults.transformResponse, function(result) {
+                        if (!result || !result.collection) return [];
+                        return {
+                            tracks: TrackAdapter.adaptMultiple(result.collection, 'sc')
+                        };
+                    })
+                }).success(function(data) {
+                    resolve(data)
+                }).error(function() {
+                    reject();
+                });
+            })
         }
 
-        function searchYoutube(term) {
+        function searchYoutube(term, pagingObject) {
 
             var defer = $q.defer();
 
             var params = {
                 key: 'AIzaSyDGbUJxAkFnaJqlTD4NwDmzWxXAk55gFh4',
                 type: 'video',
-                maxResults: DEFAULT_LIMIT,
+                maxResults: pagingObject.limit,
+                pageToken: pagingObject.nextPageToken,
                 part: 'id',
-                fields: 'items/id',
+                //fields: 'items/id',
                 q: term
             };
+
+            var nextPageToken = '';
 
             $http({
                 url: 'https://www.googleapis.com/youtube/v3/search',
@@ -47,6 +58,8 @@
                 params: params
             }).success(function(result) {
                 if (!result || !result.items) defer.resolve([]);
+
+                nextPageToken = result.nextPageToken;
 
                 var ids = result.items.map(function(item) {
                     return item.id.videoId;
@@ -65,7 +78,7 @@
                 var secondRequestParams = {
                     key: 'AIzaSyDGbUJxAkFnaJqlTD4NwDmzWxXAk55gFh4',
                     type: 'video',
-                    maxResults: DEFAULT_LIMIT,
+                    maxResults: pagingObject.limit,
                     part: parts.join(','),
                     fields: fields.join(','),
                     id: ids.join(',')
@@ -77,7 +90,10 @@
                     params: secondRequestParams,
                     transformResponse: ServiceHelpers.appendTransform($http.defaults.transformResponse, function(result) {
                         if (!result || !result.items) return [];
-                        return TrackAdapter.adaptMultiple(result.items, 'yt');
+                        return {
+                            nextPageToken: nextPageToken,
+                            tracks: TrackAdapter.adaptMultiple(result.items, 'yt')
+                        }
                     })
                 }).success(function(data) {
                     defer.resolve(data);

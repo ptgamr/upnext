@@ -1,7 +1,7 @@
 <md-list class="media-list">
-    <md-item ng-repeat="track in tracks track by $index" ng-class="{'playing': isTrackPlaying(track), 'pause': isTrackPaused(track)}">
+    <md-item ng-repeat="track in tracks | filter:currentFilter track by $index" ng-class="{'playing': isTrackPlaying(track), 'pause': isTrackPaused(track)}">
         <md-item-content layout="row" layout-align="start start">
-            <div class="md-tile-left" ng-click="handleTrackClick($index)">
+            <div class="md-tile-left" ng-click="handleTrackClick(track)">
                 <div class="face">
                     <img  ng-src="{{track.artworkUrl}}" alt="{{track.title}}">
                     <div class="overlay"></div>
@@ -11,7 +11,7 @@
                 <span class="fa fa-pause fa-lg"></span>
             </div>
             <div class="md-tile-content">
-                <h3 ng-click="handleTrackClick($index)">{{track.title}}</h3>
+                <h3 ng-click="handleTrackClick(track)">{{track.title}}</h3>
                 <h4>{{track.user}}</h4>
                 <p ng-if="track.viewCount">
                     {{track.viewCount}} | {{track.likeCount}}
