@@ -1,14 +1,16 @@
 <md-list class="media-list">
     <md-item ng-repeat="track in tracks | filter:currentFilter track by $index" ng-class="{'playing': isTrackPlaying(track), 'pause': isTrackPaused(track)}">
         <md-item-content layout="row" layout-align="start start">
+            <md-icon ng-if="track.origin === 'sc'" md-font-icon="brand-icon fa fa-soundcloud"></md-icon>
+            <md-icon ng-if="track.origin === 'yt'" md-font-icon="brand-icon fa fa-youtube"></md-icon>
             <div class="md-tile-left" ng-click="handleTrackClick(track)">
                 <div class="face">
                     <img  ng-src="{{track.artworkUrl}}" alt="{{track.title}}">
                     <div class="overlay"></div>
                 </div>
-                <span class="icon icon-playing"></span>
-                <span class="fa fa-play fa-lg"></span>
-                <span class="fa fa-pause fa-lg"></span>
+                <span class="dynamic-icon icon icon-playing"></span>
+                <span class="dynamic-icon fa fa-play fa-lg"></span>
+                <span class="dynamic-icon fa fa-pause fa-lg"></span>
             </div>
             <div class="md-tile-content">
                 <h3 ng-click="handleTrackClick(track)">{{track.title}}</h3>

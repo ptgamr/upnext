@@ -26,6 +26,8 @@
                     
                     var filter = '';
 
+                    if (!toggle) return;
+
                     if (toggle.soundcloud && toggle.youtube) {
                         filter = '';
                     } else if (toggle.soundcloud) {

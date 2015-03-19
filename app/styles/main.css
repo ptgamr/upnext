@@ -222,6 +222,9 @@ md-slider:not([md-discrete]):not([disabled]):focus .md-focus-ring, md-slider:not
 .media-list {
 
 }
+  .media-list .brand-icon {font-size: 18px;}
+  .media-list .brand-icon.fa-soundcloud {color: #ff8800;}
+  .media-list .brand-icon.fa-youtube {color: #e52d27;}
     
   .media-list .face {
     position: relative;
@@ -254,7 +257,7 @@ md-slider:not([md-discrete]):not([disabled]):focus .md-focus-ring, md-slider:not
     cursor: pointer;
   }
 
-  .media-list .md-tile-left .icon, .media-list .md-tile-left .fa {
+  .media-list .md-tile-left .dynamic-icon {
     position: absolute;
     top: 50%;
     left: 50%;
