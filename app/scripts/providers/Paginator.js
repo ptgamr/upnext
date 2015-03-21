@@ -89,7 +89,9 @@
                 this.pagingSuccess = (typeof opts.pagingSuccess === 'function') ? opts.pagingSuccess : angular.noop;
                 this.pagingFailed = (typeof opts.pagingFailed === 'function') ? opts.pagingFailed : angular.noop;
 
-                fetch.call(this, false);
+                if (opts.fetchFirstPage) {
+                   fetch.call(this, false);
+                }
             };
 
             Paginator.prototype = {
@@ -133,7 +135,6 @@
 
                 reset: function() {
                     this.paginationModel.skip = 0;
-                    fetch.call(this, false);
                 },
             };
 

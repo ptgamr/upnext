@@ -1,8 +1,9 @@
 <md-list class="media-list">
-    <md-item ng-repeat="track in tracks | filter:currentFilter track by $index" ng-class="{'playing': isTrackPlaying(track), 'pause': isTrackPaused(track)}">
+    <md-item ng-repeat="track in tracks | filter:originFilter track by $index" class="{{getCssClass(track)}}">
         <md-item-content layout="row" layout-align="start start">
-            <md-icon ng-if="track.origin === 'sc'" md-font-icon="fa fa-soundcloud" class="brand-icon"></md-icon>
-            <md-icon ng-if="track.origin === 'yt'" md-font-icon="icon ion-social-youtube" class="brand-icon"></md-icon>
+            <a class="original-link" ng-href="{{track.originalUrl || '#'}}" title="View Original">
+                <md-icon md-font-icon="{{fontIcon[track.origin]}}" class="brand-icon"></md-icon>
+            </a>
             <div class="md-tile-left" ng-click="handleTrackClick(track)">
                 <div class="face">
                     <img  ng-src="{{track.artworkUrl}}" alt="{{track.title}}">
@@ -13,9 +14,9 @@
                 <span class="dynamic-icon fa fa-pause fa-lg"></span>
             </div>
             <div class="md-tile-content">
-                <h3 ng-click="handleTrackClick(track)">{{track.title}}</h3>
+                <h3 ng-click="handleTrackClick(track)">{{$index + 1}}. {{track.title}}</h3>
                 <h4>{{track.user}}</h4>
-                <p ng-if="track.viewCount" class="statistic">
+                <p class="statistic">
                     <md-icon md-font-icon="icon ion-headphone"></md-icon><span>{{track.viewCount | number}}</span>
                     <md-icon md-font-icon="icon ion-heart"></md-icon><span>{{track.likeCount | number}}</span>
                 </p>

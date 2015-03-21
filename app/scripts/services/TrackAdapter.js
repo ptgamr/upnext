@@ -43,6 +43,7 @@
                 normalizedTrack.dislikeCount = null;
                 normalizedTrack.viewCount = track.statistics.viewCount;
                 normalizedTrack.origin = ORIGIN_YOUTUBE;
+                normalizedTrack.originalUrl = 'https://www.youtube.com/watch?v=' + track.id;
 
             } else {
                 normalizedTrack.id = track.id;
@@ -54,6 +55,7 @@
                 normalizedTrack.dislikeCount = null;
                 normalizedTrack.viewCount = track.playback_count;
                 normalizedTrack.origin = ORIGIN_SOUNDCLOUD;
+                normalizedTrack.originalUrl = track.permalink_url;
             }
 
             return normalizedTrack;

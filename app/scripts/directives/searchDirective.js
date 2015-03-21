@@ -12,7 +12,7 @@
             require: '^corePlayer',
             link: function($scope, element, attrs, playerController) {
                 
-                var soundcloudPaginator, youtubePaginator;
+                var soundcloudPaginator, youtubePaginator, tempSearchResult = [];
 
                 $scope.searchTerm = localStorage.getItem('lastSearchTerm') || '';
                 $scope.toggle = {
@@ -21,46 +21,53 @@
                 };
 
                 $scope.player = playerController;
+
                 $scope.mixedResults = [];
 
                 function soundcloudPagingFunction(paginationModel) {
                     return SearchService.search($scope.searchTerm, paginationModel);
                 }
 
-                function soundCloudPagingSuccess(data) {
-                    $scope.mixedResults = $scope.mixedResults.concat(data);
-                }
-
                 function youtubePagingFunction(paginationModel) {
                     return SearchService.searchYoutube($scope.searchTerm, paginationModel);
                 }
 
-                function youtubePagingSucces(data) {
-                    $scope.mixedResults = $scope.mixedResults.concat(data);
+                function concatAndMixedResult(data) {
+                    if (tempSearchResult.length) {
+                        tempSearchResult = tempSearchResult.concat(data);
+                        $scope.mixedResults = $scope.mixedResults.concat(_.shuffle(tempSearchResult));
+                        tempSearchResult = [];
+                    } else {
+                        tempSearchResult = tempSearchResult.concat(data);
+                    }
                 }
 
+                $scope.soundcloudPaginator = Paginator.getInstance({
+                    limit: 10,
+                    getFirstPage: false,
+                    pagingFunction: soundcloudPagingFunction,
+                    pagingSuccess: concatAndMixedResult
+                });
+
+                $scope.youtubePaginator = Paginator.getInstance({
+                    limit: 10,
+                    getFirstPage: false,
+                    pagingFunction: youtubePagingFunction,
+                    pagingSuccess: concatAndMixedResult
+                });
+
                 $scope.getMore = function(newSearch) {
-                    if (!newSearch && soundcloudPaginator && youtubePaginator) {
-                        soundcloudPaginator.moreRows();
-                        youtubePaginator.moreRows();
-                    } else {
-                        
+                    if (newSearch) {
                         $scope.mixedResults = [];
-
                         localStorage.setItem('lastSearchTerm', $scope.searchTerm);
-
-                        soundcloudPaginator = Paginator.getInstance({
-                            limit: 10,
-                            pagingFunction: soundcloudPagingFunction,
-                            pagingSuccess: soundCloudPagingSuccess
-                        });
-
-                        youtubePaginator = Paginator.getInstance({
-                            limit: 10,
-                            pagingFunction: youtubePagingFunction,
-                            pagingSuccess: youtubePagingSucces
-                        });
+                        $scope.soundcloudPaginator.reset();
+                        $scope.youtubePaginator.reset();
                     }
+
+                    $scope.soundcloudPaginator.moreRows();
+                    $scope.youtubePaginator.moreRows();
+
+                    $scope.promises = [$scope.soundcloudPaginator.lastPromise, $scope.youtubePaginator.lastPromise];
                 }
 
                 $scope.onKeyPress = function(keyEvent) {
@@ -70,7 +77,7 @@
                 }
 
                 $scope.hasMoreRow = function() {
-                    return soundcloudPaginator && youtubePaginator && soundcloudPaginator.hasMoreRow && youtubePaginator.hasMoreRow;
+                    return $scope.soundcloudPaginator.hasMoreRow && $scope.youtubePaginator.hasMoreRow;
                 }
             }
         };

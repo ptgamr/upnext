@@ -12,9 +12,10 @@
 		</md-checkbox>
 	</section>
 
-    <track-list tracks="mixedResults" on-track-click="playnow" origin-toggle="toggle"></track-list>
 
-    <section layout="row" layout-align="center center">
+    <track-list  tracks="mixedResults" on-track-click="playnow" origin-toggle="toggle"></track-list>
+    <loading ng-show="soundcloudPaginator.lastPromise.$$state.status === 0 || youtubePaginator.lastPromise.$$state.status === 0"></loading>
+    <section layout="row" layout-align="center center" ng-hide="soundcloudPaginator.lastPromise.$$state.status === 0 || youtubePaginator.lastPromise.$$state.status === 0">
     	<md-button ng-show="hasMoreRow()" class="md-primary" ng-click="getMore(false)">Load more</md-button>
     </section>
 </md-content>

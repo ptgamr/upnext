@@ -232,7 +232,8 @@ md-slider:not([md-discrete]):not([disabled]):focus .md-focus-ring, md-slider:not
 .media-list {
 
 }
-  .media-list .brand-icon {font-size: 18px; line-height: 18px;}
+  .media-list a.original-link {margin-top: 25px; margin-right: 5px;}
+  .media-list .brand-icon {font-size: 18px; line-height: 18px; width: 24px; height: 18px;}
   .media-list .brand-icon .fa-soundcloud {color: #ff8800;}
   .media-list .brand-icon .ion-social-youtube {color: #e52d27;}
     
