@@ -18,10 +18,14 @@
                     term: localStorage.getItem('lastSearchTerm') || ''
                 };
 
-                $scope.toggle = {
+                $scope.toggle = JSON.parse(localStorage.getItem('toggle')) || {
                     soundcloud: true,
                     youtube: true
                 };
+
+                $scope.$watch('toggle', function(newVal) {
+                    localStorage.setItem('toggle', JSON.stringify(newVal));
+                }, true);
 
                 $scope.player = playerController;
 
@@ -38,10 +42,14 @@
                 function concatAndMixedResult(data) {
                     if (tempSearchResult.length) {
                         tempSearchResult = tempSearchResult.concat(data);
-                        $scope.mixedResults = $scope.mixedResults.concat(_.shuffle(tempSearchResult));
+                        $scope.mixedResults = $scope.mixedResults.concat(tempSearchResult);
                         tempSearchResult = [];
                     } else {
                         tempSearchResult = tempSearchResult.concat(data);
+
+                        if (!$scope.soundcloudPaginator.hasMoreRow || !$scope.youtubePaginator.hasMoreRow) {
+                            $scope.mixedResults = $scope.mixedResults.concat(tempSearchResult);
+                        }
                     }
                 }
 
@@ -80,7 +88,7 @@
                 };
 
                 $scope.hasMoreRow = function() {
-                    return $scope.soundcloudPaginator.hasMoreRow && $scope.youtubePaginator.hasMoreRow;
+                    return $scope.soundcloudPaginator.hasMoreRow || $scope.youtubePaginator.hasMoreRow;
                 };
             }
         };
