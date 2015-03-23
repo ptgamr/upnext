@@ -237,12 +237,24 @@ md-slider:not([md-discrete]):not([disabled]):focus .md-focus-ring, md-slider:not
 
   .track-item .md-button i{
     color: #555;
+    font-size: 18px;
+  }
+
+  .track-item .statistic {
+    color: #777;
+  }
+
+  .track-item .statistic i {
+    vertical-align: middle;
+    font-size: 12px;
+    display: inline-block;
+    margin-right: 5px;
   }
   
-  .media-list a.original-link {margin-top: 25px; margin-right: 5px;}
+  .media-list a.original-link {width: 20px; margin-top: 25px; margin-right: 5px;}
   .media-list .brand-icon {font-size: 18px; line-height: 18px; width: 24px; height: 18px;}
-  .media-list .brand-icon .fa-soundcloud {color: #ff8800;}
-  .media-list .brand-icon .ion-social-youtube {color: #e52d27;}
+  .media-list .brand-icon.fa-soundcloud {color: #ff8800;}
+  .media-list .brand-icon.ion-social-youtube {color: #e52d27;}
     
   .media-list .face {
     position: relative;

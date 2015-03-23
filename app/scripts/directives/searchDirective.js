@@ -4,7 +4,7 @@
     angular.module('soundCloudify')
         .directive('search', searchDirective);
 
-    function searchDirective(SearchService, Paginator) {
+    function searchDirective(SearchService, Paginator, $filter) {
         return {
             restrict: 'E',
             templateUrl: 'scripts/views/search.html',
@@ -12,9 +12,12 @@
             require: '^corePlayer',
             link: function($scope, element, attrs, playerController) {
                 
-                var soundcloudPaginator, youtubePaginator, tempSearchResult = [];
+                var soundcloudPaginator, youtubePaginator, tempSearchResult = [], cacheForFilter;
 
-                $scope.searchTerm = localStorage.getItem('lastSearchTerm') || '';
+                $scope.search = {
+                    term: localStorage.getItem('lastSearchTerm') || ''
+                };
+
                 $scope.toggle = {
                     soundcloud: true,
                     youtube: true
@@ -25,11 +28,11 @@
                 $scope.mixedResults = [];
 
                 function soundcloudPagingFunction(paginationModel) {
-                    return SearchService.search($scope.searchTerm, paginationModel);
+                    return SearchService.search($scope.search.term, paginationModel);
                 }
 
                 function youtubePagingFunction(paginationModel) {
-                    return SearchService.searchYoutube($scope.searchTerm, paginationModel);
+                    return SearchService.searchYoutube($scope.search.term, paginationModel);
                 }
 
                 function concatAndMixedResult(data) {
@@ -59,7 +62,7 @@
                 $scope.getMore = function(newSearch) {
                     if (newSearch) {
                         $scope.mixedResults = [];
-                        localStorage.setItem('lastSearchTerm', $scope.searchTerm);
+                        localStorage.setItem('lastSearchTerm', $scope.search.term);
                         $scope.soundcloudPaginator.reset();
                         $scope.youtubePaginator.reset();
                     }
@@ -68,17 +71,17 @@
                     $scope.youtubePaginator.moreRows();
 
                     $scope.promises = [$scope.soundcloudPaginator.lastPromise, $scope.youtubePaginator.lastPromise];
-                }
+                };
 
                 $scope.onKeyPress = function(keyEvent) {
                     if (keyEvent.which === 13) {
                         $scope.getMore(true);
                     }
-                }
+                };
 
                 $scope.hasMoreRow = function() {
                     return $scope.soundcloudPaginator.hasMoreRow && $scope.youtubePaginator.hasMoreRow;
-                }
+                };
             }
         };
     }

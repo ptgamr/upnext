@@ -2,61 +2,53 @@
     'use strict';
 
     angular.module('soundCloudify')
+        .directive('trackListReact', trackListReactDirective)
         .directive('trackList', trackListDirective);
 
-    function trackListDirective(reactDirective) {
+    function trackListReactDirective(reactDirective) {
         return reactDirective('TrackList')
     };
 
-    function trackListDirective1() {
+    function trackListDirective($playlistMenu) {
         return {
             restrict: 'E',
             templateUrl: 'scripts/views/trackList.html',
             scope: {
                 tracks: '=',
                 onTrackClick: '@',
-                originToggle: '='
+                originToggle: '=',
+                showRemoveButton: '@'
             },
             require: '^corePlayer',
             link: function($scope, element, attrs, playerController) {
-                $scope.fontIcon = {
-                    sc: 'fa fa-soundcloud',
-                    yt: 'icon ion-social-youtube'
+
+                /*
+                 * onTrackClick can be 'playpause || queue || playnow';
+                 */
+                $scope.onTrackClick = $scope.onTrackClick || 'playnow';
+
+
+                /**
+                 * Broadcast information to playingTrackAwarenessDirective
+                 */
+                $scope.componentDidUpdate = function() {
+                    $scope.$broadcast('componentDidUpdate');
                 };
 
-                $scope.getCssClass = function(track) {
-                    if (playerController.state.playing && playerController.state.currentTrack.id === track.id) {
-                        return 'playing';
-                    } else if (playerController.state.currentTrack.id === track.id) {
-                        return 'pause';
-                    }
+                /**
+                 * Show playlist menu using $playlistMenu service
+                 */
+                $scope.showPlaylistMenu = function(track) {
+                    var targetElement = angular.element(element[0].querySelector('#track-item-' + track.id + ' .add-to-playlist-btn'));
+                    $playlistMenu.show({
+                        element: targetElement,
+                        trackToAdd: track
+                    });
                 };
 
-                $scope.player = playerController;
-
-                //onTrackClick can be 'playpause || queue || playnow';
-                $scope.onTrackClick = $scope.onTrackClick || 'play';
-
-                $scope.originFilter = {origin: ''};
-
-                $scope.$watch('originToggle',function(toggle) {
-                    
-                    var filter = '';
-
-                    if (!toggle) return;
-
-                    if (toggle.soundcloud && toggle.youtube) {
-                        filter = '';
-                    } else if (toggle.soundcloud) {
-                        filter += 'sc';
-                    } else if (toggle.youtube) {
-                        filter += 'yt';
-                    }
-
-                    $scope.originFilter.origin = filter;
-
-                }, true);
-
+                /**
+                 * Handler for track click
+                 */
                 $scope.handleTrackClick = function(track) {
 
                     if ($scope.onTrackClick === 'playpause') {
@@ -74,6 +66,28 @@
                     }
 
                 };
+
+                $scope.trackFilter = {
+                    origin: ''
+                };
+
+                $scope.$watch('originToggle',function(toggle) {
+                    
+                    var filter = '';
+
+                    if (!toggle) return;
+
+                    if (toggle.soundcloud && toggle.youtube) {
+                        filter = '';
+                    } else if (toggle.soundcloud) {
+                        filter += 'sc';
+                    } else if (toggle.youtube) {
+                        filter += 'yt';
+                    }
+
+                    $scope.trackFilter.origin = filter;
+                    
+                }, true);
             }
         };
     }

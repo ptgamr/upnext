@@ -1,5 +1,10 @@
 <div playing-track-aware>
-    <react-component name="TrackList" props="tracks" watch-depth="reference"/>
+    <track-list-react tracks="tracks | filter:trackFilter"
+                on-track-click="handleTrackClick"
+                component-did-update="componentDidUpdate"
+                on-add-track-to-playlist="showPlaylistMenu"
+                show-remove-button="showRemoveButton">
+    </track-list-react>
 </div>
 
 <!-- <md-list class="media-list">
