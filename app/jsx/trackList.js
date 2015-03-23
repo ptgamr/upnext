@@ -85,9 +85,12 @@ window.TrackList = React.createClass({
 		var showRemoveButton = typeof this.props.showRemoveButton === 'undefined' ? true : this.props.showRemoveButton;
 
 		var rows = _.map(tracks, function(track) {
-			return (
-				<TrackItem track={track} player={player} onTrackClick={onTrackClick} onAddTrackToPlaylist={onAddTrackToPlaylist} onRemoveTrack={onRemoveTrack} showRemoveButton={showRemoveButton}/>
-			);
+
+			if (track) {
+				return (
+					<TrackItem track={track} player={player} onTrackClick={onTrackClick} onAddTrackToPlaylist={onAddTrackToPlaylist} onRemoveTrack={onRemoveTrack} showRemoveButton={showRemoveButton}/>
+				);
+			}
 		});
 
 		return (

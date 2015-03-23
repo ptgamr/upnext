@@ -141,8 +141,7 @@ YoutubePlayer.prototype = {
         this.player.stopVideo();
     },
     replay: function() {
-        this.player.stop();
-        this.player.playVideo();
+        this.player.seekTo(0);
     },
     seek: function(xpos) {
         this.player.seekTo(xpos * this.player.getDuration());
@@ -356,7 +355,7 @@ function onEnded() {
     } else if (mainPlayer.state.repeat === 1) {
         mainPlayer.next.call(mainPlayer);
     } else {
-        mainPlayer.replay().call(mainPlayer);
+        mainPlayer.replay.call(mainPlayer);
     }
 }
 

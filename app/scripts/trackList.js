@@ -85,9 +85,12 @@ window.TrackList = React.createClass({displayName: "TrackList",
 		var showRemoveButton = typeof this.props.showRemoveButton === 'undefined' ? true : this.props.showRemoveButton;
 
 		var rows = _.map(tracks, function(track) {
-			return (
-				React.createElement(TrackItem, {track: track, player: player, onTrackClick: onTrackClick, onAddTrackToPlaylist: onAddTrackToPlaylist, onRemoveTrack: onRemoveTrack, showRemoveButton: showRemoveButton})
-			);
+
+			if (track) {
+				return (
+					React.createElement(TrackItem, {track: track, player: player, onTrackClick: onTrackClick, onAddTrackToPlaylist: onAddTrackToPlaylist, onRemoveTrack: onRemoveTrack, showRemoveButton: showRemoveButton})
+				);
+			}
 		});
 
 		return (
