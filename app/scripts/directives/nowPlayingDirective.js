@@ -14,6 +14,19 @@
 
                 $scope.player = playerController;
 
+                // click comming from React component
+                $scope.trackClick = function(track) {
+                    var index = _.findIndex(playerController.tracks, function(iterator) {
+                        return iterator.id === track.id;
+                    });
+
+                    playerController.playPause(index);
+                };
+
+                $scope.componentDidUpdate = function() {
+                    $scope.$broadcast('componentDidUpdate');
+                };
+
                 $scope.saveStream = function($event) {
                     
                     showDialog($event);

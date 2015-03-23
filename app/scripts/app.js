@@ -13,7 +13,7 @@
         return defaults.concat(transform);
     };
 
-	var soundCloudify = angular.module('soundCloudify', ['ngMaterial', 'plangular', 'ngRoute', 'ui.router']);
+	var soundCloudify = angular.module('soundCloudify', ['ngMaterial', 'plangular', 'ngRoute', 'ui.router', 'react']);
 
 	soundCloudify.value('CLIENT_ID', '849e84ac5f7843ce1cbc0e004ae4fb69');
 

@@ -1,4 +1,8 @@
-<md-list class="media-list">
+<div playing-track-aware>
+    <react-component name="TrackList" props="tracks" watch-depth="reference"/>
+</div>
+
+<!-- <md-list class="media-list">
     <md-item ng-repeat="track in tracks | filter:originFilter track by $index" class="{{getCssClass(track)}}">
         <md-item-content layout="row" layout-align="start start">
             <a class="original-link" ng-href="{{track.originalUrl || '#'}}" title="View Original">
@@ -36,3 +40,4 @@
         <md-divider ng-if="!$last"></md-divider>
     </md-item>
 </md-list>
+ -->

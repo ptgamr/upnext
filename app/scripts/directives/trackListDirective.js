@@ -4,7 +4,11 @@
     angular.module('soundCloudify')
         .directive('trackList', trackListDirective);
 
-    function trackListDirective() {
+    function trackListDirective(reactDirective) {
+        return reactDirective('TrackList')
+    };
+
+    function trackListDirective1() {
         return {
             restrict: 'E',
             templateUrl: 'scripts/views/trackList.html',

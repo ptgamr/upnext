@@ -33,26 +33,6 @@ md-icon { font-size: 24px; line-height: 24px;}
 .md-tile-content .statistic > md-icon {font-size: 12px; line-height: 12px; color: #555; width: 12px; height: 12px;}
 .md-tile-content .statistic > span {margin-right: 10px; vertical-align: middle;}
 
-md-item .md-tile-hover{
-  float: right;
-  right: 0;
-  margin-top: 18px;
-  display: none;
-}
-
-md-item:hover .md-tile-hover, md-item .md-tile-hover.active{
-  display: block;
-}
-
-md-item .md-button md-icon{
-  color: #555;
-}
-
-md-item-content {
-  padding: 5px 0;
-}
-
-
 
 md-tabs.main-nav md-tab,
 md-tabs.main-nav .md-header {
@@ -230,8 +210,35 @@ md-slider:not([md-discrete]):not([disabled]):focus .md-focus-ring, md-slider:not
     }
 
 .media-list {
-
+  list-style: none;
+  padding: 0;
 }
+  .track-item {
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
+    box-sizing: border-box;
+    padding: 5px 0;
+  }
+  .track-item .md-tile-hover{
+    float: right;
+    right: 0;
+    margin-top: 18px;
+    display: none;
+
+    flex-direction: row;
+    align-items: flex-start;
+    box-sizing: border-box;
+  }
+
+  .track-item:hover .md-tile-hover, .track-item .md-tile-hover.active{
+    display: flex;
+  }
+
+  .track-item .md-button i{
+    color: #555;
+  }
+  
   .media-list a.original-link {margin-top: 25px; margin-right: 5px;}
   .media-list .brand-icon {font-size: 18px; line-height: 18px; width: 24px; height: 18px;}
   .media-list .brand-icon .fa-soundcloud {color: #ff8800;}
@@ -278,11 +285,11 @@ md-slider:not([md-discrete]):not([disabled]):focus .md-focus-ring, md-slider:not
     color: #fff;
   }
 
-  .media-list md-item:hover .fa-play{
+  .media-list .track-item:hover .fa-play{
     display: block;
   }
 
-  .media-list md-item:hover .overlay ,.media-list .playing .overlay {
+  .media-list .track-item:hover .overlay ,.media-list .playing .overlay {
     display: block;
   }
 

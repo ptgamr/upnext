@@ -8,7 +8,9 @@
     "font-awesome": "~4.3.0",
     "angular-ui-router": "~0.2.13",
     "underscore": "~1.8.2",
-    "ionicons": "~2.0.1"
+    "ionicons": "~2.0.1",
+    "ngReact": "~0.1.4",
+    "react": "~0.13.1"
   },
   "devDependencies": {}
 }
