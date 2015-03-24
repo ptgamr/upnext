@@ -4,13 +4,12 @@
     angular.module('soundCloudify')
         .directive('explore', musicExploreDirective);
 
-    function musicExploreDirective(Category) {
+    function musicExploreDirective(Category, CorePlayer) {
         return {
             restrict: 'E',
             templateUrl: 'scripts/views/explore.html',
             scope: true,
-            require: '^corePlayer',
-            link: function($scope, element, attrs, playerController) {
+            link: function($scope, element, attrs) {
 
                 Category.getList().success(function(categories) {
                     $scope.categories = categories['music'] || [];
@@ -38,14 +37,14 @@
                 }
 
                 $scope.addTrack = function(track) {
-                    playerController.add(track, true);
+                    CorePlayer.add(track, true);
                 };
 
                 $scope.sanitizeCategory = function(category) {
                     return unescape(category).replace(/\+/g, " ");
                 };
 
-                $scope.player = playerController;
+                $scope.player = CorePlayer;
             }
         };
     }

@@ -4,15 +4,14 @@
     angular.module('soundCloudify')
         .directive('nowPlaying', nowPlayingDirective);
 
-    function nowPlayingDirective(Category, $mdDialog, PlaylistService) {
+    function nowPlayingDirective(Category, $mdDialog, PlaylistService, CorePlayer) {
         return {
             restrict: 'E',
             templateUrl: 'scripts/views/nowPlaying.html',
             scope: true,
-            require: '^corePlayer',
-            link: function($scope, element, attrs, playerController) {
+            link: function($scope, element, attrs) {
 
-                $scope.player = playerController;
+                $scope.player = CorePlayer;
 
                 $scope.saveStream = function($event) {
                     

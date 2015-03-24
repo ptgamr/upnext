@@ -9,7 +9,7 @@
         return reactDirective('TrackList')
     };
 
-    function trackListDirective($playlistMenu) {
+    function trackListDirective($playlistMenu, CorePlayer) {
         return {
             restrict: 'E',
             templateUrl: 'scripts/views/trackList.html',
@@ -19,8 +19,7 @@
                 originToggle: '=',
                 showRemoveButton: '@'
             },
-            require: '^corePlayer',
-            link: function($scope, element, attrs, playerController) {
+            link: function($scope, element, attrs) {
 
                 /*
                  * onTrackClick can be 'playpause || queue || playnow';
@@ -57,14 +56,22 @@
                             return iterator.id === track.id;
                         });
 
-                        playerController.playPause(index);
+                        CorePlayer.playPause(index);
 
                     } else if ($scope.onTrackClick = 'playnow') {
-                        playerController.add(track, true);
+                        CorePlayer.add(track, true);
                     } else {
 
                     }
 
+                };
+
+                $scope.handleRemoveTrack = function(track) {
+                    var index = _.findIndex(CorePlayer.tracks, function(iterator) {
+                        return iterator.id === track.id;
+                    });
+
+                    CorePlayer.remove(index);
                 };
 
                 $scope.trackFilter = {
