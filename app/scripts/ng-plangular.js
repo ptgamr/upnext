@@ -15,7 +15,7 @@
 
 var plangular = angular.module('plangular', []);
 
-plangular.directive('corePlayer', function(Messaging, NowPlaying, CLIENT_ID) {
+plangular.service('CorePlayer', function(Messaging, NowPlaying, CLIENT_ID) {
 
   function debounce(fn, delay) {
     var timer = null;
@@ -39,174 +39,184 @@ plangular.directive('corePlayer', function(Messaging, NowPlaying, CLIENT_ID) {
     shuffle: false
   };
 
-  return {
-    restrict: 'EA',
-    controller: function() {
+  var self = this;
+  this.tracks = [];
+  this.state = DEFAULT_STATE;
 
-      var self = this;
-      this.tracks = [];
-      this.state = DEFAULT_STATE;
+  NowPlaying.getList(function(tracks) {
+    self.tracks = tracks;
+  });
 
-      NowPlaying.getList(function(tracks) {
-        self.tracks = tracks;
-      });
-
-      NowPlaying.getState(function(savedState) {
-        if (savedState && typeof savedState.volume !== 'undefined') {
-          self.state = savedState;
-        }
-      });
-
-      this.add = function(track, andPlay) {
-
-        andPlay = andPlay || true;
-
-        if (track) {
-          this.tracks.unshift(track);
-        }
-
-        if (andPlay) {
-          this.play(0);
-        }
-
-        NowPlaying.saveList(this.tracks);
-
-      };
-
-      this.remove = function(index) {
-        this.tracks.splice(index, 1);
-
-        if (this.state.currentIndex === index) {
-          this.play(index);
-        } else if (index < this.state.currentIndex){
-          this.state.currentIndex --;
-        }
-
-        NowPlaying.saveList(this.tracks);
-        NowPlaying.saveState(this.state);
-      };
-
-      this.clear = function() {
-        this.tracks = [];
-
-        angular.extend(this.state, {
-          currentTrack: false,
-          currentIndex: 0,
-          playing: false,
-          currentTime: 0,
-          duration: 0
-        });
-
-        //Messaging.sendStopMessage();
-        NowPlaying.saveList(this.tracks);
-        NowPlaying.saveState(this.state);
-      }
-
-      this.play = function(index) {
-
-        index = index || 0;
-
-        var track = this.tracks[index];
-
-        if (!track) {
-          throw 'No track found for playing, index=' + index;
-        }
-
-        if (track) {
-          this.state.playing = true;
-          this.state.currentTime = 0;
-          this.state.duration = 0;
-          this.state.currentTrack = track;
-          this.state.currentIndex = index;
-          NowPlaying.saveState(this.state);
-          Messaging.sendPlayMessage(track);
-        }
-      };
-
-      this.pause = function() {
-        this.state.playing = false;
-        NowPlaying.saveState(this.state);
-        Messaging.sendPauseMessage();
-      };
-
-      this.resume = function() {
-        this.state.playing = true;
-        NowPlaying.saveState(this.state);
-        Messaging.sendResumeMessage();
-      }
-
-      this.playPause = function(index) {
-        if (typeof index !== 'undefined') {
-          if (index === this.state.currentIndex) {
-            this.state.playing ? this.pause() : this.resume();
-          } else {
-            this.play(index);
-          }
-          return;
-        }
-
-        this.state.playing ? this.pause() : this.resume();
-      };
-
-      this.next = function() {
-        Messaging.sendNextMessage();
-      };
-
-      this.previous = function() {
-        Messaging.sendPrevMessage();
-      };
-
-      this.seek = function(xpos) {
-        this.state.currentTime = xpos * this.state.duration;
-        Messaging.sendSeekMessage(xpos);
-      };
-
-      this.updateState = function(data) {
-        if(!this.state.currentTrack) {
-          this.state.currentTrack = data.track;
-          this.state.playing = true;
-        }
-
-        this.state.currentTime = data.currentTime;
-        this.state.duration = data.duration;
-      }
-
-      this.isPlaying = function(trackId) {
-        if (!this.state.currentTrack) return false;
-        console.log('check track ' + this.state.currentTrack.id === trackId);
-        return this.state.currentTrack.id === trackId;
-      }
-
-      var deboundSaveVolume = debounce(function() {
-        NowPlaying.saveState(self.state);
-      }, 500);
-
-      this.setVolume = function(volume) {
-        this.state.volume = volume;
-        Messaging.sendVolumeMessage(volume);
-        deboundSaveVolume();
-      }
-
-      this.toggleRepeat = function() {
-        if (this.state.repeat === 0) {
-          this.state.repeat = 1; // repeat all
-        } else if (this.state.repeat === 1) {
-          this.state.repeat = 2; // repeat one
-        } else {
-          this.state.repeat = 0; // no repeat
-        }
-        NowPlaying.saveState(this.state);
-      }
-
-      this.toggleShuffle = function() {
-        this.state.shuffle = !this.state.shuffle;
-        NowPlaying.saveState(this.state);
-      }
+  NowPlaying.getState(function(savedState) {
+    if (savedState && typeof savedState.volume !== 'undefined') {
+      self.state = savedState;
     }
+  });
+
+  this.add = function(track, andPlay) {
+
+    andPlay = andPlay || true;
+
+    if (track) {
+      this.tracks.unshift(track);
+    }
+
+    if (andPlay) {
+      this.play(0);
+    }
+
+    NowPlaying.saveList(this.tracks);
+
+  };
+
+  this.playAll = function(tracks) {
+
+    this.tracks = tracks;
+    NowPlaying.saveList(this.tracks);
+
+    angular.extend(this.state, {
+      currentTrack: false,
+      currentIndex: 0,
+      playing: false,
+      currentTime: 0,
+      duration: 0
+    });
+
+    this.play(0);
+  };
+
+  this.remove = function(index) {
+    this.tracks.splice(index, 1);
+
+    if (this.state.currentIndex === index) {
+      this.play(index);
+    } else if (index < this.state.currentIndex){
+      this.state.currentIndex --;
+    }
+
+    NowPlaying.saveList(this.tracks);
+    NowPlaying.saveState(this.state);
+  };
+
+  this.clear = function() {
+    this.tracks = [];
+
+    angular.extend(this.state, {
+      currentTrack: false,
+      currentIndex: 0,
+      playing: false,
+      currentTime: 0,
+      duration: 0
+    });
+
+    //Messaging.sendStopMessage();
+    NowPlaying.saveList(this.tracks);
+    NowPlaying.saveState(this.state);
+  }
+
+  this.play = function(index) {
+
+    index = index || 0;
+
+    var track = this.tracks[index];
+
+    if (!track) {
+      throw 'No track found for playing, index=' + index;
+    }
+
+    if (track) {
+      this.state.playing = true;
+      this.state.currentTime = 0;
+      this.state.duration = 0;
+      this.state.currentTrack = track;
+      this.state.currentIndex = index;
+      NowPlaying.saveState(this.state);
+      Messaging.sendPlayMessage(track);
+    }
+  };
+
+  this.pause = function() {
+    this.state.playing = false;
+    NowPlaying.saveState(this.state);
+    Messaging.sendPauseMessage();
+  };
+
+  this.resume = function() {
+    this.state.playing = true;
+    NowPlaying.saveState(this.state);
+    Messaging.sendResumeMessage();
+  }
+
+  this.playPause = function(index) {
+    if (typeof index !== 'undefined') {
+      if (index === this.state.currentIndex) {
+        this.state.playing ? this.pause() : this.resume();
+      } else {
+        this.play(index);
+      }
+      return;
+    }
+
+    this.state.playing ? this.pause() : this.resume();
+  };
+
+  this.next = function() {
+    Messaging.sendNextMessage();
+  };
+
+  this.previous = function() {
+    Messaging.sendPrevMessage();
+  };
+
+  this.seek = function(xpos) {
+    this.state.currentTime = xpos * this.state.duration;
+    Messaging.sendSeekMessage(xpos);
+  };
+
+  this.updateState = function(data) {
+    if(!this.state.currentTrack) {
+      this.state.currentTrack = data.track;
+      this.state.playing = true;
+    }
+
+    this.state.currentTime = data.currentTime;
+    this.state.duration = data.duration;
+  };
+
+  this.isPlaying = function(trackId) {
+    if (!this.state.currentTrack) return false;
+    console.log('check track ' + this.state.currentTrack.id === trackId);
+    return this.state.currentTrack.id === trackId;
+  };
+
+  var deboundSaveVolume = debounce(function() {
+    NowPlaying.saveState(self.state);
+  }, 500);
+
+  this.setVolume = function(volume) {
+    this.state.volume = volume;
+    Messaging.sendVolumeMessage(volume);
+    deboundSaveVolume();
+  };
+
+  this.toggleRepeat = function() {
+    if (this.state.repeat === 0) {
+      this.state.repeat = 1; // repeat all
+    } else if (this.state.repeat === 1) {
+      this.state.repeat = 2; // repeat one
+    } else {
+      this.state.repeat = 0; // no repeat
+    }
+    NowPlaying.saveState(this.state);
+  };
+
+  this.toggleShuffle = function() {
+    this.state.shuffle = !this.state.shuffle;
+    NowPlaying.saveState(this.state);
   };
 });
 
-plangular.directive('plangular', ['$http', '$rootScope', 'plangularConfig', 'Messaging', function ($http, $rootScope, plangularConfig, Messaging) {
+plangular.directive('plangular', ['$http', '$rootScope', 'plangularConfig', 'Messaging', 'CorePlayer', function ($http, $rootScope, plangularConfig, Messaging, CorePlayer) {
   
   var CLIENT_ID = plangularConfig.clientId;
 
@@ -214,23 +224,15 @@ plangular.directive('plangular', ['$http', '$rootScope', 'plangularConfig', 'Mes
 
     restrict: 'A',
     scope: true,
-    require: '^corePlayer',
-    link: function (scope, elem, attrs, playerController) {
+    link: function (scope, elem, attrs) {
 
-      scope.player = playerController;
+      scope.player = CorePlayer;
 
       Messaging.registerTimeUpdateHandler(function(data) {
         $rootScope.$apply(function () {
-          playerController.updateState.call(playerController, data);
+          CorePlayer.updateState.call(CorePlayer, data);
         });
       });
-
-      // Messaging.registerEndedHandler(function() {
-      //   $rootScope.$apply(function () {
-      //     if (playerController.tracks.length > 0) playerController.next.call(playerController);
-      //     else playerController.pause.call(playerController);
-      //   });
-      // });
   
       Messaging.registerTrackChangedFromBackgroundHandler(function(data) {
         console.log('tack changed from background');

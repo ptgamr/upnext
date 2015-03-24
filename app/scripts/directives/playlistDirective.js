@@ -13,7 +13,7 @@
         };
     }
 
-    function playlistController($scope, PlaylistService) {
+    function playlistController($scope, PlaylistService, CorePlayer, $mdToast) {
         
         PlaylistService
             .getList()
@@ -36,8 +36,27 @@
             $scope.newPlaylistName = '';
         };
 
-        $scope.remove = function(index) {
+        $scope.remove = function($event, index) {
+            $event.stopPropagation();
             PlaylistService.removePlaylist(index);
+        };
+
+        $scope.playAll = function($event, index) {
+            $event.stopPropagation();
+
+            var playlist = PlaylistService.getPlaylist(index);
+
+            if (!playlist.tracks.length) {
+                $mdToast.show(
+                  $mdToast.simple()
+                    .content('No track to play')
+                    .position('bottom right')
+                    .hideDelay(2000)
+                );
+                return;
+            }
+
+            CorePlayer.playAll(playlist.tracks);
         };
 
         $scope.selectPlaylist = function(playlist) {

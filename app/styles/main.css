@@ -59,7 +59,7 @@ md-tabs.main-nav md-tab md-itemcon {
 
 md-tab-label > span { vertical-align: bottom; line-height: 18px; }
 
-md-toolbar.bottom-toolbar { background-color: #fff; min-height: 44px; }
+md-toolbar.bottom-toolbar { background-color: #fff; min-height: 44px; color: #555; border-top: 1px solid #f2f2f2; box-shadow: none;}
 md-toolbar.bottom-toolbar .md-toolbar-tools { height: 44px; max-height: 44px;}
 md-toolbar.bottom-toolbar .md-toolbar-tools .md-button {color: #555;}
 md-toolbar.bottom-toolbar .md-toolbar-tools .md-button md-icon {font-size: 24px; line-height: 24px;}
@@ -220,7 +220,7 @@ md-slider:not([md-discrete]):not([disabled]):focus .md-focus-ring, md-slider:not
     box-sizing: border-box;
     padding: 5px 0;
   }
-  .track-item .md-tile-hover{
+  md-item .md-tile-hover, .track-item .md-tile-hover{
     float: right;
     right: 0;
     margin-top: 18px;
@@ -231,7 +231,7 @@ md-slider:not([md-discrete]):not([disabled]):focus .md-focus-ring, md-slider:not
     box-sizing: border-box;
   }
 
-  .track-item:hover .md-tile-hover, .track-item .md-tile-hover.active{
+  md-item:hover .md-tile-hover, .track-item:hover .md-tile-hover, .track-item .md-tile-hover.active{
     display: flex;
   }
 

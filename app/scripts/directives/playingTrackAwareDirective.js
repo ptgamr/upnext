@@ -4,20 +4,18 @@
     angular.module('soundCloudify')
             .directive('playingTrackAware', playinTrackAwareDirective);
 
-    function playinTrackAwareDirective($timeout) {
+    function playinTrackAwareDirective($timeout, CorePlayer) {
 
         return {
             restrict: 'A',
-            scope: {
-            },
-            require: '^corePlayer',
+            scope: {},
             transclude: true,
             template: '<div ng-transclude></div>',
-            link : function($scope, $element, attrs, player) {
-                $scope.player = player;
+            link : function($scope, $element, attrs) {
+                $scope.player = CorePlayer;
 
                 $scope.$on('componentDidUpdate', function() {
-                    updateActiveTrack(player.state.currentTrack);
+                    updateActiveTrack(CorePlayer.state.currentTrack);
                 });
 
                 $scope.$watch('player.state.currentTrack', function(currentTrack) {
@@ -25,7 +23,7 @@
                 }, true);
 
                 $scope.$watch('player.state.playing', function(status) {
-                    updateActiveTrack(player.state.currentTrack);
+                    updateActiveTrack(CorePlayer.state.currentTrack);
                 }, true);
 
                 function updateActiveTrack(track) {
@@ -33,7 +31,7 @@
 
                     var cssClass = 'playing';
                     
-                    if (!player.state.playing) {
+                    if (!CorePlayer.state.playing) {
                         cssClass = 'pause';
                     }
                     

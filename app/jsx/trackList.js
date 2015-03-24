@@ -22,8 +22,8 @@ window.TrackItem = React.createClass({
 		};
 
 		var removeButton;
-
-		if (this.props.showRemoveButton) {
+		
+		if (this.props.showRemoveButton === 'true') {
 			removeButton = (
 				<button className="remove-btn md-button md-default-theme" onClick={this.onRemoveTrack} title="Remove">
 	                <i className="icon ion-android-delete"></i>
@@ -82,7 +82,7 @@ window.TrackList = React.createClass({
 		var onTrackClick = this.props.onTrackClick;
 		var onAddTrackToPlaylist = this.props.onAddTrackToPlaylist;
 		var onRemoveTrack = this.props.onRemoveTrack;
-		var showRemoveButton = typeof this.props.showRemoveButton === 'undefined' ? true : this.props.showRemoveButton;
+		var showRemoveButton = this.props.showRemoveButton;
 
 		var rows = _.map(tracks, function(track) {
 

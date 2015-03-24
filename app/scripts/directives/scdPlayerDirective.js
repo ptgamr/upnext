@@ -4,14 +4,13 @@
     angular.module('soundCloudify')
         .directive('scdPlayer', soundCloudifyPlayerDirective);
 
-    function soundCloudifyPlayerDirective($mdSidenav, $document) {
+    function soundCloudifyPlayerDirective($mdSidenav, $document, CorePlayer) {
         return {
             restrict: 'E',
             templateUrl: 'scripts/views/player.html',
-            require: '^corePlayer',
-            link: function(scope, element, attrs, playerController) {
+            link: function(scope, element, attrs) {
 
-                scope.player = playerController;
+                scope.player = CorePlayer;
                 scope.volume = scope.player.state.volume * 100;
 
                 scope.toggleNowPlaying = function() {
@@ -31,7 +30,7 @@
 
                 scope.doSeek = function(e) {
                     var xpos = e.offsetX / e.target.offsetWidth;
-                    playerController.seek(xpos);
+                    CorePlayer.seek(xpos);
                 }
 
                 scope.$watch('volume', function(val) {

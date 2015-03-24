@@ -31,12 +31,15 @@
 
         var PLAYLIST_STORAGE_KEY = 'playlist';
 
-        var playlistStore;
+        var playlistStore = {
+            items: null
+        };
 
         return {
             getList: getList,
             newPlaylist: newPlaylist,
             removePlaylist: removePlaylist,
+            getPlaylist: getPlaylist,
             addTrackToPlaylist: addTrackToPlaylist,
             addTracksToPlaylist: addTracksToPlaylist
         };
@@ -45,9 +48,9 @@
 
             var defer = $q.defer();
 
-            if (typeof playlistStore === 'undefined') {
+            if (playlistStore.items === null) {
                 chrome.storage.local.get(PLAYLIST_STORAGE_KEY, function(data) {
-                    playlistStore = data[PLAYLIST_STORAGE_KEY] || [];
+                    playlistStore.items = data[PLAYLIST_STORAGE_KEY] || [];
                     defer.resolve(playlistStore);
                 });
             } else {
@@ -59,7 +62,7 @@
 
         function newPlaylist(name) {
             var playlist = new Playlist(name);
-            playlistStore.unshift(playlist);
+            playlistStore.items.unshift(playlist);
             updateStorage();
             return playlist;
         }
@@ -68,13 +71,20 @@
             if (typeof index === 'undefined' || isNaN(index))
                     throw new Error('Error when remove playlist: index must be specified as number');
 
-            playlistStore.splice(index, 1);
+            playlistStore.items.splice(index, 1);
             updateStorage();
+        }
+
+        function getPlaylist(index) {
+            if (typeof index === 'undefined' || isNaN(index))
+                    throw new Error('Error when remove playlist: index must be specified as number');
+
+            return playlistStore.items[index];
         }
 
         function addTrackToPlaylist(track, index) {
 
-            var playlist = playlistStore[index];
+            var playlist = playlistStore.items[index];
 
             if(!playlist)
                 throw new Error('Error when adding track: Playlist not found.');
@@ -97,7 +107,7 @@
 
         function removeTrackFromPlaylist(trackIndex, playlistIndex) {
 
-            var playlist = playlistStore[playlistIndex];
+            var playlist = playlistStore.items[playlistIndex];
 
             if(!playlist)
                 throw new Error('Error when adding track: Playlist not found.');
@@ -108,7 +118,7 @@
 
         function updateStorage() {
             var storageObj = {};
-            storageObj[PLAYLIST_STORAGE_KEY] = playlistStore;
+            storageObj[PLAYLIST_STORAGE_KEY] = playlistStore.items;
             chrome.storage.local.set(storageObj);
         }
     };

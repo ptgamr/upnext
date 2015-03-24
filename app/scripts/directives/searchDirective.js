@@ -4,13 +4,12 @@
     angular.module('soundCloudify')
         .directive('search', searchDirective);
 
-    function searchDirective(SearchService, Paginator, $filter) {
+    function searchDirective(SearchService, Paginator, $filter, CorePlayer) {
         return {
             restrict: 'E',
             templateUrl: 'scripts/views/search.html',
             scope: true,
-            require: '^corePlayer',
-            link: function($scope, element, attrs, playerController) {
+            link: function($scope, element, attrs) {
                 
                 var soundcloudPaginator, youtubePaginator, tempSearchResult = [], cacheForFilter;
 
@@ -27,7 +26,7 @@
                     localStorage.setItem('toggle', JSON.stringify(newVal));
                 }, true);
 
-                $scope.player = playerController;
+                $scope.player = CorePlayer;
 
                 $scope.mixedResults = [];
 
