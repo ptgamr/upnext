@@ -1,6 +1,6 @@
 {
-    "name": "__MSG_appName__",
-    "version": "0.0.25",
+    "name": "Soundcloudify",
+    "version": "0.0.27",
     "manifest_version": 2,
     "description": "__MSG_appDescription__",
     "icons": {
