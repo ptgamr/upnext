@@ -135,6 +135,17 @@ module.exports = function (grunt) {
       }
     },
 
+    ngAnnotate: {
+        options: {
+            // Task-specific options go here.
+        },
+        app: {
+          files: {
+            '.tmp/concat/scripts/popup.js': ['.tmp/concat/scripts/popup.js']
+          }
+        },
+    },
+
     // Reads HTML for usemin blocks to enable smart builds that automatically
     // concat, minify and revision files. Creates configurations in memory so
     // additional tasks can operate on them
@@ -144,6 +155,7 @@ module.exports = function (grunt) {
       },
       html: [
         '<%= config.app %>/popup.html',
+        '<%= config.app %>/background.html',
         '<%= config.app %>/options.html'
       ]
     },
@@ -238,10 +250,22 @@ module.exports = function (grunt) {
             '*.{ico,png,txt}',
             'images/{,*/}*.{webp,gif}',
             '{,*/}*.html',
-            'styles/{,*/}*.css',
-            'styles/fonts/{,*/}*.*',
+            'fonts/**/*',
+            'scripts/views/*.html',
             '_locales/{,*/}*.json',
           ]
+        }, {
+          expand: true,
+          dot: true,
+          cwd: '<%= config.app %>/bower_components/ionicons/fonts',
+          dest: '<%= config.dist %>/fonts',
+          src: ['*']
+        }, {
+          expand: true,
+          dot: true,
+          cwd: '<%= config.app %>/bower_components/font-awesome/fonts',
+          dest: '<%= config.dist %>/fonts',
+          src: ['*']
         }]
       }
     },
@@ -315,6 +339,7 @@ module.exports = function (grunt) {
     'concurrent:dist',
     'cssmin',
     'concat',
+    'ngAnnotate',
     'uglify',
     'copy',
     'usemin',

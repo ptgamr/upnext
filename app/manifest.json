@@ -1,57 +1,57 @@
 {
-  "name": "__MSG_appName__",
-  "version": "0.0.1",
-  "manifest_version": 2,
-  "description": "__MSG_appDescription__",
-  "icons": {
-    "16": "images/icon-16.png",
-    "128": "images/icon-128.png"
-  },
-  "default_locale": "en",
-  "background": {
-    "page": "scripts/background.html"
-  },
-  "browser_action": {
-    "default_icon": {
-      "19": "images/icon-19.png",
-      "38": "images/icon-38.png"
+    "name": "__MSG_appName__",
+    "version": "0.0.25",
+    "manifest_version": 2,
+    "description": "__MSG_appDescription__",
+    "icons": {
+        "16": "images/icon-16.png",
+        "128": "images/icon-128.png"
     },
-    "default_title": "SoundCloudify",
-    "default_popup": "popup.html"
-  },
-  "options_page": "options.html",
-  "omnibox": {
-    "keyword": "SoundCloudify"
-  },
-  "content_scripts": [
-    {
-      "matches": [
-        "http://*/*",
-        "https://*/*"
-      ],
-      "css": [
-        "styles/main.css"
-      ],
-      "js": [
-        "scripts/contentscript.js"
-      ],
-      "run_at": "document_end",
-      "all_frames": false
-    }
-  ],
-  "content_security_policy": "script-src 'self' 'unsafe-eval' https://api.soundcloud.com https://api-v2.soundcloud.com; object-src 'self'",
-  "permissions": [
-    "webRequest",
-    "webRequestBlocking",
-    "storage",
-    "tabs",
-    "management",
-    "notifications",
-    "https://api.soundcloud.com/*",
-    "https://api-v2.soundcloud.com/*",
-    "*://*.youtube.com/*"
-  ],
-  "web_accessible_resources": [
-    "images/*"
-  ]
+    "default_locale": "en",
+    "background": {
+        "page": "background.html"
+    },
+    "browser_action": {
+        "default_icon": {
+            "19": "images/icon-19.png",
+            "38": "images/icon-38.png"
+        },
+        "default_title": "SoundCloudify",
+        "default_popup": "popup.html"
+    },
+    "options_page": "options.html",
+    "omnibox": {
+        "keyword": "SoundCloudify"
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "http://*/*",
+                "https://*/*"
+            ],
+            "css": [
+                "styles/main.css"
+            ],
+            "js": [
+                "scripts/contentscript.js"
+            ],
+            "run_at": "document_end",
+            "all_frames": false
+        }
+    ],
+    "content_security_policy": "script-src 'self' 'unsafe-eval' https://api.soundcloud.com https://api-v2.soundcloud.com; object-src 'self'",
+    "permissions": [
+        "webRequest",
+        "webRequestBlocking",
+        "storage",
+        "tabs",
+        "management",
+        "notifications",
+        "https://api.soundcloud.com/*",
+        "https://api-v2.soundcloud.com/*",
+        "*://*.youtube.com/*"
+    ],
+    "web_accessible_resources": [
+        "images/*"
+    ]
 }
