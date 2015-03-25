@@ -84,7 +84,7 @@
                     nextPageToken: ''
                 };
 
-                this.hasMoreRow = false;
+                this.hasMoreRow = true;
                 this.pagingFunction = opts.pagingFunction;
                 this.pagingSuccess = (typeof opts.pagingSuccess === 'function') ? opts.pagingSuccess : angular.noop;
                 this.pagingFailed = (typeof opts.pagingFailed === 'function') ? opts.pagingFailed : angular.noop;

@@ -87,7 +87,7 @@
                 };
 
                 $scope.hasMoreRow = function() {
-                    return $scope.soundcloudPaginator.hasMoreRow || $scope.youtubePaginator.hasMoreRow;
+                    return $scope.mixedResults.length && ($scope.soundcloudPaginator.hasMoreRow || $scope.youtubePaginator.hasMoreRow);
                 };
             }
         };

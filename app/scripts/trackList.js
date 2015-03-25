@@ -25,43 +25,31 @@ window.TrackItem = React.createClass({displayName: "TrackItem",
 		
 		if (this.props.showRemoveButton === 'true') {
 			removeButton = (
-				React.createElement("button", {className: "remove-btn md-button md-default-theme", onClick: this.onRemoveTrack, title: "Remove"}, 
-	                React.createElement("i", {className: "icon ion-android-delete"})
-	            )
+                React.createElement("i", {className: "remove-btn icon ion-android-delete", onClick: this.onRemoveTrack, title: "Remove"})
 			);
 		}
 
 		return (
 			React.createElement("li", {id: 'track-item-' + track.id, className: "track-item"}, 
-				React.createElement("a", {className: "original-link", href: track.originalUrl, title: "View Original"}, 
-					React.createElement("i", {className: fontIcon[track.origin]})
-	            ), 
 				React.createElement("div", {className: "md-tile-left", onClick: this.onClick}, 
 					React.createElement("div", {className: "face"}, 
-						React.createElement("img", {src: track.artworkUrl, alt: track.title}), 
-						React.createElement("div", {className: "overlay"})
-					), 
-					React.createElement("span", {className: "dynamic-icon icon icon-playing"}), 
-	                React.createElement("span", {className: "dynamic-icon fa fa-play fa-lg"}), 
-	                React.createElement("span", {className: "dynamic-icon fa fa-pause fa-lg"})
+						React.createElement("img", {src: track.artworkUrl, alt: track.title})
+					)
+				), 
+				React.createElement("div", {className: "play-actions"}, 
+					React.createElement("span", {className: "track-number"}, this.props.trackNumber), 
+					React.createElement("i", {className: "dynamic-icon icon icon-playing"}), 
+					React.createElement("i", {className: "dynamic-icon fa fa-play fa-lg"}), 
+					React.createElement("i", {className: "dynamic-icon fa fa-pause fa-lg"})
 				), 
 				React.createElement("div", {className: "md-tile-content"}, 
-					React.createElement("h3", {onClick: this.onClick}, track.title), 
-					React.createElement("h4", null, track.user), 
-					React.createElement("p", {className: "statistic"}, 
-						React.createElement("i", {className: "icon ion-headphone"}), React.createElement("span", null, parseInt(track.viewCount).toLocaleString()), 
-						React.createElement("i", {className: "icon ion-heart"}), React.createElement("span", null, parseInt(track.likeCount).toLocaleString())
-	                )
+					React.createElement("h3", {onClick: this.onClick}, track.title)
 				), 
 				React.createElement("div", {className: "md-tile-hover"}, 
-	                React.createElement("button", {className: "like-btn md-button md-default-theme", title: "Like"}, 
-	                    React.createElement("i", {className: "icon ion-android-star"})
-	                ), 
-	                React.createElement("button", {className: "add-to-playlist-btn md-button md-default-theme", onClick: this.onAddTrackToPlaylist, title: "Add to playlist"}, 
-	                    React.createElement("i", {className: "icon ion-android-add"})
-	                ), 
-	                removeButton
-	            )
+			        React.createElement("i", {className: "like-btn icon ion-android-star"}), 
+			        React.createElement("i", {className: "add-to-playlist-btn icon ion-android-add", onClick: this.onAddTrackToPlaylist}), 
+				    removeButton
+				)
 			)
 		);
 	}
@@ -84,11 +72,14 @@ window.TrackList = React.createClass({displayName: "TrackList",
 		var onRemoveTrack = this.props.onRemoveTrack;
 		var showRemoveButton = this.props.showRemoveButton;
 
+		var trackNumber = 0;
 		var rows = _.map(tracks, function(track) {
+
+			trackNumber ++;
 
 			if (track) {
 				return (
-					React.createElement(TrackItem, {track: track, player: player, onTrackClick: onTrackClick, onAddTrackToPlaylist: onAddTrackToPlaylist, onRemoveTrack: onRemoveTrack, showRemoveButton: showRemoveButton})
+					React.createElement(TrackItem, {track: track, trackNumber: trackNumber, player: player, onTrackClick: onTrackClick, onAddTrackToPlaylist: onAddTrackToPlaylist, onRemoveTrack: onRemoveTrack, showRemoveButton: showRemoveButton})
 				);
 			}
 		});

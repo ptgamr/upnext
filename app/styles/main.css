@@ -13,20 +13,6 @@ html {
   opacity: 0.65;
 }
 
-.md-tile-left > img {
-  width: 45px;
-  height: 45px;
-}
-
-.md-tile-content h3 {
-  font-size: 14px;
-  line-height: 16px;
-  max-width: 100%;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
 md-icon { font-size: 24px; line-height: 24px;}
 
 .md-tile-content .statistic {font-size: 12px;}
@@ -59,7 +45,7 @@ md-tabs.main-nav md-tab md-itemcon {
 
 md-tab-label > span { vertical-align: bottom; line-height: 18px; }
 
-md-toolbar.bottom-toolbar { background-color: #fff; min-height: 44px; color: #555; border-top: 1px solid #f2f2f2; box-shadow: none;}
+md-toolbar.bottom-toolbar { background-color: #444444; min-height: 44px; color: #bbb; box-shadow: none;}
 md-toolbar.bottom-toolbar .md-toolbar-tools { height: 44px; max-height: 44px;}
 md-toolbar.bottom-toolbar .md-toolbar-tools .md-button {color: #555;}
 md-toolbar.bottom-toolbar .md-toolbar-tools .md-button md-icon {font-size: 24px; line-height: 24px;}
@@ -207,37 +193,65 @@ md-slider:not([md-discrete]):not([disabled]):focus .md-focus-ring, md-slider:not
 
     #discovery .tab-content {
       height: 400px;
+      background-color: #1C1C1F;
+      color: #bbb;
     }
 
 .media-list {
   list-style: none;
   padding: 0;
+  margin: 0;
 }
   .track-item {
     display: flex;
     flex-direction: row;
     align-items: flex-start;
     box-sizing: border-box;
-    padding: 5px 0;
+    border-bottom: 1px solid #222;
   }
-  md-item .md-tile-hover, .track-item .md-tile-hover{
-    float: right;
-    right: 0;
-    margin-top: 18px;
-    display: none;
 
+  .track-item i {
+    color: #bbb;
+    display: inline-block;
+    font-size: 12px;
+    vertical-align: middle;
+  }
+
+  .track-item i:hover {
+    cursor: pointer;
+    color: #777;
+  }
+
+  .track-item .md-tile-hover, md-item .md-tile-hover{
+    padding-right: 10px;
+    display: none;
     flex-direction: row;
     align-items: flex-start;
     box-sizing: border-box;
+    line-height: 40px;
   }
 
-  md-item:hover .md-tile-hover, .track-item:hover .md-tile-hover, .track-item .md-tile-hover.active{
+  .track-item .md-tile-hover i {
+    font-size: 16px;
+    margin: 0 5px;
+  }
+
+  .md-tile-content h3 {
+    font-size: 14px;
+    line-height: 40px;
+    margin: 0;
+    max-width: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .track-item .md-tile-hover.active, .track-item:hover .md-tile-hover, md-item:hover .md-tile-hover{
     display: flex;
   }
 
-  .track-item .md-button i{
-    color: #555;
-    font-size: 18px;
+  .track-item.playing {
+    color: #fff;
   }
 
   .track-item .statistic {
@@ -245,9 +259,6 @@ md-slider:not([md-discrete]):not([disabled]):focus .md-focus-ring, md-slider:not
   }
 
   .track-item .statistic i {
-    vertical-align: middle;
-    font-size: 12px;
-    display: inline-block;
     margin-right: 5px;
   }
   
@@ -258,16 +269,13 @@ md-slider:not([md-discrete]):not([disabled]):focus .md-focus-ring, md-slider:not
     
   .media-list .face {
     position: relative;
-    border-radius: 30px;
     border: 1px solid #ddd;
-    width: 48px;
-    height: 48px;
-    margin: 8px;
+    width: 40px;
+    height: 40px;
     overflow: hidden;
   }
 
   .media-list .face .overlay {
-    border-radius: 30px;
     display: none;
   }
 
@@ -277,52 +285,57 @@ md-slider:not([md-discrete]):not([disabled]):focus .md-focus-ring, md-slider:not
   }
 
   .media-list .md-tile-content {
-      padding: 8px 16px;
+      padding: 0;
   }
   .media-list .md-tile-left {
     position: relative;
+    min-width: 0;
+    margin-right: 10px;
   }
 
   .media-list .md-tile-left:hover {
     cursor: pointer;
   }
 
-  .media-list .md-tile-left .dynamic-icon {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    margin-top: -6px;
-    margin-left: -6px;
+  .media-list .play-actions {
+    line-height: 40px;
+    width: 20px;
+  }
+
+  .media-list .play-actions .dynamic-icon {
     display: none;
-    color: #fff;
+  }
+
+  .media-list .track-item.playing .track-number, .media-list .track-item:hover .track-number {
+    display: none;
   }
 
   .media-list .track-item:hover .fa-play{
-    display: block;
+    display: inline-block;
   }
 
   .media-list .track-item:hover .overlay ,.media-list .playing .overlay {
-    display: block;
+    display: inline-block;
   }
 
   .media-list .playing h3, .media-list .pause h3 {
     font-weight: bold;
   }
   
-  .media-list .playing .md-tile-left .icon-playing{
-    display: block;
+  .media-list .playing .icon-playing{
+    display: inline-block;
   }
 
-  .media-list .playing:hover .md-tile-left .icon-playing {
+  .media-list .playing:hover .icon-playing {
     display: none;
   }
 
-  .media-list .playing:hover .md-tile-left .fa-play {
+  .media-list .playing:hover .fa-play {
     display: none;
   }
 
-  .media-list .playing:hover .md-tile-left .fa-pause {
-    display: block;
+  .media-list .playing:hover .fa-pause {
+    display: inline-block;
   }
 
 .playlist {}

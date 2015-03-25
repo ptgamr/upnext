@@ -32,10 +32,13 @@
 			    .primaryPalette('deep-orange');
 
 			// $mdThemingProvider.theme('docs-dark', 'default')
-		 //        .primaryPalette('yellow')
-		 //        .dark();
+			//        .primaryPalette('yellow')
+			//        .dark();
 
 			$compileProvider.imgSrcSanitizationWhitelist(/^\s*((https?|ftp|file|blob|chrome-extension):|data:image\/)/);
+
+			//TODO: reenable it in production
+			//$compileProvider.debugInfoEnabled(false);
 		}
 	]);
 
