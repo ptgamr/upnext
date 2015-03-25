@@ -3,7 +3,7 @@
 window.TrackItem = React.createClass({displayName: "TrackItem",
 	onClick: function() {
 		if (this.props.onTrackClick)
-			this.props.onTrackClick(this.props.track);
+			this.props.onTrackClick(this.props.track, this.props.trackNumber - 1);
 	},
 	onAddTrackToPlaylist: function() {
 		if (this.props.onAddTrackToPlaylist)

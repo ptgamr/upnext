@@ -31,7 +31,7 @@
                  * Broadcast information to playingTrackAwarenessDirective
                  */
                 $scope.componentDidUpdate = function() {
-                    $scope.$broadcast('componentDidUpdate');
+                    $scope.$emit('componentDidUpdate');
                 };
 
                 /**
@@ -48,13 +48,13 @@
                 /**
                  * Handler for track click
                  */
-                $scope.handleTrackClick = function(track) {
+                $scope.handleTrackClick = function(track, index) {
 
                     if ($scope.onTrackClick === 'playpause') {
 
-                        var index = _.findIndex($scope.tracks, function(iterator) {
-                            return iterator.id === track.id;
-                        });
+                        if (isNaN(index)) {
+                            throw  new Error('track index is not specify or not a number for "playpause"');
+                        }
 
                         CorePlayer.playPause(index);
 

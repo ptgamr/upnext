@@ -382,6 +382,7 @@ track-list > div {
 
 #singleton-playlist-menu.open {
   display: block;
+  overflow: hidden;
   -webkit-animation: fadeIn .25s;
 }
 
@@ -474,4 +475,48 @@ progress {
   100% {
     opacity: 0;
   }
+}
+
+
+/*http://support.google.com/chrome/?hl=en*/
+::-webkit-scrollbar {
+  height: 10px !important;
+  overflow: visible !important;
+  width: 10px !important;
+}
+
+::-webkit-scrollbar-thumb {
+  background: -webkit-linear-gradient(left, rgba(198,198,198,1) 0%,rgba(220,220,220,1) 100%) !important;
+  background-clip: padding-box !important;
+  border: 2px solid transparent !important;
+  border-image: initial !important;
+  min-height: 28px !important;
+  padding: 100px 0px 0px !important;
+  /*box-shadow: rgba(0, 0, 0, 0.0980392) 1px 1px 0px inset, rgba(0, 0, 0, 0.0666667) 0px -1px 0px inset !important;*/
+}
+
+/* :window-inactive inspired by cssTricks */
+::-webkit-scrollbar-thumb:hover {
+  background: -webkit-linear-gradient(left, rgba(158,158,158,1) 0%,rgba(180,180,180,1) 100%) !important;
+  background-clip: padding-box !important;
+}
+
+/* :window-inactive inspired by cssTricks */
+::-webkit-scrollbar-thumb:window-inactive {
+  background: -webkit-linear-gradient(left, rgba(58,58,58,1) 0%,rgba(80,80,80,1) 100%) !important;
+  background-clip: padding-box !important;
+}
+
+::-webkit-scrollbar-button {
+  height: 0px !important;
+  width: 0px !important;
+}
+
+::-webkit-scrollbar-track {
+  background-color: #1C1C1F;
+  box-shadow: inset 1px 0px 5px -2px rgba(0,0,0,0.3);
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent !important;
 }

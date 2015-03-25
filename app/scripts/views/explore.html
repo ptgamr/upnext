@@ -9,7 +9,7 @@
         </md-item>
     </md-list>
 </md-content>
-<md-content class="tab-content md-padding" ng-show="chosenCategory">
+<md-content class="tab-content md-padding" ng-show="chosenCategory" playing-track-aware="track">
     <div layout="row" class="tab-heading">
         <div flex>
             <md-button class="back-link" ng-click="backToTopChart()">
@@ -24,7 +24,7 @@
     <loading ng-if="isLoading"></loading>
     <track-list tracks="tracks" on-track-click="playnow"></track-list>
 </md-content>
-<md-toolbar class="bottom-toolbar" ng-show="chosenCategory">
+<md-toolbar class="bottom-toolbar">
     <div class="md-toolbar-tools">
         <span></span>
         <span flex></span>
