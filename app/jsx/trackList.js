@@ -18,7 +18,7 @@ window.TrackItem = React.createClass({
 
 		var fontIcon = {
 			sc: 'brand-icon fa fa-soundcloud',
-            yt: 'brand-icon icon ion-social-youtube'
+            yt: 'brand-icon icon ion-social-youtube-outline'
 		};
 
 		var removeButton;
@@ -44,6 +44,13 @@ window.TrackItem = React.createClass({
 				</div>
 				<div className='md-tile-content'>
 					<h3 onClick={this.onClick}>{track.title}</h3>
+					<p className='statistic'>
+						<a className="original-link" href={track.originalUrl} title="View Original">
+							<i className={fontIcon[track.origin]}></i>
+			            </a>
+						<i className='icon ion-headphone'></i><span>{parseInt(track.viewCount).toLocaleString()}</span>
+						<i className='icon ion-heart'></i><span>{parseInt(track.likeCount).toLocaleString()}</span>
+	                </p>
 				</div>
 				<div className="md-tile-hover">
 			        <i className="like-btn icon ion-android-star"></i>

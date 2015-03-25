@@ -1,8 +1,8 @@
 <div id="discovery" ng-controller="DiscoveryController as vm">
     <md-tabs class="main-nav md-primary" md-selected="vm.selectedIndex">
-        <md-tab id="tab1" aria-controls="tab1-content">
-            <md-icon md-font-icon="icon ion-stats-bars"></md-icon>
-            <span>charts</span>
+        <md-tab id="tab4" aria-controls="tab4-content">
+            <md-icon md-font-icon="icon ion-ios-musical-notes"></md-icon>
+            <span>now playing</span>
         </md-tab>
         <md-tab id="tab2" aria-controls="tab2-content">
             <md-icon md-font-icon="icon ion-search"></md-icon>
@@ -12,9 +12,9 @@
             <md-icon md-font-icon="icon ion-film-marker"></md-icon>
             <span>playlist</span>
         </md-tab>
-        <md-tab id="tab4" aria-controls="tab4-content">
-            <md-icon md-font-icon="icon ion-ios-musical-notes"></md-icon>
-            <span>now playing</span>
+        <md-tab id="tab1" aria-controls="tab1-content">
+            <md-icon md-font-icon="icon ion-stats-bars"></md-icon>
+            <span>charts</span>
         </md-tab>
     </md-tabs>
     <ng-switch on="vm.selectedIndex" class="tabpanel-container">
@@ -22,7 +22,8 @@
             id="tab1-content"
             aria-labelledby="tab1"
             ng-switch-when="0">
-            <explore></explore>
+            
+            <now-playing></now-playing>
         </div>
         <div role="tabpanel"
             id="tab2-content"
@@ -41,7 +42,7 @@
         <div role="tabpanel"
             id="tab4-content"
             ng-switch-when="3">
-            <now-playing></now-playing>
+            <explore></explore>
         </div>
     </ng-switch>
     <playlist-menu id="singleton-playlist-menu"></playlist-menu>

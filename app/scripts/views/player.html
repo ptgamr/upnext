@@ -17,27 +17,27 @@
         </div>
         <section layout="row" layout-margin layout-align="center center" class="player-controls">
             <md-button aria-label="Previous Song" flex ng-click="player.previous()">
-                <md-icon md-svg-src="fonts/open-iconic/svg/media-step-backward.svg" class="player-control control-back" alt="Previous"></md-icon>
+                <md-icon md-font-icon="icon ion-ios-skipbackward" class="player-control control-back" alt="Previous"></md-icon>
             </md-button>
             <md-button aria-label="Play Pause" flex ng-click="player.playPause()">
-                <md-icon md-svg-src="fonts/open-iconic/svg/media-pause.svg" class="player-control control-pause" alt="Pause" ng-if="player.state.playing"></md-icon>
-                <md-icon md-svg-src="fonts/open-iconic/svg/media-play.svg" class="player-control control-play" alt="Play" ng-if="!player.state.playing"></md-icon>
+                <md-icon md-font-icon="icon ion-ios-pause" class="player-control control-pause" alt="Pause" ng-if="player.state.playing"></md-icon>
+                <md-icon md-font-icon="icon ion-ios-play" class="player-control control-play" alt="Play" ng-if="!player.state.playing"></md-icon>
             </md-button>
             <md-button aria-label="Next Song" flex ng-click="player.next()">
-                <md-icon md-svg-src="fonts/open-iconic/svg/media-step-forward.svg" class="player-control control-next" alt="Next"></md-icon>
+                <md-icon md-font-icon="icon ion-ios-skipforward" class="player-control control-next" alt="Next"></md-icon>
             </md-button>
         </section>
         <section layout="row" class="volume-controls">
             <md-icon md-font-icon="icon ion-android-volume-down" alt="Volume"></md-icon>
-            <md-slider flex min="0" max="100" ng-model="volume" aria-label="volume" id="volume-slider" class="md-warn"></md-slider>
+            <md-slider flex min="0" max="100" ng-model="volume" aria-label="volume" id="volume-slider" class="md-primary"></md-slider>
             <md-icon md-font-icon="icon ion-android-volume-up" alt="Volume"></md-icon>
         </section>
         <section layout="row" layout-margin layout-align="center center" class="player-sub-controls">
-            <md-button ng-class="{'md-warn': player.state.repeat !== 0}" aria-label="Toggle Repeat" class="player-control control-repeat" ng-click="player.toggleRepeat()">
+            <md-button ng-class="{'md-primary': player.state.repeat !== 0}" aria-label="Toggle Repeat" class="player-control control-repeat" ng-click="player.toggleRepeat()">
                 <span ng-if="player.state.repeat !== 2">REPEAT ALL</span>
                 <span ng-if="player.state.repeat === 2">REPEAT ONE</span>
             </md-button>
-            <md-button ng-class="{'md-warn': player.state.shuffle}" aria-label="Toggle Shuffle" class="player-control control-shuffle" ng-click="player.toggleShuffle()">
+            <md-button ng-class="{'md-primary': player.state.shuffle}" aria-label="Toggle Shuffle" class="player-control control-shuffle" ng-click="player.toggleShuffle()">
                 SHUFFLE
             </md-button>
         </section>

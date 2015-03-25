@@ -18,7 +18,7 @@ window.TrackItem = React.createClass({displayName: "TrackItem",
 
 		var fontIcon = {
 			sc: 'brand-icon fa fa-soundcloud',
-            yt: 'brand-icon icon ion-social-youtube'
+            yt: 'brand-icon icon ion-social-youtube-outline'
 		};
 
 		var removeButton;
@@ -43,7 +43,14 @@ window.TrackItem = React.createClass({displayName: "TrackItem",
 					React.createElement("i", {className: "dynamic-icon fa fa-pause fa-lg"})
 				), 
 				React.createElement("div", {className: "md-tile-content"}, 
-					React.createElement("h3", {onClick: this.onClick}, track.title)
+					React.createElement("h3", {onClick: this.onClick}, track.title), 
+					React.createElement("p", {className: "statistic"}, 
+						React.createElement("a", {className: "original-link", href: track.originalUrl, title: "View Original"}, 
+							React.createElement("i", {className: fontIcon[track.origin]})
+			            ), 
+						React.createElement("i", {className: "icon ion-headphone"}), React.createElement("span", null, parseInt(track.viewCount).toLocaleString()), 
+						React.createElement("i", {className: "icon ion-heart"}), React.createElement("span", null, parseInt(track.likeCount).toLocaleString())
+	                )
 				), 
 				React.createElement("div", {className: "md-tile-hover"}, 
 			        React.createElement("i", {className: "like-btn icon ion-android-star"}), 

@@ -2,9 +2,6 @@
     <md-list>
         <md-item ng-repeat="cat in categories">
             <md-item-content layout="row" layout-align="start start" ng-click="selectCategory(cat)">
-                <div class="md-tile-left">
-                    <img ng-src="images/artwork-bar.jpg" alt="{{cat}}">
-                </div>
                 <div class="md-tile-content">
                     <h3>{{sanitizeCategory(cat)}}</h3>
                 </div>
