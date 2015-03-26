@@ -55,9 +55,16 @@ plangular.service('CorePlayer', function(Messaging, NowPlaying, CLIENT_ID) {
 
   this.add = function(track, andPlay) {
 
+
+
     andPlay = andPlay || true;
 
     if (track) {
+      //we need to do a copy here to ensure each track we add
+      //to the playlist will have a unique id
+      track = angular.copy(track);
+      track.uuid = window.ServiceHelpers.ID();
+      
       this.tracks.unshift(track);
     }
 

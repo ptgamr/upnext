@@ -107,7 +107,7 @@ window.TrackList = React.createClass({displayName: "TrackList",
 
 			if (track) {
 				return (
-					React.createElement(TrackItem, {track: track, trackNumber: trackNumber, player: player, onTrackClick: onTrackClick, onAddTrackToPlaylist: onAddTrackToPlaylist, onRemoveTrack: onRemoveTrack, showRemoveButton: showRemoveButton, onStarTrack: onStarTrack})
+					React.createElement(TrackItem, {key: track.uuid, track: track, trackNumber: trackNumber, player: player, onTrackClick: onTrackClick, onAddTrackToPlaylist: onAddTrackToPlaylist, onRemoveTrack: onRemoveTrack, showRemoveButton: showRemoveButton, onStarTrack: onStarTrack})
 				);
 			}
 		});

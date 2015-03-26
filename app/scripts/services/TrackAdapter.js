@@ -36,7 +36,6 @@
             var normalizedTrack = {};
 
             if (track.origin === ORIGIN_YOUTUBE || origin === ORIGIN_YOUTUBE) {
-
                 normalizedTrack.id = track.id;
                 normalizedTrack.title = track.snippet.title;
                 normalizedTrack.artworkUrl = track.snippet.thumbnails.default.url || DEFAULT_THUMBNAIL;
@@ -61,6 +60,7 @@
                 normalizedTrack.originalUrl = track.permalink_url;
             }
 
+            normalizedTrack.uuid = window.ServiceHelpers.ID();
             normalizedTrack.starred = PlaylistService.isTrackStarred(normalizedTrack);
             return normalizedTrack;
         }

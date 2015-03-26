@@ -17,7 +17,7 @@
                 tracks: '=',
                 onTrackClick: '@',
                 originToggle: '=',
-                showRemoveButton: '@'
+                showRemoveButton: '='
             },
             link: function($scope, element, attrs) {
 

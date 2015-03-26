@@ -13,16 +13,19 @@
 
                 $scope.player = CorePlayer;
 
+                //give PlaylistService 1000ms to load
+                //We need it to get the starred information for the track
+                //FIXME: better to make this process async. but ok for now
+                var delay = !PlaylistService.isReady() ? 1000 : 300;
+
                 $scope.$watch(function() {
                     return CorePlayer.tracks;
                 }, function(value) {
-                    if (!PlaylistService.isReady()) {
-                        $timeout(function() {
-                            $scope.tracks = TrackAdapter.decorateStar(CorePlayer.tracks);
-                        }, 500);
-                    } else {
+
+                    //need a little delay here to make smother transition when changing tab
+                    $timeout(function() {
                         $scope.tracks = TrackAdapter.decorateStar(CorePlayer.tracks);
-                    }
+                    }, delay);
                 });
 
                 $scope.saveStream = function($event) {
