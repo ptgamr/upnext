@@ -36,11 +36,11 @@ window.TrackItem = React.createClass({displayName: "TrackItem",
 						React.createElement("img", {src: track.artworkUrl, alt: track.title})
 					)
 				), 
-				React.createElement("div", {className: "play-actions"}, 
+				React.createElement("div", {className: "play-actions", onClick: this.onClick}, 
 					React.createElement("span", {className: "track-number"}, this.props.trackNumber), 
 					React.createElement("i", {className: "dynamic-icon icon icon-playing"}), 
-					React.createElement("i", {className: "dynamic-icon fa fa-play fa-lg"}), 
-					React.createElement("i", {className: "dynamic-icon fa fa-pause fa-lg"})
+					React.createElement("i", {className: "dynamic-icon icon ion-ios-play"}), 
+					React.createElement("i", {className: "dynamic-icon icon ion-ios-pause"})
 				), 
 				React.createElement("div", {className: "md-tile-content"}, 
 					React.createElement("h3", {onClick: this.onClick}, track.title), 

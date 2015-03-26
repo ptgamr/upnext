@@ -6,6 +6,10 @@
     <md-list class="playlist">
         <md-item ng-repeat="playlist in playlists.items track by $index" ng-click="selectPlaylist(playlist)">
             <md-item-content>
+                <div class="md-tile-left">
+                    <md-icon ng-if="$index === 0" md-font-icon="icon ion-ios-star"></md-icon>
+                    <md-icon ng-if="$index !== 0" md-font-icon="icon ion-ios-musical-notes"></md-icon>
+                </div>
                 <div class="md-tile-content">
                     <h3>{{playlist.name}}</h3>
                     <h4>{{playlist.tracks.length}} tracks</h4>
@@ -14,7 +18,7 @@
                     <md-button title="Play All" aria-label="Play All" ng-click="playAll($event, $index)">
                         <md-icon md-font-icon="icon ion-play"></md-icon>
                     </md-button>
-                    <md-button aria-label="Remove Playlist" ng-click="remove($event, $index)">
+                    <md-button aria-label="Remove Playlist" ng-click="remove($event, $index)" ng-if="$index !== 0">
                         <md-icon md-font-icon="icon ion-android-delete"></md-icon>
                     </md-button>
                 </div>

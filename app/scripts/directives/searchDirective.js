@@ -4,92 +4,108 @@
     angular.module('soundCloudify')
         .directive('search', searchDirective);
 
-    function searchDirective(SearchService, Paginator, $filter, CorePlayer) {
+    function searchDirective() {
         return {
             restrict: 'E',
             templateUrl: 'scripts/views/search.html',
             scope: true,
-            link: function($scope, element, attrs) {
-                
-                var soundcloudPaginator, youtubePaginator, tempSearchResult = [], cacheForFilter;
+            controller: SearchController,
+            controllerAs: 'ctrl'
+        };
+    }
 
-                $scope.search = {
-                    term: localStorage.getItem('lastSearchTerm') || ''
-                };
+    function SearchController ($scope, SuggestionService, CorePlayer, Paginator, SearchService) {
 
-                $scope.toggle = JSON.parse(localStorage.getItem('toggle')) || {
-                    soundcloud: true,
-                    youtube: true
-                };
+        var vm = this;
+        vm.selectedItem  = null;
+        vm.searchText    = null;
+        vm.suggest   = suggest;
+        vm.search = {
+            term: ''
+        };
 
-                $scope.$watch('toggle', function(newVal) {
-                    localStorage.setItem('toggle', JSON.stringify(newVal));
-                }, true);
+        var soundcloudPaginator, youtubePaginator, tempSearchResult = [], cacheForFilter;
 
-                $scope.player = CorePlayer;
+        vm.toggle = JSON.parse(localStorage.getItem('toggle')) || {
+            soundcloud: true,
+            youtube: true
+        };
 
-                $scope.mixedResults = [];
+        $scope.$watch(angular.bind(vm, function () {
+            return this.toggle;
+        }), function (newVal, oldVal) {
+            localStorage.setItem('toggle', JSON.stringify(newVal));
+        });
 
-                function soundcloudPagingFunction(paginationModel) {
-                    return SearchService.search($scope.search.term, paginationModel);
-                }
+        vm.player = CorePlayer;
 
-                function youtubePagingFunction(paginationModel) {
-                    return SearchService.searchYoutube($scope.search.term, paginationModel);
-                }
+        vm.mixedResults = [];
 
-                function concatAndMixedResult(data) {
-                    if (tempSearchResult.length) {
-                        tempSearchResult = tempSearchResult.concat(data);
-                        $scope.mixedResults = $scope.mixedResults.concat(tempSearchResult);
-                        tempSearchResult = [];
-                    } else {
-                        tempSearchResult = tempSearchResult.concat(data);
+        vm.soundcloudPaginator = Paginator.getInstance({
+            limit: 10,
+            getFirstPage: false,
+            pagingFunction: soundcloudPagingFunction,
+            pagingSuccess: concatAndMixedResult
+        });
 
-                        if (!$scope.soundcloudPaginator.hasMoreRow || !$scope.youtubePaginator.hasMoreRow) {
-                            $scope.mixedResults = $scope.mixedResults.concat(tempSearchResult);
-                        }
-                    }
-                }
+        vm.youtubePaginator = Paginator.getInstance({
+            limit: 10,
+            getFirstPage: false,
+            pagingFunction: youtubePagingFunction,
+            pagingSuccess: concatAndMixedResult
+        });
 
-                $scope.soundcloudPaginator = Paginator.getInstance({
-                    limit: 10,
-                    getFirstPage: false,
-                    pagingFunction: soundcloudPagingFunction,
-                    pagingSuccess: concatAndMixedResult
-                });
+        vm.getMore = function(newSearch) {
 
-                $scope.youtubePaginator = Paginator.getInstance({
-                    limit: 10,
-                    getFirstPage: false,
-                    pagingFunction: youtubePagingFunction,
-                    pagingSuccess: concatAndMixedResult
-                });
+            if (!vm.search.term) return;
 
-                $scope.getMore = function(newSearch) {
-                    if (newSearch) {
-                        $scope.mixedResults = [];
-                        localStorage.setItem('lastSearchTerm', $scope.search.term);
-                        $scope.soundcloudPaginator.reset();
-                        $scope.youtubePaginator.reset();
-                    }
+            if (newSearch) {
+                vm.mixedResults = [];
+                localStorage.setItem('lastSearchTerm', vm.search.term);
+                vm.soundcloudPaginator.reset();
+                vm.youtubePaginator.reset();
+            }
 
-                    $scope.soundcloudPaginator.moreRows();
-                    $scope.youtubePaginator.moreRows();
+            vm.soundcloudPaginator.moreRows();
+            vm.youtubePaginator.moreRows();
 
-                    $scope.promises = [$scope.soundcloudPaginator.lastPromise, $scope.youtubePaginator.lastPromise];
-                };
+            vm.promises = [vm.soundcloudPaginator.lastPromise, vm.youtubePaginator.lastPromise];
+        };
 
-                $scope.onKeyPress = function(keyEvent) {
-                    if (keyEvent.which === 13) {
-                        $scope.getMore(true);
-                    }
-                };
-
-                $scope.hasMoreRow = function() {
-                    return $scope.mixedResults.length && ($scope.soundcloudPaginator.hasMoreRow || $scope.youtubePaginator.hasMoreRow);
-                };
+        vm.onKeyPress = function(keyEvent) {
+            if (keyEvent.which === 13) {
+                vm.getMore(true);
             }
         };
+
+        vm.hasMoreRow = function() {
+            return vm.mixedResults.length && (vm.soundcloudPaginator.hasMoreRow || vm.youtubePaginator.hasMoreRow);
+        };
+
+        function soundcloudPagingFunction(paginationModel) {
+            return SearchService.search(vm.search.term, paginationModel);
+        }
+
+        function youtubePagingFunction(paginationModel) {
+            return SearchService.searchYoutube(vm.search.term, paginationModel);
+        }
+
+        function concatAndMixedResult(data) {
+            if (tempSearchResult.length) {
+                tempSearchResult = tempSearchResult.concat(data);
+                vm.mixedResults = vm.mixedResults.concat(tempSearchResult);
+                tempSearchResult = [];
+            } else {
+                tempSearchResult = tempSearchResult.concat(data);
+
+                if (!vm.soundcloudPaginator.hasMoreRow || !vm.youtubePaginator.hasMoreRow) {
+                    vm.mixedResults = vm.mixedResults.concat(tempSearchResult);
+                }
+            }
+        }
+
+        function suggest (query) {
+            return SuggestionService.suggest(query);
+        }
     }
 }());

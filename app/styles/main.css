@@ -227,7 +227,7 @@ md-slider:not([md-discrete]):not([disabled]):focus .md-focus-ring, md-slider:not
 
   .track-item i:hover {
     cursor: pointer;
-    color: #777;
+    color: #fff;
   }
 
   .track-item .md-tile-hover, md-item .md-tile-hover{
@@ -310,6 +310,8 @@ md-slider:not([md-discrete]):not([disabled]):focus .md-focus-ring, md-slider:not
   }
 
   .media-list .play-actions .dynamic-icon {
+    font-size: 20px;
+    line-height: 20px;
     display: none;
   }
 
@@ -317,7 +319,7 @@ md-slider:not([md-discrete]):not([disabled]):focus .md-focus-ring, md-slider:not
     display: none;
   }
 
-  .media-list .track-item:hover .fa-play{
+  .media-list .track-item:hover .ion-ios-play{
     display: inline-block;
   }
 
@@ -337,11 +339,11 @@ md-slider:not([md-discrete]):not([disabled]):focus .md-focus-ring, md-slider:not
     display: none;
   }
 
-  .media-list .playing:hover .fa-play {
+  .media-list .playing:hover .ion-ios-play {
     display: none;
   }
 
-  .media-list .playing:hover .fa-pause {
+  .media-list .playing:hover .ion-ios-pause {
     display: inline-block;
   }
 
@@ -356,8 +358,9 @@ md-slider:not([md-discrete]):not([disabled]):focus .md-focus-ring, md-slider:not
 
 .playlist {}
 .playlist md-item-content {background-color: #1C1C1F; border-left: 2px solid #1C1C1F; margin-bottom: 10px;}
+.playlist .md-tile-left {text-align: center;}
 .playlist .md-tile-content { padding: 5px 10px;}
-.playlist md-item-content:hover {cursor: pointer;}
+.playlist md-item-content:hover {cursor: pointer; border-color: #8bc34a; color: #fff;}
 .playlist md-item .md-tile-hover {margin: 0 10px 0 0;}
 
 .list-hover {}
@@ -387,9 +390,10 @@ track-list > div {
 }
 
 #singleton-playlist-menu md-input-container {padding-bottom: 0; background-color: #1C1C1F;}
-#singleton-playlist-menu md-content { max-height: 200px; background-color: #2e2f33; color: #bbb;}
-#singleton-playlist-menu md-item-content {padding: 0 10px; border-bottom: 1px solid #1C1C1F;}
-#singleton-playlist-menu md-item:hover md-item-content { cursor: pointer; background-color: #1C1C1F;}
+#singleton-playlist-menu md-content { max-height: 200px; background-color: #1C1C1F; color: #bbb;}
+#singleton-playlist-menu md-item-content {padding: 0 10px; border-bottom: 1px solid #2e2f33;}
+#singleton-playlist-menu md-item:hover md-item-content { cursor: pointer; color: #ffffff;}
+#singleton-playlist-menu md-item:hover md-item-content h3 { font-weight: bold; }
 #singleton-playlist-menu md-input-container {padding: 10px;}
 #singleton-playlist-menu .md-tile-content {padding: 0 5px;}
 

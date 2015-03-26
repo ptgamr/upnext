@@ -36,11 +36,11 @@ window.TrackItem = React.createClass({
 						<img src={track.artworkUrl} alt={track.title} />
 					</div>
 				</div>
-				<div className="play-actions">
+				<div className="play-actions" onClick={this.onClick}>
 					<span className="track-number">{this.props.trackNumber}</span>
 					<i className="dynamic-icon icon icon-playing"></i>
-					<i className="dynamic-icon fa fa-play fa-lg"></i>
-					<i className="dynamic-icon fa fa-pause fa-lg"></i>
+					<i className="dynamic-icon icon ion-ios-play"></i>
+					<i className="dynamic-icon icon ion-ios-pause"></i>
 				</div>
 				<div className='md-tile-content'>
 					<h3 onClick={this.onClick}>{track.title}</h3>

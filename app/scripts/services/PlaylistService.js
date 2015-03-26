@@ -51,6 +51,13 @@
             if (playlistStore.items === null) {
                 chrome.storage.local.get(PLAYLIST_STORAGE_KEY, function(data) {
                     playlistStore.items = data[PLAYLIST_STORAGE_KEY] || [];
+
+                    //the Starred Playlist should be automatically added & can not be removed
+                    if (!playlistStore.items.length) {
+                        playlistStore.items.push(new Playlist('Starred'));
+                        updateStorage();
+                    }
+
                     defer.resolve(playlistStore);
                 });
             } else {
@@ -62,7 +69,7 @@
 
         function newPlaylist(name) {
             var playlist = new Playlist(name);
-            playlistStore.items.unshift(playlist);
+            playlistStore.items.splice(1, 0, playlist);
             updateStorage();
             return playlist;
         }

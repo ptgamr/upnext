@@ -30,6 +30,10 @@
 ### Sample youtube response 
 
 
+#BUGS
+[] player artwork won't change in some cases
+[] Toast text color is still white
+
 ```
 //https://developers.google.com/youtube/v3/docs/videos
 {
