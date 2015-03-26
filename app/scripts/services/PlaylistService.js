@@ -21,7 +21,7 @@
         playlist.tracks = playlist.tracks.concat(tracks);
     }
 
-    function _removeTrackFromPlaylist(trackIndex) {
+    function _removeTrackFromPlaylist(trackIndex, playlist) {
         if (typeof trackIndex === 'undefined' || isNaN(trackIndex))
             throw new Error('Error when remove track: trackIndex must be specified as number');
         playlist.tracks.splice(trackIndex, 1);
@@ -35,13 +35,18 @@
             items: null
         };
 
+        getList();
+
         return {
             getList: getList,
             newPlaylist: newPlaylist,
             removePlaylist: removePlaylist,
             getPlaylist: getPlaylist,
             addTrackToPlaylist: addTrackToPlaylist,
-            addTracksToPlaylist: addTracksToPlaylist
+            addTracksToPlaylist: addTracksToPlaylist,
+            starTrack: starTrack,
+            unstarTrack: unstarTrack,
+            isTrackStarred: isTrackStarred
         };
 
         function getList() {
@@ -121,6 +126,44 @@
 
             _removeTrackFromPlaylist(trackIndex);
             updateStorage();
+        }
+
+        function starTrack(track) {
+            var starList = playlistStore.items[0];
+
+            if(!starList)
+                throw new Error('starTrack(): Star Playlist not found. This should be reported.');
+
+            _addTrackToPlaylist(track, starList);
+            updateStorage();
+        }
+
+        function unstarTrack(track) {
+            var starList = playlistStore.items[0];
+
+            if(!starList)
+                throw new Error('unstarTrack(): Star Playlist not found. This should be reported.');
+
+            for (var i = 0 ; i < starList.tracks.length; i++) {
+                if (starList.tracks[i].id === track.id) {
+                    _removeTrackFromPlaylist(i, starList);
+                    break;
+                }
+            }
+            updateStorage();
+        }
+
+        function isTrackStarred(track) {
+            var starList = playlistStore.items[0];
+
+            if(!starList)
+                throw new Error('isTrackStarred() : Star Playlist not found. This should be reported.');
+
+            for (var i = 0 ; i < starList.tracks.length; i++) {
+                if (starList.tracks[i].id === track.id) {
+                    return true;
+                }
+            }
         }
 
         function updateStorage() {

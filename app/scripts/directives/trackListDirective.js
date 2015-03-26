@@ -9,7 +9,7 @@
         return reactDirective('TrackList')
     };
 
-    function trackListDirective($playlistMenu, CorePlayer) {
+    function trackListDirective($playlistMenu, CorePlayer, PlaylistService) {
         return {
             restrict: 'E',
             templateUrl: 'scripts/views/trackList.html',
@@ -72,6 +72,11 @@
                     });
 
                     CorePlayer.remove(index);
+                };
+
+                $scope.starTrack = function(track) {
+                    track.starred = true;
+                    PlaylistService.starTrack(track);
                 };
 
                 $scope.trackFilter = {

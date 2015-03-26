@@ -4,7 +4,7 @@
     angular.module('soundCloudify')
         .service("TrackAdapter", TrackAdapter);
 
-    function TrackAdapter () {
+    function TrackAdapter (PlaylistService) {
         
         var DEFAULT_THUMBNAIL = 'images/artwork-bar.jpg';
 
@@ -13,7 +13,8 @@
 
         return {
             adapt: adapt,
-            adaptMultiple: adaptMultiple
+            adaptMultiple: adaptMultiple,
+            decorateStar: decorateStar
         };
 
         /**
@@ -58,14 +59,23 @@
                 normalizedTrack.originalUrl = track.permalink_url;
             }
 
+            normalizedTrack.starred = PlaylistService.isTrackStarred(normalizedTrack);
             return normalizedTrack;
         }
 
 
         function adaptMultiple(tracks, origin) {
             return tracks.map(function(track) {
-                return adapt(track, origin);
+                if (track)
+                    return adapt(track, origin);
             });
+        }
+
+        function decorateStar(tracks) {
+            return tracks.map(function(track) {
+                track.starred = PlaylistService.isTrackStarred(track);
+                return track;
+            })
         }
     };
 

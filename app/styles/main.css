@@ -303,7 +303,7 @@ md-slider:not([md-discrete]):not([disabled]):focus .md-focus-ring, md-slider:not
     cursor: pointer;
   }
 
-  .media-list .play-actions {
+  .media-list .play-actions, .media-list .starred {
     line-height: 40px;
     width: 30px;
     text-align: center;
@@ -313,6 +313,14 @@ md-slider:not([md-discrete]):not([disabled]):focus .md-focus-ring, md-slider:not
     font-size: 20px;
     line-height: 20px;
     display: none;
+  }
+
+  .media-list .starred {
+    width: 15px;
+    margin-right: 7px;
+  }
+  .media-list .starred i{
+    color: #FFEB3B;
   }
 
   .media-list .track-item.playing .track-number, .media-list .track-item:hover .track-number {
@@ -485,13 +493,13 @@ progress {
 
 
 /*http://support.google.com/chrome/?hl=en*/
-::-webkit-scrollbar {
+#soundcloudify ::-webkit-scrollbar {
   height: 10px !important;
   overflow: visible !important;
   width: 10px !important;
 }
 
-::-webkit-scrollbar-thumb {
+#soundcloudify ::-webkit-scrollbar-thumb {
   background: -webkit-linear-gradient(left, rgba(198,198,198,1) 0%,rgba(220,220,220,1) 100%) !important;
   background-clip: padding-box !important;
   border: 2px solid transparent !important;
@@ -502,27 +510,27 @@ progress {
 }
 
 /* :window-inactive inspired by cssTricks */
-::-webkit-scrollbar-thumb:hover {
+#soundcloudify ::-webkit-scrollbar-thumb:hover {
   background: -webkit-linear-gradient(left, rgba(158,158,158,1) 0%,rgba(180,180,180,1) 100%) !important;
   background-clip: padding-box !important;
 }
 
 /* :window-inactive inspired by cssTricks */
-::-webkit-scrollbar-thumb:window-inactive {
+#soundcloudify ::-webkit-scrollbar-thumb:window-inactive {
   background: -webkit-linear-gradient(left, rgba(58,58,58,1) 0%,rgba(80,80,80,1) 100%) !important;
   background-clip: padding-box !important;
 }
 
-::-webkit-scrollbar-button {
+#soundcloudify ::-webkit-scrollbar-button {
   height: 0px !important;
   width: 0px !important;
 }
 
-::-webkit-scrollbar-track {
+#soundcloudify ::-webkit-scrollbar-track {
   background-color: #1C1C1F;
   box-shadow: inset 1px 0px 5px -2px rgba(0,0,0,0.3);
 }
 
-::-webkit-scrollbar-corner {
+#soundcloudify ::-webkit-scrollbar-corner {
   background: transparent !important;
 }
