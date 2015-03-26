@@ -34,6 +34,37 @@
 [] player artwork won't change in some cases
 [] Toast text color is still white
 
+#Google Analytics
+
+### page view
+[] Now Playing
+[] Search
+[] Playlist
+[] Top Charts
+
+### search 
+[] search term
+[] click from recent search
+[] toggle youtube
+[] toggle soundcloud
+[] result click for soundcloud
+[] result click for youtube
+[] star from search
+[] add to playlist from search
+
+### playlist
+[] create a new playlist
+[] remove playlist
+[] playall playlist
+[] view playlist
+
+### player
+[] toggle repeat all
+[] toggle repeat one
+[] toggle repeat off
+[] toggle shuffle
+
+
 ```
 //https://developers.google.com/youtube/v3/docs/videos
 {

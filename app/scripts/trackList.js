@@ -20,6 +20,8 @@ window.TrackItem = React.createClass({displayName: "TrackItem",
 	render: function() {
 		var track = this.props.track;
 
+		if (!track) return;
+
 		var fontIcon = {
 			sc: 'brand-icon fa fa-soundcloud',
             yt: 'brand-icon icon ion-social-youtube-outline'

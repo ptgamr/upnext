@@ -65,6 +65,8 @@ plangular.service('CorePlayer', function(Messaging, NowPlaying, CLIENT_ID) {
       this.play(0);
     }
 
+    console.log(this.tracks);
+
     NowPlaying.saveList(this.tracks);
 
   };

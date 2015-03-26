@@ -1,9 +1,9 @@
 <md-content class="tab-content md-padding" playing-track-aware="index">
-    <track-list  tracks="player.tracks" on-track-click="playpause" show-remove-button="true"></track-list>
+    <track-list  tracks="tracks" on-track-click="playpause" show-remove-button="true"></track-list>
 </md-content>
 <md-toolbar class="bottom-toolbar">
     <div class="md-toolbar-tools">
-        <span flex>{{player.tracks.length}} songs</span>
+        <span flex>{{tracks.length}} songs</span>
         <span flex></span>
         <span>
             <md-button ng-click="saveStream($event)"><md-icon md-font-icon="icon ion-android-archive"></md-icon></md-button>

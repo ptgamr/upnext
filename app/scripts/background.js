@@ -254,6 +254,9 @@ Player.prototype = {
             }
 
             chrome.storage.local.set({'nowPlayingState': this.state});
+        } else {
+            this.state.currentIndex ++;
+            this.next();
         }
     },
 

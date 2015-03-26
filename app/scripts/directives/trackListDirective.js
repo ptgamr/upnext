@@ -59,6 +59,11 @@
                         CorePlayer.playPause(index);
 
                     } else if ($scope.onTrackClick = 'playnow') {
+
+                        if (!track) {
+                            throw new Error('trying to add track, but no track to add');
+                        }
+
                         CorePlayer.add(track, true);
                     } else {
 
@@ -84,7 +89,7 @@
                 };
 
                 $scope.$watch('originToggle',function(toggle) {
-                    
+
                     var filter = '';
 
                     if (!toggle) return;

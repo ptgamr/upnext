@@ -4,7 +4,7 @@
     angular.module('soundCloudify')
         .directive('nowPlaying', nowPlayingDirective);
 
-    function nowPlayingDirective(Category, $mdDialog, PlaylistService, CorePlayer, TrackAdapter) {
+    function nowPlayingDirective(Category, $mdDialog, PlaylistService, CorePlayer, TrackAdapter, $timeout) {
         return {
             restrict: 'E',
             templateUrl: 'scripts/views/nowPlaying.html',
@@ -13,7 +13,17 @@
 
                 $scope.player = CorePlayer;
 
-                $scope.tracks = TrackAdapter.decorateStar(CorePlayer.tracks);
+                $scope.$watch(function() {
+                    return CorePlayer.tracks;
+                }, function(value) {
+                    if (!PlaylistService.isReady()) {
+                        $timeout(function() {
+                            $scope.tracks = TrackAdapter.decorateStar(CorePlayer.tracks);
+                        }, 500);
+                    } else {
+                        $scope.tracks = TrackAdapter.decorateStar(CorePlayer.tracks);
+                    }
+                });
 
                 $scope.saveStream = function($event) {
                     

@@ -31,13 +31,18 @@
 
         var PLAYLIST_STORAGE_KEY = 'playlist';
 
+        var ready = false;
+
         var playlistStore = {
             items: null
         };
 
-        getList();
+        getList().then(function() {
+            ready = true;
+        });
 
         return {
+            isReady: isReady,
             getList: getList,
             newPlaylist: newPlaylist,
             removePlaylist: removePlaylist,
@@ -48,6 +53,10 @@
             unstarTrack: unstarTrack,
             isTrackStarred: isTrackStarred
         };
+
+        function isReady() {
+            return ready;
+        }
 
         function getList() {
 
