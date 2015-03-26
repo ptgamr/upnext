@@ -24,6 +24,8 @@
             term: ''
         };
 
+        vm.recentSearch = JSON.parse(localStorage.getItem('recentSearch')) || [];
+
         var soundcloudPaginator, youtubePaginator, tempSearchResult = [], cacheForFilter;
 
         vm.toggle = JSON.parse(localStorage.getItem('toggle')) || {
@@ -35,7 +37,7 @@
             return this.toggle;
         }), function (newVal, oldVal) {
             localStorage.setItem('toggle', JSON.stringify(newVal));
-        });
+        }, true);
 
         vm.player = CorePlayer;
 
@@ -61,7 +63,10 @@
 
             if (newSearch) {
                 vm.mixedResults = [];
-                localStorage.setItem('lastSearchTerm', vm.search.term);
+                vm.recentSearch.unshift(vm.search.term.trim());
+                //limit to 5 items
+                vm.recentSearch = _.uniq(vm.recentSearch).slice(0,5);
+                localStorage.setItem('recentSearch', JSON.stringify(vm.recentSearch));
                 vm.soundcloudPaginator.reset();
                 vm.youtubePaginator.reset();
             }

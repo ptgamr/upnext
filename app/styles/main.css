@@ -400,6 +400,7 @@ track-list > div {
 
 #search md-input-container { padding-bottom: 0;}
 #search md-checkbox:first-child {margin-left: 0;}
+.recent-search {}
 
 .icon {}
   .icon.icon-playing, .icon.icon-playing-blue {
@@ -411,6 +412,7 @@ track-list > div {
   .icon.icon-playing-blue {
     background: url('../images/equalizer.primary.gif') center no-repeat;
   }
+
 
 progress {
   display: block;

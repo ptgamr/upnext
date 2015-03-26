@@ -20,8 +20,12 @@
 		</md-checkbox>
 	</section>
 
-    <track-list class="list-full" tracks="ctrl.mixedResults" on-track-click="playnow" show-remove-button="false" origin-toggle="ctrl.toggle"></track-list>
+    <section class="recent-search" ng-show="ctrl.recentSearch.length && !ctrl.mixedResults.length && !(ctrl.soundcloudPaginator.lastPromise.$$state.status === 0 || ctrl.youtubePaginator.lastPromise.$$state.status === 0)">
+        <h3>Recent search:</h3>
+        <p ng-repeat="term in ctrl.recentSearch"><a>{{term}}</a></p>
+    </section>
 
+    <track-list class="list-full" tracks="ctrl.mixedResults" on-track-click="playnow" show-remove-button="false" origin-toggle="ctrl.toggle"></track-list>
     <loading ng-show="ctrl.soundcloudPaginator.lastPromise.$$state.status === 0 || ctrl.youtubePaginator.lastPromise.$$state.status === 0"></loading>
     <section layout="row" layout-align="center center" ng-hide="ctrl.soundcloudPaginator.lastPromise.$$state.status === 0 || ctrl.youtubePaginator.lastPromise.$$state.status === 0">
     	<md-button ng-show="ctrl.hasMoreRow()" class="md-primary" ng-click="ctrl.getMore(false)">Load more</md-button>
