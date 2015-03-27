@@ -1,12 +1,11 @@
 <md-content class="md-padding tab-content " playing-track-aware="track">
     <md-autocomplete
-        md-autofocus="false"
         md-selected-item="ctrl.selectedItem"
         md-search-text="ctrl.search.term"
         md-items="item in ctrl.suggest(ctrl.search.term)"
         md-item-text="item.display"
         md-floating-label="Search anything"
-        md-selected-item-change="ctrl.search.term = ctrl.selectedItem.value; ctrl.getMore(true)">
+        md-selected-item-change="ctrl.getMore(true)">
         
         <span md-highlight-text="ctrl.search.term">{{item.display}}</span>
       </md-autocomplete>
