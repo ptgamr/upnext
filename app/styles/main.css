@@ -534,3 +534,9 @@ progress {
 #soundcloudify ::-webkit-scrollbar-corner {
   background: transparent !important;
 }
+
+
+
+md-input-container.md-default-theme label, md-input-container.md-default-theme .md-placeholder {
+  color: #bbb;
+}

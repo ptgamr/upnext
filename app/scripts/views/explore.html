@@ -1,4 +1,4 @@
-<md-content class="list-hover tab-content md-padding" ng-hide="chosenCategory">
+<md-content class="list-hover tab-content md-padding" ng-if="!chosenCategory">
     <md-list>
         <md-item ng-repeat="cat in categories">
             <md-item-content layout="row" layout-align="start start" ng-click="selectCategory(cat)">
@@ -9,7 +9,7 @@
         </md-item>
     </md-list>
 </md-content>
-<md-content class="tab-content md-padding" ng-show="chosenCategory" playing-track-aware="track">
+<md-content class="tab-content md-padding" ng-if="chosenCategory" playing-track-aware="track">
     <div layout="row" class="tab-heading">
         <div flex>
             <md-button class="back-link" ng-click="backToTopChart()">
@@ -21,8 +21,13 @@
             <h3 class="chosen-category">{{sanitizeCategory(chosenCategory)}}</h3>
         </div>
     </div>
-    <loading ng-if="isLoading"></loading>
     <track-list tracks="tracks" on-track-click="playnow"></track-list>
+
+    <loading ng-show="paginator.lastPromise.$$state.status === 0"></loading>
+    <section layout="row" layout-align="center center" ng-hide="paginator.lastPromise.$$state.status === 0">
+        <md-button ng-show="paginator.hasMoreRow" class="md-primary" ng-click="paginator.moreRows()">Load more</md-button>
+    </section>
+
 </md-content>
 <md-toolbar class="bottom-toolbar">
     <div class="md-toolbar-tools">

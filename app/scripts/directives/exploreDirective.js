@@ -4,7 +4,7 @@
     angular.module('soundCloudify')
         .directive('explore', musicExploreDirective);
 
-    function musicExploreDirective(Category, CorePlayer) {
+    function musicExploreDirective(Category, CorePlayer, Paginator) {
         return {
             restrict: 'E',
             templateUrl: 'scripts/views/explore.html',
@@ -21,10 +21,23 @@
                     if (val) {
                         $scope.isLoading = true;
                         $scope.tracks = [];
-                        Category.getTracks(val).success(function(tracks) {
-                            $scope.isLoading = false;
-                            $scope.tracks = tracks;
-                        })
+                        // Category.getTracks(val).success(function(tracks) {
+                        //     $scope.isLoading = false;
+                        //     $scope.tracks = tracks;
+                        // });
+
+                        $scope.paginator = Paginator.getInstance({
+                            limit: 10,
+                            getFirstPage: true,
+                            pagingFunction: function(paginationModel) {
+                                return Category.getTracks(val, paginationModel);
+                            },
+                            pagingSuccess: function(data) {
+                                $scope.tracks = $scope.tracks.concat(data);
+                            }
+                        });
+
+                        $scope.paginator.moreRows();
                     }
                 });
 
