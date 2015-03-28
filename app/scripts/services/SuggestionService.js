@@ -20,10 +20,8 @@
                     method: 'GET',
                     params: params,
                     transformResponse: ServiceHelpers.appendTransform($http.defaults.transformResponse, function(result) {
-                        console.log(result);
+
                         if (!result || !result[1]) return [];
-
-
                         return result[1].map(function(suggestion) {
                             return {
                                 value: suggestion,

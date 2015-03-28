@@ -21,7 +21,7 @@
             <h3 class="chosen-category">{{sanitizeCategory(chosenCategory)}}</h3>
         </div>
     </div>
-    <track-list tracks="tracks" on-track-click="playnow"></track-list>
+    <track-list class="list-full" tracks="tracks" on-track-click="playnow" list-context="charts"></track-list>
 
     <loading ng-show="paginator.lastPromise.$$state.status === 0"></loading>
     <section layout="row" layout-align="center center" ng-hide="paginator.lastPromise.$$state.status === 0">

@@ -10,11 +10,14 @@
             templateUrl: 'scripts/views/search.html',
             scope: true,
             controller: SearchController,
-            controllerAs: 'ctrl'
+            controllerAs: 'ctrl',
+            link: function($scope, $element, attrs, ctrl) {
+
+            }
         };
     }
 
-    function SearchController ($scope, SuggestionService, CorePlayer, Paginator, SearchService) {
+    function SearchController ($scope, $q, SuggestionService, CorePlayer, Paginator, SearchService) {
 
         var vm = this;
         vm.selectedItem  = null;
@@ -23,6 +26,7 @@
         vm.search = {
             term: ''
         };
+        vm.showSuggestion = true;
 
         vm.recentSearch = JSON.parse(localStorage.getItem('recentSearch')) || [];
 
@@ -56,6 +60,13 @@
             pagingFunction: youtubePagingFunction,
             pagingSuccess: concatAndMixedResult
         });
+
+        vm.recentSearchClick = function(term) {
+            vm.search.term = term;
+            vm.selectedItem = vm.search.term;
+            vm.showSuggestion = false;
+            vm.getMore(true);
+        };
 
         vm.getMore = function(newSearch) {
 
@@ -110,7 +121,10 @@
         }
 
         function suggest (query) {
-            return SuggestionService.suggest(query);
+            return vm.showSuggestion ? SuggestionService.suggest(query) : $q(function(resolve, reject) {
+                resolve([]);
+                vm.showSuggestion = true;
+            });
         }
     }
 }());

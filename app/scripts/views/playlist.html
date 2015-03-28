@@ -26,7 +26,7 @@
         </md-item>
     </md-list>
 </md-content>
-<md-content class="tab-content md-padding" ng-show="selectedPlaylist">
+<md-content class="tab-content md-padding" ng-show="selectedPlaylist" playing-track-aware="track">
     <div layout="row" class="tab-heading">
         <div flex>
             <md-button class="back-link" ng-click="backToPlaylist()">
@@ -38,7 +38,7 @@
             <h3 class="chosen-category">{{selectedPlaylist.name}}</h3>
         </div>
     </div>
-    <track-list tracks="selectedPlaylist.tracks" on-track-click="playnow"></track-list>
+    <track-list tracks="selectedPlaylist.tracks" on-track-click="playnow" list-context="playlist"></track-list>
 </md-content>
 <md-toolbar class="bottom-toolbar">
     <div class="md-toolbar-tools">

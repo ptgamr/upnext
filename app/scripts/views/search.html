@@ -2,6 +2,7 @@
     <md-autocomplete
         md-selected-item="ctrl.selectedItem"
         md-search-text="ctrl.search.term"
+        md-search-text-change="ctrl.search.term"
         md-items="item in ctrl.suggest(ctrl.search.term)"
         md-item-text="item.display"
         md-floating-label="Search anything"
@@ -21,10 +22,12 @@
 
     <section class="recent-search" ng-show="ctrl.recentSearch.length && !ctrl.mixedResults.length && !(ctrl.soundcloudPaginator.lastPromise.$$state.status === 0 || ctrl.youtubePaginator.lastPromise.$$state.status === 0)">
         <h3>Recent search:</h3>
-        <p ng-repeat="term in ctrl.recentSearch"><a>{{term}}</a></p>
+        <p ng-repeat="term in ctrl.recentSearch">
+            <a ng-click="ctrl.recentSearchClick(term)">{{term}}</a>
+        </p>
     </section>
 
-    <track-list class="list-full" tracks="ctrl.mixedResults" on-track-click="playnow" show-remove-button="false" origin-toggle="ctrl.toggle"></track-list>
+    <track-list class="list-full" tracks="ctrl.mixedResults" on-track-click="playnow" origin-toggle="ctrl.toggle" list-context="search"></track-list>
     <loading ng-show="ctrl.soundcloudPaginator.lastPromise.$$state.status === 0 || ctrl.youtubePaginator.lastPromise.$$state.status === 0"></loading>
     <section layout="row" layout-align="center center" ng-hide="ctrl.soundcloudPaginator.lastPromise.$$state.status === 0 || ctrl.youtubePaginator.lastPromise.$$state.status === 0">
     	<md-button ng-show="ctrl.hasMoreRow()" class="md-primary" ng-click="ctrl.getMore(false)">Load more</md-button>

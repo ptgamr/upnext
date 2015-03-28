@@ -18,15 +18,24 @@
                 //FIXME: better to make this process async. but ok for now
                 var delay = !PlaylistService.isReady() ? 1000 : 300;
 
-                $scope.$watch(function() {
-                    return CorePlayer.tracks;
-                }, function(value) {
 
-                    //need a little delay here to make smother transition when changing tab
-                    $timeout(function() {
-                        $scope.tracks = TrackAdapter.decorateStar(CorePlayer.tracks);
-                    }, delay);
-                });
+                //need a little delay here to make smother transition when changing tab
+                $timeout(function() {
+                    $scope.tracks = TrackAdapter.decorateStar(CorePlayer.tracks);
+                }, delay);
+
+                // $scope.$watch(function() {
+                //     return CorePlayer.tracks;
+                // }, function(value) {
+
+                    
+                // });
+                
+                // $scope.on('nowPlaying:updated', function() {
+                //     $scope.tracks = TrackAdapter.decorateStar(CorePlayer.tracks);
+                // });
+
+                // $scope.on('track')
 
                 $scope.saveStream = function($event) {
                     

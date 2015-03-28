@@ -50,7 +50,7 @@
                       $mdToast.simple()
                         .content('Track has been added to playlist successfully')
                         .position('bottom right')
-                        .hideDelay(2000)
+                        .hideDelay(1000)
                     );
                 };
             }

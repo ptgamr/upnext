@@ -1,11 +1,12 @@
 <div>
     <track-list-react tracks="tracks | filter:trackFilter"
                 on-track-click="handleTrackClick"
+                on-play-next="playNext"
                 component-did-update="componentDidUpdate"
                 on-add-track-to-playlist="showPlaylistMenu"
                 on-remove-track="handleRemoveTrack"
                 on-star-track="starTrack"
-                show-remove-button="showRemoveButton">
+                list-context="listContext">
     </track-list-react>
 </div>
 

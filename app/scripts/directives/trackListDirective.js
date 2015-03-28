@@ -9,7 +9,7 @@
         return reactDirective('TrackList')
     };
 
-    function trackListDirective($playlistMenu, CorePlayer, PlaylistService) {
+    function trackListDirective($playlistMenu, CorePlayer, PlaylistService, $mdToast) {
         return {
             restrict: 'E',
             templateUrl: 'scripts/views/trackList.html',
@@ -17,7 +17,7 @@
                 tracks: '=',
                 onTrackClick: '@',
                 originToggle: '=',
-                showRemoveButton: '='
+                listContext: '@'
             },
             link: function($scope, element, attrs) {
 
@@ -71,17 +71,37 @@
 
                 };
 
+                $scope.playNext = function(track) {
+
+                    CorePlayer.playNext(track);
+
+                    $mdToast.show(
+                      $mdToast.simple()
+                        .content('Track has been queued up next')
+                        .position('bottom right')
+                        .hideDelay(1000)
+                    );
+                };
+
                 $scope.handleRemoveTrack = function(track) {
                     var index = _.findIndex(CorePlayer.tracks, function(iterator) {
                         return iterator.id === track.id;
                     });
 
+                    //since $scope.tracks is always a decorated array, means we have no reference to it
+                    //we have to remove track in this to update the UI
+                    $scope.tracks.splice(index, 1);
                     CorePlayer.remove(index);
                 };
 
                 $scope.starTrack = function(track) {
-                    track.starred = true;
-                    PlaylistService.starTrack(track);
+                    track.starred = !!!track.starred;
+
+                    if (track.starred) {
+                        PlaylistService.starTrack(track);
+                    } else {
+                        PlaylistService.unstarTrack(track);
+                    }
                 };
 
                 $scope.trackFilter = {

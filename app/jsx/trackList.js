@@ -5,6 +5,10 @@ window.TrackItem = React.createClass({
 		if (this.props.onTrackClick)
 			this.props.onTrackClick(this.props.track, this.props.trackNumber - 1);
 	},
+	onPlayNext: function() {
+		if (this.props.onPlayNext)
+			this.props.onPlayNext(this.props.track);
+	},
 	onAddTrackToPlaylist: function() {
 		if (this.props.onAddTrackToPlaylist)
 			this.props.onAddTrackToPlaylist(this.props.track);
@@ -19,6 +23,7 @@ window.TrackItem = React.createClass({
 	},
 	render: function() {
 		var track = this.props.track;
+		var context = this.props.context || 'nowplaying';
 
 		if (!track) return;
 
@@ -27,23 +32,29 @@ window.TrackItem = React.createClass({
             yt: 'brand-icon icon ion-social-youtube-outline'
 		};
 
-		var removeButton, unstarButton, starButton;
+		var removeButton, playNextButton, unstarButton, starButton;
 		
-		if (this.props.showRemoveButton === 'true') {
+		if (context === 'nowplaying' || context === 'playlist') {
 			removeButton = (
-                <i className="remove-btn icon ion-android-delete" onClick={this.onRemoveTrack} title="Remove"></i>
+                <i className="remove-btn icon ion-close" onClick={this.onRemoveTrack} title="Remove"></i>
+			);
+		}
+
+		if (context !== 'nowplaying') {
+			playNextButton = (
+				<i className="add-to-playlist-btn icon ion-log-in" title="Play Next" onClick={this.onPlayNext}></i>
 			);
 		}
 
 		if (track.starred) {
 			unstarButton = (
 				<div className="starred">
-					<i className="remove-btn icon ion-ios-star" title="Remove Star"></i>
+					<i className="remove-btn icon ion-star" title="Remove Star" onClick={this.onStarTrack}></i>
 				</div>
 			)
 		} else {
 			starButton = (
-				<i className="like-btn icon ion-android-star" onClick={this.onStarTrack}></i>
+				<i className="like-btn icon ion-star" title="Star" onClick={this.onStarTrack}></i>
 			)
 		}
 
@@ -73,7 +84,8 @@ window.TrackItem = React.createClass({
 				</div>
 				<div className="md-tile-hover">
 			        {starButton}
-			        <i className="add-to-playlist-btn icon ion-android-add" onClick={this.onAddTrackToPlaylist}></i>
+			        {playNextButton}
+			        <i className="add-to-playlist-btn icon ion-plus" title="Add to playlist" onClick={this.onAddTrackToPlaylist}></i>
 				    {removeButton}
 				</div>
 			</li>
@@ -86,19 +98,21 @@ window.TrackList = React.createClass({
 		tracks: React.PropTypes.array,
 		trackClick: React.PropTypes.string,
 		onTrackClick: React.PropTypes.func,
+		onPlayNext: React.PropTypes.func,
 		onAddTrackToPlaylist: React.PropTypes.func,
 		onStarTrack: React.PropTypes.func,
 		onRemoveTrack: React.PropTypes.func,
 		componentDidUpdate: React.PropTypes.func,
-		showRemoveButton: React.PropTypes.bool
+		listContext: React.PropTypes.string
 	},
 	render: function() {
 		var tracks = this.props.tracks;
 		var onTrackClick = this.props.onTrackClick;
 		var onAddTrackToPlaylist = this.props.onAddTrackToPlaylist;
 		var onRemoveTrack = this.props.onRemoveTrack;
-		var showRemoveButton = this.props.showRemoveButton;
 		var onStarTrack = this.props.onStarTrack;
+		var onPlayNext = this.props.onPlayNext;
+		var listContext = this.props.listContext;
 
 		var trackNumber = 0;
 		var rows = _.map(tracks, function(track) {
@@ -107,7 +121,7 @@ window.TrackList = React.createClass({
 
 			if (track) {
 				return (
-					<TrackItem key={track.uuid} track={track} trackNumber={trackNumber} player={player} onTrackClick={onTrackClick} onAddTrackToPlaylist={onAddTrackToPlaylist} onRemoveTrack={onRemoveTrack} showRemoveButton={showRemoveButton} onStarTrack={onStarTrack}/>
+					<TrackItem context={listContext} key={track.uuid} track={track} trackNumber={trackNumber} player={player} onTrackClick={onTrackClick} onAddTrackToPlaylist={onAddTrackToPlaylist} onRemoveTrack={onRemoveTrack} onStarTrack={onStarTrack} onPlayNext={onPlayNext}/>
 				);
 			}
 		});

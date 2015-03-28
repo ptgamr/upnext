@@ -78,8 +78,10 @@ md-divider.md-default-theme {
 
 
 #soundcloudify {
-    margin: 0;
-    overflow: hidden;
+  width: 660px;
+  height: 448px;
+  margin: 0;
+  overflow: hidden;
 }
 
 #main {
@@ -152,7 +154,7 @@ md-divider.md-default-theme {
 .player-controls .player-control {color: #FBFBFC;}
 
 .player-sub-controls {margin-bottom: 10px;}
-.player-sub-controls .player-control {color: #fff;}
+.player-sub-controls .player-control {color: #fff; font-size: 10px;}
 .player-sub-controls .player-control md-icon { width: 12px; height: 12px;}
 
 .volume-controls md-icon {color: #555;}
@@ -240,7 +242,7 @@ md-slider:not([md-discrete]):not([disabled]):focus .md-focus-ring, md-slider:not
   }
 
   .track-item .md-tile-hover i {
-    font-size: 16px;
+    font-size: 14px;
     margin: 0 5px;
   }
 
@@ -359,7 +361,7 @@ md-slider:not([md-discrete]):not([disabled]):focus .md-focus-ring, md-slider:not
 .list-full .track-item {background-color: #1C1C1F; border-bottom: none; margin-bottom: 10px; border-left: 2px solid #1C1C1F;}
 .list-full .track-item:hover {border-color: #8bc34a; color: #fff;}
 .list-full .face {width: 60px; height: 60px;}
-.list-full .play-actions {line-height: 60px;}
+.list-full .play-actions, .list-full .starred {line-height: 60px;}
 .list-full .statistic { display: block; }
 .list-full .md-tile-content h3 {line-height: 30px;}
 .list-full .md-tile-hover {line-height: 60px;}
@@ -367,7 +369,8 @@ md-slider:not([md-discrete]):not([disabled]):focus .md-focus-ring, md-slider:not
 .playlist {}
 .playlist md-item-content {background-color: #1C1C1F; border-left: 2px solid #1C1C1F; margin-bottom: 10px;}
 .playlist .md-tile-left {text-align: center;}
-.playlist .md-tile-content { padding: 5px 10px;}
+.playlist .md-tile-content { padding: 15px 10px;}
+.playlist .md-tile-content h3 {line-height: 14px; margin-bottom: 10px;}
 .playlist md-item-content:hover {cursor: pointer; border-color: #8bc34a; color: #fff;}
 .playlist md-item .md-tile-hover {margin: 0 10px 0 0;}
 
@@ -409,6 +412,7 @@ track-list > div {
 #search md-input-container { padding-bottom: 0;}
 #search md-checkbox:first-child {margin-left: 0;}
 .recent-search {}
+.recent-search a:hover { color: #fff; border-bottom: 1px solid #fff; cursor: pointer;}
 
 .icon {}
   .icon.icon-playing, .icon.icon-playing-blue {
@@ -539,4 +543,8 @@ progress {
 
 md-input-container.md-default-theme label, md-input-container.md-default-theme .md-placeholder {
   color: #bbb;
+}
+
+md-toast.md-default-theme {
+  color: #555;
 }

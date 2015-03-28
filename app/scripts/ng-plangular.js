@@ -55,8 +55,6 @@ plangular.service('CorePlayer', function(Messaging, NowPlaying, CLIENT_ID) {
 
   this.add = function(track, andPlay) {
 
-
-
     andPlay = andPlay || true;
 
     if (track) {
@@ -66,18 +64,38 @@ plangular.service('CorePlayer', function(Messaging, NowPlaying, CLIENT_ID) {
       track.uuid = window.ServiceHelpers.ID();
       
       this.tracks.unshift(track);
+
+      NowPlaying.saveList(this.tracks);
     }
 
     if (andPlay) {
       this.play(0);
     }
 
-    console.log(this.tracks);
+  };
 
-    NowPlaying.saveList(this.tracks);
+  /**
+   * Add track to position after the current index, in order to play this track  next
+   */
+  this.playNext = function(track) {
+    
+    if (track) {
+      track = angular.copy(track);
+      track.uuid = window.ServiceHelpers.ID();
+      
+      var currentIndex = this.state.currentIndex;
+      this.tracks.splice(currentIndex + 1, 0, track);
+
+      NowPlaying.saveList(this.tracks);
+    }
 
   };
 
+  /*
+   * Clear the current list
+   * Add all tracks to the list
+   * Start play at position 0s
+   */
   this.playAll = function(tracks) {
 
     this.tracks = tracks;
@@ -94,6 +112,9 @@ plangular.service('CorePlayer', function(Messaging, NowPlaying, CLIENT_ID) {
     this.play(0);
   };
 
+  /**
+   * Remove track at specific index
+   */
   this.remove = function(index) {
     this.tracks.splice(index, 1);
 

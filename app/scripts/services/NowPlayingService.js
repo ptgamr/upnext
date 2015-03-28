@@ -4,7 +4,7 @@
     angular.module('soundCloudify')
         .service("NowPlaying", NowPlayingService);
 
-    function NowPlayingService($http, CLIENT_ID){
+    function NowPlayingService($http, CLIENT_ID, $rootScope){
         
         var NOW_PLAYING_LIST_KEY = 'nowPlaying';
         var NOW_PLAYING_STATE_KEY = 'nowPlayingState';
@@ -26,6 +26,7 @@
             var nowPlayingObj = {};
             nowPlayingObj[NOW_PLAYING_LIST_KEY] = list;
             chrome.storage.local.set(nowPlayingObj);
+            $rootScope.$broadcast('nowPlaying:updated');
         }
 
         function saveState(state) {
