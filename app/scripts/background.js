@@ -10,6 +10,12 @@ chrome.runtime.onInstalled.addListener(function (details) {
  */
 var Utils = {
     createOrUpdateNotification: function(id, options, callback) {
+
+      var views = chrome.extension.getViews({ type: "popup" });
+
+      //dont show notification if popup window is open
+      if (views.length) return;
+
       // Try to lower priority to minimal "shown" priority
       chrome.notifications.update(id, {priority: 0}, function(existed) {
         if(existed) {
