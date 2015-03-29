@@ -351,7 +351,7 @@ plangular.filter('prettyTime', function() {
 plangular.filter('scArtwork', function() {
   return function(value) {
 
-    if (!value) return '';
+    if (!value) return 'images/artwork-default.jpg';
 
     if (value.indexOf('-large') !== -1) {
       return value.replace('-large.', '-t250x250.');

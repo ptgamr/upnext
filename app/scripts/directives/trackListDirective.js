@@ -16,7 +16,6 @@
             scope: {
                 tracks: '=',
                 onTrackClick: '@',
-                originToggle: '=',
                 listContext: '@'
             },
             link: function($scope, element, attrs) {
@@ -103,28 +102,6 @@
                         PlaylistService.unstarTrack(track);
                     }
                 };
-
-                $scope.trackFilter = {
-                    origin: ''
-                };
-
-                $scope.$watch('originToggle',function(toggle) {
-
-                    var filter = '';
-
-                    if (!toggle) return;
-
-                    if (toggle.soundcloud && toggle.youtube) {
-                        filter = '';
-                    } else if (toggle.soundcloud) {
-                        filter += 'sc';
-                    } else if (toggle.youtube) {
-                        filter += 'yt';
-                    }
-
-                    $scope.trackFilter.origin = filter;
-                    
-                }, true);
             }
         };
     }

@@ -108,9 +108,20 @@ md-divider.md-default-theme {
   -webkit-transition: all .25s ease-in-out;
 }
 
+#player .artwork .show-on-hover  a {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  font-size: 26px;
+}
+
+#player .artwork .show-on-hover .fa-youtube { color: #FBFBFC; }
+#player .artwork .show-on-hover .fa-soundcloud { color: #FBFBFC; }
+
 #player .artwork:hover .show-on-hover {
   opacity: 1;
 }
+
 
 #player .artwork > img{
   position: absolute;
