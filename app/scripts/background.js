@@ -62,12 +62,15 @@ var SoundCloudPlayer = function(opts) {
 
     this.onTimeUpdate = opts.onTimeUpdate;
     this.onEnded = opts.onEnded;
+    this.onError = opts.onError;
 
     this.audio.addEventListener('timeupdate', function() {
         self.onTimeUpdate(self.audio.currentTime, self.audio.duration);
     }, false);
 
     this.audio.addEventListener('ended', this.onEnded, false);
+
+    this.audio.addEventListener('error', this.onError, false);
 };
 
 SoundCloudPlayer.prototype = {
@@ -104,8 +107,9 @@ SoundCloudPlayer.prototype = {
         this.audio.currentTime = (xpos * this.audio.duration);
     },
     clear: function() {
-        this.stop();
-        this.audio.src = null;  
+        this.audio.pause();
+        this.audio.src = '';
+        this.audio.removeAttribute('src');
     },
     setVolume: function(volume) {
         this.audio.volume = volume;
@@ -122,6 +126,7 @@ var YoutubePlayer = function(opts) {
     this.playerReady = false;
     this.onTimeUpdate = opts.onTimeUpdate;
     this.onEnded = opts.onEnded;
+    this.onError = opts.onError;
 };
 
 YoutubePlayer.prototype = {
@@ -344,12 +349,14 @@ Player.prototype = {
 
 var soundcloudPlayer = new SoundCloudPlayer({
     onTimeUpdate: onTimeUpdate,
-    onEnded: onEnded
+    onEnded: onEnded,
+    onError: onError
 });
 
 var youtubePlayer = new YoutubePlayer({
     onTimeUpdate: onTimeUpdate,
-    onEnded: onEnded
+    onEnded: onEnded,
+    onError: onError
 });
 
 var mainPlayer = new Player(soundcloudPlayer, youtubePlayer);
@@ -370,6 +377,12 @@ function onEnded() {
     } else {
         mainPlayer.replay.call(mainPlayer);
     }
+}
+
+function onError(e) {
+    console.log(e);
+    if (!currentPort) return;
+    currentPort.postMessage({message: 'scd.error'});
 }
 
 
@@ -415,7 +428,8 @@ function onYouTubeIframeAPIReady() {
             videoId: 'J1Ol6M0d9sg',
             events: {
                 'onReady': onPlayerReady,
-                'onStateChange': onPlayerStateChange
+                'onStateChange': onPlayerStateChange,
+                'onError': onPlayerError
             }
         });
 }
@@ -448,6 +462,10 @@ function onPlayerStateChange(event) {
         case YT.PlayerState.CUED:
             break;
     }
+}
+
+function onPlayerError() {
+    youtubePlayer.onError();
 }
 
 chrome.runtime.onConnect.addListener(function(port) {

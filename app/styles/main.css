@@ -267,6 +267,11 @@ md-slider:not([md-discrete]):not([disabled]):focus .md-focus-ring, md-slider:not
     white-space: nowrap;
   }
 
+  .md-tile-content h3:hover {
+    color: #fff;
+    cursor: pointer;
+  }
+
   .track-item .md-tile-hover.active, .track-item:hover .md-tile-hover, md-item:hover .md-tile-hover{
     display: flex;
   }
@@ -366,6 +371,18 @@ md-slider:not([md-discrete]):not([disabled]):focus .md-focus-ring, md-slider:not
 
   .media-list .playing:hover .ion-ios-pause {
     display: inline-block;
+  }
+
+  .media-list .error h3 {
+    color: #f44336 !important;
+  }
+
+  .media-list .error .track-number {
+    display: inline-block !important;
+  }
+
+  .media-list .error .dynamic-icon {
+    display: none !important;
   }
 
 .list-full {}
@@ -558,4 +575,9 @@ md-input-container.md-default-theme label, md-input-container.md-default-theme .
 
 md-toast.md-default-theme {
   color: #555;
+}
+
+md-toast.error {
+  background-color: #f44336;
+  color: #fff;
 }

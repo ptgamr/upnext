@@ -58,8 +58,14 @@ window.TrackItem = React.createClass({
 			)
 		}
 
+		var className = 'track-item';
+
+		if (track.error) {
+			className += ' error';			
+		}
+
 		return (
-			<li id={'track-item-' + track.id} className='track-item'>
+			<li id={'track-item-' + track.id} className={className}>
 				<div className='md-tile-left' onClick={this.onClick}>
 					<div className='face'>
 						<img src={track.artworkUrl} alt={track.title} />

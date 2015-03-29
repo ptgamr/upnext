@@ -244,9 +244,17 @@ plangular.service('CorePlayer', function(Messaging, NowPlaying, CLIENT_ID) {
     this.state.shuffle = !this.state.shuffle;
     NowPlaying.saveState(this.state);
   };
+
+  this.markCurrentTrackError = function() {
+    this.state.currentTrack.error = true;
+    this.tracks[this.state.currentIndex].error = true;
+    NowPlaying.saveState(this.state);
+    NowPlaying.saveList(this.tracks);
+  };
 });
 
-plangular.directive('plangular', ['$http', '$rootScope', 'plangularConfig', 'Messaging', 'CorePlayer', function ($http, $rootScope, plangularConfig, Messaging, CorePlayer) {
+plangular.directive('plangular', ['$http', '$rootScope', 'plangularConfig', 'Messaging', 'CorePlayer', '$mdToast',
+                                             function ($http, $rootScope, plangularConfig, Messaging, CorePlayer, $mdToast) {
   
   var CLIENT_ID = plangularConfig.clientId;
 
@@ -267,6 +275,16 @@ plangular.directive('plangular', ['$http', '$rootScope', 'plangularConfig', 'Mes
       Messaging.registerTrackChangedFromBackgroundHandler(function(data) {
         console.log('tack changed from background');
         scope.player.state = data;
+      });
+
+      Messaging.registerErrorHandler(function() {
+        $mdToast.show({
+          templateUrl: 'scripts/views/toastError.html',
+          hideDelay: 1000,
+          position: 'bottom right'
+        });
+
+        CorePlayer.markCurrentTrackError();
       });
     }
 
@@ -374,7 +392,7 @@ plangular.provider('plangularConfig', function() {
 
 plangular.factory("Messaging", function() {
 
-  var onTimeUpdate, onEnded, onTrackChanged;
+  var onTimeUpdate, onEnded, onTrackChanged, onError;
 
   var port = chrome.runtime.connect({name: "soundcloudify"});
 
@@ -394,10 +412,15 @@ plangular.factory("Messaging", function() {
         if(onTrackChanged)
           onTrackChanged(data);
         break;
+      case 'scd.error':
+        if(onError)
+          onError();
+        break;
     }
   });
     
   return {
+      registerErrorHandler: registerErrorHandler,
       registerTimeUpdateHandler: registerTimeUpdateHandler,
       registerEndedHandler: registerEndedHandler,
       registerTrackChangedFromBackgroundHandler: registerTrackChangedFromBackgroundHandler,
@@ -409,6 +432,10 @@ plangular.factory("Messaging", function() {
       sendSeekMessage: sendSeekMessage,
       sendVolumeMessage: sendVolumeMessage
   };
+
+  function registerErrorHandler(callback) {
+    onError = callback;
+  }
 
   function registerTimeUpdateHandler(callback) {
     onTimeUpdate = callback;
