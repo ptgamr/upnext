@@ -19,7 +19,8 @@
 
     function SearchController ($scope, $q, SuggestionService, CorePlayer, Paginator, SearchService, $filter) {
 
-        var vm = this;
+        var vm = this,
+            lastSearchTerm;
         vm.searchText    = null;
         vm.suggest   = suggest;
         vm.search = {
@@ -77,23 +78,27 @@
     
         vm.getMore = function(newSearch) {
 
-            if (!vm.search.term) return;
+            if (!vm.search.term || vm.search.term === lastSearchTerm) return;
+
+            var tempRecentSearch = angular.copy(vm.recentSearch);
 
             if (newSearch) {
                 mixedResults = [];
                 vm.filteredResults = [];
-                vm.recentSearch.unshift(vm.search.term.trim());
-                //limit to 5 items
-                vm.recentSearch = _.uniq(vm.recentSearch).slice(0,5);
-                localStorage.setItem('recentSearch', JSON.stringify(vm.recentSearch));
                 vm.soundcloudPaginator.reset();
                 vm.youtubePaginator.reset();
+
+                tempRecentSearch.unshift(vm.search.term.trim());
+                vm.recentSearch = _.uniq(tempRecentSearch).slice(0,5);
+                localStorage.setItem('recentSearch', JSON.stringify(vm.recentSearch));
             }
 
             vm.soundcloudPaginator.moreRows();
             vm.youtubePaginator.moreRows();
 
             vm.promises = [vm.soundcloudPaginator.lastPromise, vm.youtubePaginator.lastPromise];
+
+            lastSearchTerm = vm.search.term;
         };
 
         vm.hasMoreRow = function() {

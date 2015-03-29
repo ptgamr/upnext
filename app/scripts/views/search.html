@@ -28,7 +28,7 @@
             <a ng-click="ctrl.recentSearchClick(term)">{{term}}</a>
         </p>
     </section>
-    <track-list class="list-full" tracks="ctrl.filteredResults" on-track-click="playnow" origin-toggle="ctrl.toggle" list-context="search"></track-list>
+    <track-list class="list-full" ng-show="ctrl.filteredResults.length" tracks="ctrl.filteredResults" on-track-click="playnow" origin-toggle="ctrl.toggle" list-context="search"></track-list>
     <loading ng-show="ctrl.soundcloudPaginator.lastPromise.$$state.status === 0 || ctrl.youtubePaginator.lastPromise.$$state.status === 0"></loading>
     <section layout="row" layout-align="center center" ng-hide="ctrl.soundcloudPaginator.lastPromise.$$state.status === 0 || ctrl.youtubePaginator.lastPromise.$$state.status === 0">
     	<md-button ng-show="ctrl.hasMoreRow()" class="md-primary" ng-click="ctrl.getMore(false)">Load more</md-button>
