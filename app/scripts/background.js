@@ -194,11 +194,11 @@ Player.prototype = {
         self.notificationId = '';
         self.activePlayer = null;
 
-        chrome.storage.local.get('nowPlaying', function(data) {
+        chrome.storage.sync.get('nowPlaying', function(data) {
             self.tracks = data['nowPlaying'] || [];
         });
 
-        chrome.storage.local.get('nowPlayingState', function(data) {
+        chrome.storage.sync.get('nowPlayingState', function(data) {
             self.state = data['nowPlayingState'] || {};
         });
 
@@ -264,7 +264,7 @@ Player.prototype = {
                 currentPort.postMessage({message: 'scd.trackChangedFromBackground', data: this.state});
             }
 
-            chrome.storage.local.set({'nowPlayingState': this.state});
+            chrome.storage.sync.set({'nowPlayingState': this.state});
         } else {
             this.state.currentIndex ++;
             this.next();
@@ -292,7 +292,7 @@ Player.prototype = {
             if (currentPort) {
                 currentPort.postMessage({message: 'scd.trackChangedFromBackground', data: this.state});
             }
-            chrome.storage.local.set({'nowPlayingState': this.state});
+            chrome.storage.sync.set({'nowPlayingState': this.state});
         }
     },
 
