@@ -472,7 +472,7 @@ chrome.runtime.onConnect.addListener(function(port) {
 
     currentPort = port;
 
-    chrome.browserAction.setBadgeText({text: 'C'});
+    //chrome.browserAction.setBadgeText({text: 'Playin'g});
 
     port.onMessage.addListener(function(event) {
 
