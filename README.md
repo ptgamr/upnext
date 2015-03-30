@@ -1,12 +1,12 @@
 #TODO LIST
 
 ### General
-* [] Queue up track
+* [x] Queue up track
 * [] When track stream error, auto next()
 * [] Batch action for multiple tracks (checkbox, delete, add to playlist etc)
-* [] Paging / endless scrolling
-** [] Search
-** [] Top charts
+* [x] Paging / endless scrolling
+** [x] Search
+** [x] Top charts
 
 ### Playlist
 * [] Delete track
@@ -16,15 +16,15 @@
 
 ### Player
 * [x] Volume
-* [] Repeat / Repeat One
-* [] Shuffle
+* [x] Repeat / Repeat One
+* [x] Shuffle
 
 ### Notification
-* [] Dont' show notification when popup is open
+* [x] Dont' show notification when popup is open
 
 
 ### Search
-* [] Remember recents search
+* [x] Remember recents search
 
 
 ### Sample youtube response 
@@ -32,7 +32,7 @@
 
 #BUGS
 [] player artwork won't change in some cases
-[] Toast text color is still white
+[x] Toast text color is still white
 
 #Google Analytics
 

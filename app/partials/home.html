@@ -17,6 +17,12 @@
             <span>charts</span>
         </md-tab>
     </md-tabs>
+    <div class="tabpanel-container">
+        <div role="tabpanel">
+            <div id="tab-content" ui-view></div>
+        </div>
+    </div>
+
     <ng-switch on="vm.selectedIndex" class="tabpanel-container">
         <div role="tabpanel"
             id="tab1-content"

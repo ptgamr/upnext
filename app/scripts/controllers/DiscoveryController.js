@@ -1,17 +1,24 @@
 (function() {
 
     angular.module('soundCloudify')
-            .controller('DiscoveryController', ['$scope', '$mdSidenav'        , DiscoveryController])
+            .controller('DiscoveryController', DiscoveryController)
 
-    function DiscoveryController($scope, $mdSidenav) {
+    function DiscoveryController($scope, $mdSidenav, $state, $timeout) {
         var vm = this;
-        var storage = localStorage;
-        vm.selectedIndex = parseInt(localStorage.getItem('activeTab')) || 0;
+        
+        var states = ['nowPlaying', 'search', 'playlist', 'charts'];
 
-        $scope.$watch(angular.bind(vm, function () {
-			return this.selectedIndex; // `this` IS the `this` above!!
-		}), function (newVal, oldVal) {
-			localStorage.setItem('activeTab', newVal);
-		});
+        var storage = localStorage;
+
+        var activeTab = parseInt(localStorage.getItem('activeTab'));
+
+        vm.selectedIndex = isNaN(activeTab) ? 3 : activeTab;
+
+        vm.onTabSelect = function() {
+            $timeout(function() {
+                localStorage.setItem('activeTab', vm.selectedIndex);
+                $state.go(states[vm.selectedIndex]);
+            });
+        };
     }
 }());

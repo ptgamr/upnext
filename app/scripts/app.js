@@ -44,13 +44,25 @@
 	soundCloudify.config(['$stateProvider', '$urlRouterProvider', '$mdThemingProvider', '$compileProvider',
 		function($stateProvider, $urlRouterProvider, $mdThemingProvider, $compileProvider) {
 
-			$urlRouterProvider.otherwise("/home");
-
 			$stateProvider
-				.state('home', {
-					url: "/home",
-					templateUrl: "partials/home.html"
+				.state('nowPlaying', {
+					url: "/now-playing",
+					templateUrl: "partials/nowPlaying.html"
+				})
+				.state('search', {
+					url: "/search",
+					templateUrl: "partials/search.html"
+				})
+				.state('playlist', {
+					url: "/playlist",
+					templateUrl: "partials/playlist.html"
+				})
+				.state('charts', {
+					url: "/charts",
+					templateUrl: "partials/topCharts.html"
 				});
+
+			$urlRouterProvider.otherwise("/charts");
 
 			$mdThemingProvider.definePalette('amazingPaletteName', {
 				'50': 'ffebee',
@@ -83,6 +95,18 @@
 			//$compileProvider.debugInfoEnabled(false);
 		}
 	]);
+
+	soundCloudify.run(function($rootScope, $window, $location) {
+
+		$rootScope.$on('$stateChangeSuccess', function(event) {
+			if (!$window.ga) {
+				return;
+			}
+
+			$window.ga('send', 'pageview', { page: $location.path() });
+		});
+
+	});
 
 	soundCloudify.service('SoundCloudService', function($http, CLIENT_ID) {
 

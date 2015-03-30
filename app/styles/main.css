@@ -208,6 +208,7 @@ md-slider:not([md-discrete]):not([disabled]):focus .md-focus-ring, md-slider:not
 
     #discovery [role="tabpanel"] {
       height: 440px;
+      background-color: #121314;
       overflow: hidden;
     }
 

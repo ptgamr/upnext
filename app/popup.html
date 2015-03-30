@@ -22,7 +22,32 @@
                 <scd-player></scd-player>
             </div>
 
-            <div id="main" ui-view></div>
+            <div id="discovery" ng-controller="DiscoveryController as vm">
+                <md-tabs class="main-nav md-primary" md-selected="vm.selectedIndex">
+                    <md-tab md-on-select="vm.onTabSelect()">
+                        <md-icon md-font-icon="icon ion-ios-musical-notes"></md-icon>
+                        <span>now playing</span>
+                    </md-tab>
+                    <md-tab md-on-select="vm.onTabSelect()">
+                        <md-icon md-font-icon="icon ion-search"></md-icon>
+                        <span>search</span>
+                    </md-tab>
+                    <md-tab md-on-select="vm.onTabSelect()">
+                        <md-icon md-font-icon="icon ion-film-marker"></md-icon>
+                        <span>playlist</span>
+                    </md-tab>
+                    <md-tab md-on-select="vm.onTabSelect()">
+                        <md-icon md-font-icon="icon ion-stats-bars"></md-icon>
+                        <span>charts</span>
+                    </md-tab>
+                </md-tabs>
+                <div class="tabpanel-container">
+                    <div role="tabpanel">
+                        <div id="tab-content" ui-view></div>
+                    </div>
+                </div>
+                <playlist-menu id="singleton-playlist-menu"></playlist-menu>
+            </div>
 
         <!-- <div ng-view></div> -->
         
