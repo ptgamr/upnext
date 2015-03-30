@@ -1,5 +1,9 @@
 #TODO LIST
 
+[] Drag n Drop playlist
+[] options page
+[] chrome sync
+
 ### General
 * [x] Queue up track
 * [] When track stream error, auto next()
@@ -31,45 +35,45 @@
 
 
 #BUGS
-[] player artwork won't change in some cases
-[x] Toast text color is still white
+* [] player artwork won't change in some cases
+* [x] Toast text color is still white
 
 #Google Analytics
 
 ### page view
-[x] Now Playing
-[x] Search
-[x] Playlist
-[x] Top Charts
+* [x] Now Playing
+* [x] Search
+* [x] Playlist
+* [x] Top Charts
 
 ### search 
-[x] new search
-[x] get more
-[x] click from recent search
-[x] toggle youtube
-[x] toggle soundcloud
-[x] result click for soundcloud
-[x] result click for youtube
-[] star from search
-[] add to playlist from search
+* [x] new search
+* [x] get more
+* [x] click from recent search
+* [x] toggle youtube
+* [x] toggle soundcloud
+* [x] result click for soundcloud
+* [x] result click for youtube
+* [x] star from search
+* [x] add to playlist from search
 
 ### playlist
-[x] create a new playlist
-[x] remove playlist
-[x] playall playlist
-[x] view playlist
+* [x] create a new playlist
+* [x] remove playlist
+* [x] playall playlist
+* [x] view playlist
 
 ### player
-[] toggle repeat all
-[] toggle repeat one
-[] toggle repeat off
-[] toggle shuffle
+* [] toggle repeat all
+* [] toggle repeat one
+* [] toggle repeat off
+* [] toggle shuffle
 
 ### charts
-[x] view specific chart
-[x] track click from chart
-[x] star from chart
-[x] playlist from chart
+* [x] view specific chart
+* [x] track click from chart
+* [x] star from chart
+* [x] playlist from chart
 
 
 ```
