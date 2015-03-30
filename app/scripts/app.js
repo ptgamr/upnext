@@ -134,35 +134,9 @@
 		});
 	});
 
-	soundCloudify.service('SoundCloudService', function($http, CLIENT_ID) {
-
-		var getTracks = function() {
-			return $http.get('https://api.soundcloud.com/tracks?client_id=' + CLIENT_ID);
-		};
-
-		var getTrack = function() {
-			return $http.get('https://api.soundcloud.com/tracks/13158665.json?client_id=' + CLIENT_ID);
-		};
-
-		return {
-			getTrack: getTrack,
-			getTracks: getTracks
-		};
-
+	angular.element(document).ready(function() {
+		//angular.bootstrap(document, ["soundCloudify"]);
+	    setTimeout(function() { angular.bootstrap(document, ["soundCloudify"]); }, 100);
 	});
 
-	soundCloudify.service('SDK', function($q, CLIENT_ID) {
-		var play = function() {
-			
-		};
-
-		var getTracks = function() {
-		};
-
-		return {
-			play: play,
-			getTracks: getTracks
-		}
-
-	});
 }());

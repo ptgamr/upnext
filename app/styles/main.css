@@ -4,9 +4,8 @@
  * light-green: #8bc34a;
  * 
  */
-
 html {
-    height: auto;
+  height: 448px !important;
 }
 
 .overlay {
@@ -26,7 +25,7 @@ md-icon { font-size: 24px; line-height: 24px;}
 .md-tile-content .statistic > md-icon {font-size: 12px; line-height: 12px; color: #555; width: 12px; height: 12px;}
 .md-tile-content .statistic > span {margin-right: 10px; vertical-align: middle;}
 
-
+md-tabs { height: 48px; overflow: hidden;}
 md-tabs.main-nav md-tab,
 md-tabs.main-nav .md-header {
     background-color: #1C1C1F !important;
@@ -77,11 +76,14 @@ md-divider.md-default-theme {
 .chosen-category { text-align: right; margin: 0px; padding: 5px 0; color: #8bc34a; border-bottom: 1px solid #8bc34a;}
 
 
-#soundcloudify {
+body#soundcloudify {
   width: 660px;
   height: 448px;
   margin: 0;
   overflow: hidden;
+    -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  -webkit-user-select: none;
 }
 
 #main {
@@ -90,6 +92,8 @@ md-divider.md-default-theme {
 
 #player {
 	width: 220px;
+  height: 448px;
+  float: left;
   background-color: #1C1C1F;
 }
 
@@ -203,17 +207,18 @@ md-slider:not([md-discrete]):not([disabled]):focus .md-focus-ring, md-slider:not
 
 #discovery {
 	width: 440px;
+  float: right;
   position: relative;
 }
 
     #discovery [role="tabpanel"] {
-      height: 440px;
+      height: 400px;
       background-color: #121314;
       overflow: hidden;
     }
 
     #discovery .tab-content {
-      height: 400px;
+      height: 360px;
       background-color: #121314;
       color: #bbb;
     }

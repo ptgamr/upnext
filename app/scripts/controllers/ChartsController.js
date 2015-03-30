@@ -6,8 +6,8 @@
     function ChartsController(Category, $state) {
         var vm = this;
 
-        Category.getList().success(function(categories) {
-            vm.categories = categories['music'] || [];
+        Category.getList().then(function(categories) {
+            vm.categories = categories;
         });
 
         vm.selectCategory = function(category) {

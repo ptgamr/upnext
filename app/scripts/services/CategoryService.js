@@ -5,6 +5,8 @@
         .service("Category", CategoryService);
 
     function CategoryService($http, CLIENT_ID, TrackAdapter, $q){
+
+        var cachedCategory = JSON.parse(localStorage.getItem('charts')) || [];
         
         return {
             getList: getList,
@@ -12,8 +14,23 @@
         };
 
         function getList(){
-            var params = { limit: 10, offset: 0, linked_partitioning: 1, client_id: CLIENT_ID };
-            return $http.get('https://api-v2.soundcloud.com/explore/categories', { params: params });
+
+            return $q(function(resolve, reject) {
+
+                if (cachedCategory.length) {
+                    resolve(cachedCategory);
+                } else {
+                    var params = { limit: 10, offset: 0, linked_partitioning: 1, client_id: CLIENT_ID };
+                    $http.get('https://api-v2.soundcloud.com/explore/categories', { params: params })
+                    .success(function(data) {
+                        cachedCategory = data['music'] || [];
+                        resolve(cachedCategory);
+
+                        localStorage.setItem('charts', JSON.stringify(cachedCategory));
+                    });
+                }
+            });
+
         }
 
         function getTracks(category, pagingObject) {
