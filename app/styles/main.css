@@ -93,7 +93,6 @@ body#soundcloudify {
 #player {
 	width: 220px;
   height: 448px;
-  float: left;
   background-color: #1C1C1F;
 }
 
@@ -207,7 +206,6 @@ md-slider:not([md-discrete]):not([disabled]):focus .md-focus-ring, md-slider:not
 
 #discovery {
 	width: 440px;
-  float: right;
   position: relative;
 }
 
