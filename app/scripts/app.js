@@ -58,9 +58,22 @@
 					templateUrl: "partials/playlist.html"
 				})
 				.state('charts', {
+					abstract: true,
 					url: "/charts",
-					templateUrl: "partials/topCharts.html"
-				});
+					templateUrl: "partials/charts/charts.html",
+					controller: 'ChartsController',
+					controllerAs: 'chartsCtrl'
+				})
+					.state('charts.list', {
+						url: "",
+						templateUrl: "partials/charts/list.html"
+					})
+					.state('charts.detail', {
+						url: "/:category",
+						templateUrl: "partials/charts/view.html",
+						controller: 'ChartsViewController',
+						controllerAs: 'viewCtrl'
+					});
 
 			$urlRouterProvider.otherwise("/charts");
 
@@ -96,16 +109,10 @@
 		}
 	]);
 
-	soundCloudify.run(function($rootScope, $window, $location) {
-
+	soundCloudify.run(function($rootScope, GATracker, $location) {
 		$rootScope.$on('$stateChangeSuccess', function(event) {
-			if (!$window.ga) {
-				return;
-			}
-
-			$window.ga('send', 'pageview', { page: $location.path() });
+			GATracker.trackPageView($location.path());
 		});
-
 	});
 
 	soundCloudify.service('SoundCloudService', function($http, CLIENT_ID) {

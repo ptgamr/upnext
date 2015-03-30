@@ -37,18 +37,19 @@
 #Google Analytics
 
 ### page view
-[] Now Playing
-[] Search
-[] Playlist
-[] Top Charts
+[x] Now Playing
+[x] Search
+[x] Playlist
+[x] Top Charts
 
 ### search 
-[] search term
-[] click from recent search
-[] toggle youtube
-[] toggle soundcloud
-[] result click for soundcloud
-[] result click for youtube
+[x] new search
+[x] get more
+[x] click from recent search
+[x] toggle youtube
+[x] toggle soundcloud
+[x] result click for soundcloud
+[x] result click for youtube
 [] star from search
 [] add to playlist from search
 
@@ -63,6 +64,12 @@
 [] toggle repeat one
 [] toggle repeat off
 [] toggle shuffle
+
+### charts
+[] view specific chart
+[] track click from chart
+[] star from chart
+[] playlist from chart
 
 
 ```

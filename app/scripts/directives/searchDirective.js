@@ -17,7 +17,7 @@
         };
     }
 
-    function SearchController ($scope, $q, SuggestionService, CorePlayer, Paginator, SearchService, $filter) {
+    function SearchController ($scope, $q, SuggestionService, CorePlayer, Paginator, SearchService, $filter, GATracker) {
 
         var vm = this,
             lastSearchTerm;
@@ -40,8 +40,18 @@
         $scope.$watch(angular.bind(vm, function () {
             return this.toggle;
         }), function (toggle, oldToggle) {
+            
             localStorage.setItem('toggle', JSON.stringify(toggle));
             vm.filteredResults = $filter('filter')(mixedResults, getOriginFilter(toggle));
+
+            if (toggle.soundcloud !== oldToggle.soundcloud) {
+                GATracker.trackSearch('toggle filter', 'soundcloud', toggle.soundcloud ? 'on' : 'off');
+            }
+
+            if(toggle.youtube !== oldToggle.youtube) {
+                GATracker.trackSearch('toggle filter', 'youtube', toggle.youtube ? 'on' : 'off');
+            }
+
         }, true);
 
         vm.player = CorePlayer;
@@ -67,18 +77,12 @@
             vm.selectedItem = term;
             vm.showSuggestion = false;
             vm.getMore(true);
+            GATracker.trackSearch('recent search', term);
         };
 
-        $scope.$watch(angular.bind(vm, function () {
-            return this.selectedItem;
-        }), function (newSelected, oldSelected) {
-            console.log('selected change');
-            console.log(newSelected);
-        });
-    
         vm.getMore = function(newSearch) {
 
-            if (!vm.search.term || vm.search.term === lastSearchTerm) return;
+            if (newSearch && (!vm.search.term || vm.search.term === lastSearchTerm)) return;
 
             var tempRecentSearch = angular.copy(vm.recentSearch);
 
@@ -91,6 +95,11 @@
                 tempRecentSearch.unshift(vm.search.term.trim());
                 vm.recentSearch = _.uniq(tempRecentSearch).slice(0,5);
                 localStorage.setItem('recentSearch', JSON.stringify(vm.recentSearch));
+
+                GATracker.trackSearch('new search', vm.search.term);
+                lastSearchTerm = vm.search.term;
+            } else {
+                GATracker.trackSearch('get more', vm.search.term);
             }
 
             vm.soundcloudPaginator.moreRows();
@@ -98,7 +107,7 @@
 
             vm.promises = [vm.soundcloudPaginator.lastPromise, vm.youtubePaginator.lastPromise];
 
-            lastSearchTerm = vm.search.term;
+            
         };
 
         vm.hasMoreRow = function() {
@@ -106,11 +115,11 @@
         };
 
         function soundcloudPagingFunction(paginationModel) {
-            return SearchService.search(vm.search.term, paginationModel);
+            return SearchService.search(lastSearchTerm, paginationModel);
         }
 
         function youtubePagingFunction(paginationModel) {
-            return SearchService.searchYoutube(vm.search.term, paginationModel);
+            return SearchService.searchYoutube(lastSearchTerm, paginationModel);
         }
 
         function concatAndMixedResult(data) {

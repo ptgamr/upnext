@@ -1,0 +1,11 @@
+<md-content class="list-hover tab-content md-padding">
+    <md-list>
+        <md-item ng-repeat="cat in chartsCtrl.categories">
+            <md-item-content layout="row" layout-align="start start" ng-click="chartsCtrl.selectCategory(cat)">
+                <div class="md-tile-content">
+                    <h3>{{chartsCtrl.sanitizeCategory(cat)}}</h3>
+                </div>
+            </md-item-content>
+        </md-item>
+    </md-list>
+</md-content>
