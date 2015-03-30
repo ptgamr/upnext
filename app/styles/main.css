@@ -76,7 +76,7 @@ md-divider.md-default-theme {
 .chosen-category { text-align: right; margin: 0px; padding: 5px 0; color: #8bc34a; border-bottom: 1px solid #8bc34a;}
 
 
-body#soundcloudify {
+#soundcloudify {
   width: 660px;
   height: 448px;
   margin: 0;
@@ -86,47 +86,47 @@ body#soundcloudify {
   -webkit-user-select: none;
 }
 
-#main {
+#soundcloudify #main {
   position: relative;
 }
 
-#player {
+#soundcloudify #player {
 	width: 220px;
   height: 448px;
   background-color: #1C1C1F;
 }
 
-#player .artwork {
+#soundcloudify #player .artwork {
     position: relative;
     width: 220px;
     height: 220px;
 }
 
-#player .padding {
+#soundcloudify #player .padding {
   padding: 0 15px;
 }
 
-#player .artwork .show-on-hover {
+#soundcloudify #player .artwork .show-on-hover {
   opacity: 0;
   -webkit-transition: all .25s ease-in-out;
 }
 
-#player .artwork .show-on-hover  a {
+#soundcloudify #player .artwork .show-on-hover  a {
   position: absolute;
   bottom: 10px;
   right: 10px;
   font-size: 26px;
 }
 
-#player .artwork .show-on-hover .fa-youtube { color: #FBFBFC; }
-#player .artwork .show-on-hover .fa-soundcloud { color: #FBFBFC; }
+#soundcloudify #player .artwork .show-on-hover .fa-youtube { color: #FBFBFC; }
+#soundcloudify #player .artwork .show-on-hover .fa-soundcloud { color: #FBFBFC; }
 
-#player .artwork:hover .show-on-hover {
+#soundcloudify #player .artwork:hover .show-on-hover {
   opacity: 1;
 }
 
 
-#player .artwork > img{
+#soundcloudify #player .artwork > img{
   position: absolute;
   top: 0;
   left: 0;
@@ -134,45 +134,45 @@ body#soundcloudify {
 	height: 100%;
 }
 
-#player .track-title {
+#soundcloudify #player .track-title {
   color: #FBFBFC;
   text-align: center;
   z-index: 1;
   overflow: hidden;
 }
 
-  #player .track-title > h3 {
+  #soundcloudify #player .track-title > h3 {
     font-size: 14px;
     white-space: nowrap;
   }
 
-  #player .track-title > h4 {
+  #soundcloudify #player .track-title > h4 {
     font-size: 12px;
     margin: 10px 0;
     font-weight: 100;
   }
 
-#player .pretty-time {
+#soundcloudify #player .pretty-time {
   color: #ffffff;
   width: 100%;
   padding: 5px;
   font-size: 12px;
 }
 
-#player .pretty-time .duration {
+#soundcloudify #player .pretty-time .duration {
   text-align: right;
   z-index: 1;
 }
 
-.player-controls {margin: 0px;}
-.player-controls .player-control {color: #FBFBFC;}
+#soundcloudify .player-controls {margin: 0px;}
+#soundcloudify .player-controls .player-control {color: #FBFBFC;}
 
-.player-sub-controls {margin-bottom: 10px;}
-.player-sub-controls .player-control {color: #fff; font-size: 10px;}
-.player-sub-controls .player-control md-icon { width: 12px; height: 12px;}
+#soundcloudify .player-sub-controls {margin-bottom: 10px;}
+#soundcloudify .player-sub-controls .player-control {color: #fff; font-size: 10px;}
+#soundcloudify .player-sub-controls .player-control md-icon { width: 12px; height: 12px;}
 
-.volume-controls md-icon {color: #555;}
-.volume-controls md-icon:last-child {text-align: right;}
+#soundcloudify .volume-controls md-icon {color: #555;}
+#soundcloudify .volume-controls md-icon:last-child {text-align: right;}
 
 md-sidenav.now-playing { width: 440px; min-width: 440px; max-width: 440px;}
 md-icon.control-hide-nowplaying {width: 15px; height: 15px;}
