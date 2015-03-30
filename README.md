@@ -54,10 +54,10 @@
 [] add to playlist from search
 
 ### playlist
-[] create a new playlist
-[] remove playlist
-[] playall playlist
-[] view playlist
+[x] create a new playlist
+[x] remove playlist
+[x] playall playlist
+[x] view playlist
 
 ### player
 [] toggle repeat all
@@ -66,10 +66,10 @@
 [] toggle shuffle
 
 ### charts
-[] view specific chart
-[] track click from chart
-[] star from chart
-[] playlist from chart
+[x] view specific chart
+[x] track click from chart
+[x] star from chart
+[x] playlist from chart
 
 
 ```

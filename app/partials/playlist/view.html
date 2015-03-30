@@ -1,0 +1,14 @@
+<md-content class="tab-content md-padding" playing-track-aware="track">
+    <div layout="row" class="tab-heading">
+        <div flex>
+            <md-button class="back-link" ng-click="playlistViewCtrl.backToPlaylist()">
+                <md-icon md-svg-src="fonts/open-iconic/svg/arrow-left.svg"></md-icon>
+                Back
+            </md-button>
+        </div>
+        <div flex="33">
+            <h3 class="chosen-category">{{playlistViewCtrl.playlist.name}}</h3>
+        </div>
+    </div>
+    <track-list tracks="playlistViewCtrl.playlist.tracks" on-track-click="playnow" list-context="playlist"></track-list>
+</md-content>

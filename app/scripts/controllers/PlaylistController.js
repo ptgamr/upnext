@@ -1,26 +1,62 @@
 (function() {
 
-    function PlaylistController ($http, $routeParams, CLIENT_ID) {
-        var self = this;
+    angular.module('soundCloudify')
+            .controller('PlaylistController', PlaylistController)
 
-        this.category = $routeParams.category;
-        console.log(this.category);
+    function PlaylistController($mdToast, $state, PlaylistService, CorePlayer, GATracker) {
+        var vm = this;
 
-        function getTracks () {
-            var params = { limit: 10, offset: 0, linked_partitioning: 1, client_id: CLIENT_ID };
-            $http.get('https://api-v2.soundcloud.com/explore/' + self.category, { params: params })
-                .success(function(data){
-                    self.tracks = data.tracks;
-                });
+        PlaylistService
+            .getList()
+            .then(function(data) {
+                vm.playlists = data;
+            });
 
-            //https://api-v2.soundcloud.com/explore/categories?limit=10&offset=0&linked_partitioning=1
-            //https://api-v2.soundcloud.com/explore/Popular+Music?limit=10&offset=0&linked_partitioning=1&client_id=b45b1aa10f1ac2941910a7f0d10f8e28&app_version=3373577
-        }
+        vm.newPlaylistName = '';
 
-        getTracks();
+        vm.addNew = function(keyEvent) {
+
+            if (keyEvent.which !== 13) {
+                return;
+            }
+
+            if (!vm.newPlaylistName) return;
+            PlaylistService.newPlaylist(vm.newPlaylistName);
+
+            vm.newPlaylistName = '';
+
+            GATracker.trackPlaylist('add new');
+        };
+
+        vm.remove = function($event, index) {
+            $event.stopPropagation();
+            PlaylistService.removePlaylist(index);
+
+            GATracker.trackPlaylist('remove at', index);
+        };
+
+        vm.playAll = function($event, index) {
+            $event.stopPropagation();
+
+            var playlist = PlaylistService.getPlaylist(index);
+
+            if (!playlist.tracks.length) {
+                $mdToast.show(
+                  $mdToast.simple()
+                    .content('No track to play')
+                    .position('bottom right')
+                    .hideDelay(2000)
+                );
+                return;
+            }
+
+            CorePlayer.playAll(playlist.tracks);
+
+            GATracker.trackPlaylist('play all', index);
+        };
+
+        vm.selectPlaylist = function(index) {
+            $state.go('playlist.view', {playlistIndex: index});
+        };
     }
-
-    soundCloudify = angular.module('soundCloudify');
-    soundCloudify.controller('PlaylistController', ['$http', '$routeParams', 'CLIENT_ID', PlaylistController]);
 }());
-

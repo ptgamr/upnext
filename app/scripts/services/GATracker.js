@@ -10,6 +10,7 @@
             trackSearch: trackSearch,
             trackDiscovery: trackDiscovery,
             trackPlayer: trackPlayer,
+            trackPlaylist: trackPlaylist,
             trackCustomEvent: trackCustomEvent
         };
 
@@ -39,6 +40,13 @@
                 return;
             }
             $window.ga('send', 'event', 'player', action, label, value);
+        }
+
+        function trackPlaylist(action, label, value) {
+            if (!$window.ga) {
+                return;
+            }
+            $window.ga('send', 'event', 'playlist', action, label, value);   
         }
 
         function trackCustomEvent(category, action, label, value) {

@@ -6,7 +6,7 @@
     function DiscoveryController($scope, $mdSidenav, $state, $timeout) {
         var vm = this;
         
-        var states = ['nowPlaying', 'search', 'playlist', 'charts.list'];
+        var states = ['nowPlaying', 'search', 'playlist.list', 'charts.list'];
 
         var storage = localStorage;
 

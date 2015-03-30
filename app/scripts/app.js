@@ -53,10 +53,29 @@
 					url: "/search",
 					templateUrl: "partials/search.html"
 				})
+				//===============================================
+				// PLAYLIST
+				//===============================================
 				.state('playlist', {
+					abstract: true,
 					url: "/playlist",
-					templateUrl: "partials/playlist.html"
+					templateUrl: "partials/playlist/playlist.html",
+					controller: 'PlaylistController',
+					controllerAs: 'playlistCtrl'
 				})
+					.state('playlist.list', {
+						url: "",
+						templateUrl: "partials/playlist/list.html"
+					})
+					.state('playlist.view', {
+						url: "/:playlistIndex",
+						templateUrl: "partials/playlist/view.html",
+						controller: 'PlaylistViewController',
+						controllerAs: 'playlistViewCtrl'
+					})
+				//===============================================
+				// CHARTS
+				//===============================================
 				.state('charts', {
 					abstract: true,
 					url: "/charts",
