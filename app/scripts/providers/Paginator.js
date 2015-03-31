@@ -135,6 +135,7 @@
 
                 reset: function() {
                     this.paginationModel.skip = 0;
+                    this.paginationModel.nextPageToken = '';
                 },
             };
 

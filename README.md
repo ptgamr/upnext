@@ -1,10 +1,10 @@
 ###TODO LIST
 
 * [] Drag n Drop playlist
-* [] apply options in background page
 * [] autocomplete can not go up -1
+* [x] apply options in background page
 * [x] restyle autocomplete color
-* [] clear all doesn't clear the list
+* [x] clear all doesn't clear the list
 * [x] when repeat is turn off, the track ended, player should be turn to `stop`
 * [x] options page
 * [x] toast show make window resize

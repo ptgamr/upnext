@@ -202,6 +202,10 @@ Player.prototype = {
             self.state = data['nowPlayingState'] || {};
         });
 
+        chrome.storage.sync.get('scConfig', function(data) {
+            self.configuration = data['scConfig'] || {showNotification: true};
+        });
+
         chrome.storage.onChanged.addListener(function (changes, areaName) {
 
             if (changes['nowPlaying']) {
@@ -212,7 +216,7 @@ Player.prototype = {
                 }
             }
 
-            if (changes['nowPlayingState']) {
+            if (changes['nowPlayingState'] && self.configuration.showNotification) {
 
                 var oldValue = changes['nowPlayingState'].oldValue,
                     lastTrackId = oldValue && oldValue.currentTrack ?  oldValue.currentTrack.id : null;
@@ -226,8 +230,13 @@ Player.prototype = {
                         message: self.state.currentTrack.title,
                         iconUrl: self.state.currentTrack.artworkUrl
                     };
+
                     Utils.createOrUpdateNotification('track-change', notificationOptions, function() {});
                 }
+            }
+
+            if (changes['scConfig']) {
+                self.configuration = changes['scConfig'].newValue;
             }
         });
 
