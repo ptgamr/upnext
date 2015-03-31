@@ -14,11 +14,20 @@
     }
 
     function _addTrackToPlaylist(track, playlist) {
-        playlist.tracks.push(track);
+        var copy = angular.copy(track);
+        copy.uuid = window.ServiceHelpers.ID();
+        playlist.tracks.push(copy);
     }
 
     function _addTracksToPlaylist(tracks, playlist) {
-        playlist.tracks = playlist.tracks.concat(tracks);
+
+        var copies = tracks.map(function(track) {
+            var copy = angular.copy(track);
+            copy.uuid = window.ServiceHelpers.ID();
+            return copy;
+        })
+
+        playlist.tracks = playlist.tracks.concat(copies);
     }
 
     function _removeTrackFromPlaylist(trackIndex, playlist) {

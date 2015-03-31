@@ -44,9 +44,6 @@
             <md-button ng-class="{'md-primary': player.state.repeat !== 0}" aria-label="Toggle Repeat" class="player-control control-repeat" ng-click="player.toggleRepeat()">
                 <i class="icon ion-arrow-swap" title="{{player.state.repeat === 2 ? 'repeat one' : 'repeat all'}}"></i>
                 <span class="repeat-one" ng-if="player.state.repeat === 2">1</span>
-                <!-- <i class="icon ion-arrow-return-left" ng-if="player.state.repeat === 2" title="repeat one"></i> -->
-                <!-- <span ng-if="player.state.repeat !== 2">REPEAT ALL</span>
-                <span ng-if="player.state.repeat === 2">REPEAT ONE</span> -->
             </md-button>
             <md-button ng-class="{'md-primary': player.state.shuffle}" aria-label="Toggle Shuffle" class="player-control control-shuffle" ng-click="player.toggleShuffle()">
                 <i class="icon ion-shuffle" title="shuffle"></i>

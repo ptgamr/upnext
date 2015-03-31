@@ -265,10 +265,11 @@ Player.prototype = {
             }
 
             chrome.storage.local.set({'nowPlayingState': this.state});
-        } else {
-            this.state.currentIndex ++;
-            this.next();
         }
+        //  else {
+        //     this.state.currentIndex ++;
+        //     this.next();
+        // }
     },
 
     prev: function() {
@@ -330,6 +331,16 @@ Player.prototype = {
         }
     },
 
+    stop: function() {
+        if (this.activePlayer) {
+            this.activePlayer.stop();
+        }
+
+        this.state.playing = false;
+        this.state.currentTime = 0;
+        chrome.storage.local.set({'nowPlayingState': this.state});
+    },
+
     clear: function() {
         if(this.activePlayer) {
             this.activePlayer.clear();
@@ -371,7 +382,9 @@ function onTimeUpdate(currentTime, duration) {
 
 function onEnded() {
     if (mainPlayer.state.repeat === 0) {
-        //do-nothing
+        mainPlayer.stop();
+        mainPlayer.seek(0);
+        currentPort.postMessage({message: 'scd.ended'});
     } else if (mainPlayer.state.repeat === 1) {
         mainPlayer.next.call(mainPlayer);
     } else {
@@ -456,6 +469,7 @@ function onPlayerStateChange(event) {
             break;
 
         case YT.PlayerState.PAUSED:
+            //youtubePlayer.play();
             break;
         case YT.PlayerState.BUFFERING:
             break;

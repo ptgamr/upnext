@@ -175,7 +175,13 @@ plangular.service('CorePlayer', function(Messaging, NowPlaying, CLIENT_ID) {
     this.state.playing = true;
     NowPlaying.saveState(this.state);
     Messaging.sendResumeMessage();
-  }
+  };
+
+  this.stop = function() {
+    this.state.playing = false;
+    this.state.currentTime = 0;
+    NowPlaying.saveState(this.state);
+  };
 
   this.playPause = function(index) {
     if (typeof index !== 'undefined') {
@@ -285,6 +291,10 @@ plangular.directive('plangular', ['$http', '$rootScope', 'plangularConfig', 'Mes
         });
 
         CorePlayer.markCurrentTrackError();
+      });
+
+      Messaging.registerEndedHandler(function() {
+        CorePlayer.stop();
       });
     }
 

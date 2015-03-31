@@ -4,7 +4,7 @@
 
 <md-content>
     <md-list class="playlist-menu">
-        <md-item ng-repeat="playlist in playlists.items track by $index" ng-click="addTrackToPlaylist($index)">
+        <md-item ng-show="$index !== 0" ng-repeat="playlist in playlists.items track by $index" ng-click="addTrackToPlaylist($index)">
             <md-item-content>
                 <div class="md-tile-content">
                     <h3>{{playlist.name}}</h3>

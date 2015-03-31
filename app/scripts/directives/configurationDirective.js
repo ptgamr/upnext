@@ -33,7 +33,7 @@
                     '<md-dialog aria-label="Configuration dialog">' +
                     '  <md-content>'+
                     '    <h2>Options</h2>'+
-                    '    <md-checkbox class="md-primary" ng-model="showNotification" aria-label="Toggle Desktop Notification">'+
+                    '    <md-checkbox class="md-primary" ng-model="configuration.showNotification" aria-label="Toggle Desktop Notification">'+
                     '      Show Desktop Notification'+
                     '    </md-checkbox>'+
                     '  </md-content>' +
@@ -50,7 +50,19 @@
             });
 
             function DialogController(scope, $mdDialog, player) {
-                scope.showNotification = true;
+
+                chrome.storage.sync.get('scConfig', function(data) {
+                    scope.configuration = data['scConfig'] || {showNotification: true};
+                });
+
+                scope.$watch('configuration', function(newConf, oldConf) {
+                    if (newConf && oldConf) {
+                        var configObj = {};
+                        configObj['scConfig'] = newConf;
+                        chrome.storage.sync.set(configObj);
+                    }
+                }, true);
+
                 scope.close = function() {
                     $mdDialog.hide();   
                 };
