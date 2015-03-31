@@ -3,6 +3,8 @@
 [] Drag n Drop playlist
 [] options page
 [] restyle autocomplete color
+[] when repeat is turn off, the track ended, player should be turn to `stop`
+[] toast show make window resize
 [x] chrome sync
 
 ### General

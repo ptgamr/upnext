@@ -17,7 +17,7 @@
         };
 
         function getList(callback){
-            return chrome.storage.sync.get(NOW_PLAYING_LIST_KEY, function(data) {
+            return chrome.storage.local.get(NOW_PLAYING_LIST_KEY, function(data) {
                 callback(data[NOW_PLAYING_LIST_KEY] || []);
             });
         }
@@ -25,18 +25,18 @@
         function saveList(list) {
             var nowPlayingObj = {};
             nowPlayingObj[NOW_PLAYING_LIST_KEY] = list;
-            chrome.storage.sync.set(nowPlayingObj);
+            chrome.storage.local.set(nowPlayingObj);
             $rootScope.$broadcast('nowPlaying:updated');
         }
 
         function saveState(state) {
             var stateObj = {};
             stateObj[NOW_PLAYING_STATE_KEY] = state;
-            chrome.storage.sync.set(stateObj);
+            chrome.storage.local.set(stateObj);
         }
 
         function getState(callback) {
-            return chrome.storage.sync.get(NOW_PLAYING_STATE_KEY, function(data) {
+            return chrome.storage.local.get(NOW_PLAYING_STATE_KEY, function(data) {
                 callback(data[NOW_PLAYING_STATE_KEY] || {});
             })
         }

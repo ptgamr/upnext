@@ -63,7 +63,7 @@
             var defer = $q.defer();
 
             if (playlistStore.items === null) {
-                chrome.storage.sync.get(PLAYLIST_STORAGE_KEY, function(data) {
+                chrome.storage.local.get(PLAYLIST_STORAGE_KEY, function(data) {
                     playlistStore.items = data[PLAYLIST_STORAGE_KEY] || [];
 
                     //the Starred Playlist should be automatically added & can not be removed
@@ -178,7 +178,7 @@
         function updateStorage() {
             var storageObj = {};
             storageObj[PLAYLIST_STORAGE_KEY] = playlistStore.items;
-            chrome.storage.sync.set(storageObj);
+            chrome.storage.local.set(storageObj);
         }
     };
 
