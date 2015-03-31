@@ -53,7 +53,7 @@
                         .content('Track has been added to playlist successfully')
                         .position('bottom right')
                         .hideDelay(1000)
-                        .parent(parentEl);
+                        .parent(parentEl)
                     );
                 };
             }

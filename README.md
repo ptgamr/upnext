@@ -1,11 +1,11 @@
 #TODO LIST
 
 [] Drag n Drop playlist
-[] options page
+[x] options page
 [] restyle autocomplete color
-[] when repeat is turn off, the track ended, player should be turn to `stop`
+[x] when repeat is turn off, the track ended, player should be turn to `stop`
 [] clear all doesn't clear the list
-[] toast show make window resize
+[x] toast show make window resize
 [x] chrome sync
 
 ### General

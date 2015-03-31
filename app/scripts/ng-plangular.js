@@ -287,7 +287,8 @@ plangular.directive('plangular', ['$http', '$rootScope', 'plangularConfig', 'Mes
         $mdToast.show({
           templateUrl: 'scripts/views/toastError.html',
           hideDelay: 1000,
-          position: 'bottom right'
+          position: 'bottom right',
+          parent: angular.element(document.querySelector('#tab-content'))
         });
 
         CorePlayer.markCurrentTrackError();
