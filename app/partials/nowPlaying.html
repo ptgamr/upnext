@@ -1,1 +1,18 @@
-<now-playing></now-playing>
+<md-content class="tab-content md-padding" playing-track-aware="index">
+	<loading ng-if="!vm.tracks"></loading>
+    <track-list  tracks="vm.tracks" on-track-click="playpause" list-context="nowplaying"></track-list>
+</md-content>
+<md-toolbar class="bottom-toolbar">
+    <div class="md-toolbar-tools">
+        <span flex>
+            <md-button ng-click="vm.saveStream($event)" class="md-primary">Save As Playlist</md-button>
+        </span>
+        <span flex>
+            <md-button ng-click="vm.clearStream($event)">CLEAR ALL</md-button>
+        </span>
+        <span flex></span>
+        <span>
+            <configuration></configuration>
+        </span>
+    </div>
+</md-toolbar>

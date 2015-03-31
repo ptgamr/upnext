@@ -47,11 +47,15 @@
 			$stateProvider
 				.state('nowPlaying', {
 					url: "/now-playing",
-					templateUrl: "partials/nowPlaying.html"
+					templateUrl: "partials/nowPlaying.html",
+					controller: 'NowPlayingController',
+					controllerAs: 'vm'
 				})
 				.state('search', {
 					url: "/search",
-					templateUrl: "partials/search.html"
+					templateUrl: "partials/search.html",
+					controller: 'SearchController',
+					controllerAs: 'vm'
 				})
 				//===============================================
 				// PLAYLIST

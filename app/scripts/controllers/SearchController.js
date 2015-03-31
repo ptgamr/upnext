@@ -1,21 +1,7 @@
-(function(){
-    'use strict';
+(function() {
 
     angular.module('soundCloudify')
-        .directive('search', searchDirective);
-
-    function searchDirective() {
-        return {
-            restrict: 'E',
-            templateUrl: 'scripts/views/search.html',
-            scope: true,
-            controller: SearchController,
-            controllerAs: 'ctrl',
-            link: function($scope, $element, attrs, ctrl) {
-
-            }
-        };
-    }
+            .controller('SearchController', SearchController)
 
     function SearchController ($scope, $q, SuggestionService, CorePlayer, Paginator, SearchService, $filter, GATracker) {
 
@@ -26,6 +12,7 @@
         vm.search = {
             term: ''
         };
+        
         vm.showSuggestion = true;
 
         vm.recentSearch = JSON.parse(localStorage.getItem('recentSearch')) || [];

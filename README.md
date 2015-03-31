@@ -2,7 +2,8 @@
 
 [] Drag n Drop playlist
 [] options page
-[] chrome sync
+[] restyle autocomplete color
+[x] chrome sync
 
 ### General
 * [x] Queue up track

@@ -52,9 +52,9 @@ md-tabs.main-nav md-tab md-itemcon {
 md-tab-label > span { vertical-align: bottom; line-height: 18px; }
 
 md-toolbar.bottom-toolbar { background-color: #1C1C1F; min-height: 44px; color: #bbb; box-shadow: none;}
-md-toolbar.bottom-toolbar .md-toolbar-tools { height: 44px; max-height: 44px;}
-md-toolbar.bottom-toolbar .md-toolbar-tools .md-button {color: #555;}
-md-toolbar.bottom-toolbar .md-toolbar-tools .md-button md-icon {font-size: 24px; line-height: 24px;}
+md-toolbar.bottom-toolbar .md-toolbar-tools { height: 40px; max-height: 40px; padding-left: 0;}
+md-toolbar.bottom-toolbar .md-toolbar-tools .md-button {color: #bbb; font-size: 12px;}
+md-toolbar.bottom-toolbar .md-toolbar-tools .md-button > i { font-size: 16px; margin-right: 5px;}
 
 /*
 md-tabs { border-bottom: 1px solid #f2f2f2; }
@@ -64,6 +64,9 @@ md-tabs.md-default-theme  md-tabs-ink-bar { color: #8bc34a; background-color: #8
 md-divider.md-default-theme {
   border-top-color: #f2f2f2;
 }
+
+md-dialog {color: #bbb;}
+md-dialog .md-actions .md-button{color: #bbb;}
 
 .search-btn { min-width: 10em; line-height: 25px;}
 
@@ -167,10 +170,12 @@ body#soundcloudify {
 .player-controls {margin: 0px;}
 .player-controls .player-control {color: #FBFBFC;}
 
-.player-sub-controls {margin-bottom: 10px;}
-.player-sub-controls .player-control {color: #fff; font-size: 10px;}
+.player-sub-controls {margin-top: 10px;}
+.player-sub-controls .player-control {color: #bbb; font-size: 18px; width: 40px;}
+.player-sub-controls .player-control .repeat-one {position: absolute; top: 5px; right: 5px; font-size: 10px; font-weight: bold;}
 .player-sub-controls .player-control md-icon { width: 12px; height: 12px;}
 
+.volume-controls {margin: 10px 0;}
 .volume-controls md-icon {color: #555;}
 .volume-controls md-icon:last-child {text-align: right;}
 
