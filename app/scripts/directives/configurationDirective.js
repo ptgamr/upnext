@@ -8,7 +8,7 @@
         return {
             restrict: 'E',
             template: '<md-button ng-click="vm.openConfigurationDialog($event)"><md-icon md-font-icon="icon ion-gear-b"></md-icon></md-button>',
-            scope: true,
+            scope: {},
             controller: ConfigurationController,
             controllerAs: 'vm'
         };
