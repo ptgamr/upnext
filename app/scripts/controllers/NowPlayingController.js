@@ -82,6 +82,7 @@
                 .cancel('No, I don\'t')
                 .targetEvent($event);
             $mdDialog.show(confirm).then(function() {
+                vm.tracks = [];
                 vm.player.clear();
             }, function() {
                 //vm.alert = 'You decided to keep your debt.';

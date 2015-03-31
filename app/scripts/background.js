@@ -215,11 +215,11 @@ Player.prototype = {
             if (changes['nowPlayingState']) {
 
                 var oldValue = changes['nowPlayingState'].oldValue,
-                    lastTrackId = oldValue ?  oldValue.currentTrack.id : null;
+                    lastTrackId = oldValue && oldValue.currentTrack ?  oldValue.currentTrack.id : null;
 
                 self.state = changes['nowPlayingState'].newValue;
 
-                if (lastTrackId !== self.state.currentTrack.id) {
+                if (self.state.currentTrack && lastTrackId !== self.state.currentTrack.id) {
                     var notificationOptions = {
                         type: "basic",
                         title: "Playing Track",
@@ -507,6 +507,9 @@ chrome.runtime.onConnect.addListener(function(port) {
                 break;
             case 'scd.prev':
                 mainPlayer.prev();
+                break;
+            case 'scd.clear':
+                mainPlayer.clear();
                 break;
             case 'scd.seek':
                 mainPlayer.seek(data.xpos);

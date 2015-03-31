@@ -67,6 +67,10 @@ md-divider.md-default-theme {
 md-dialog {color: #bbb;}
 md-dialog .md-actions .md-button{color: #bbb;}
 
+md-autocomplete ul li:hover, md-autocomplete ul li.selected {
+  background-color: #ddd;
+}
+
 .search-btn { min-width: 10em; line-height: 25px;}
 
 .list-hover md-item:hover  { cursor: pointer;}

@@ -1,12 +1,19 @@
-#TODO LIST
+###TODO LIST
 
-[] Drag n Drop playlist
-[x] options page
-[] restyle autocomplete color
-[x] when repeat is turn off, the track ended, player should be turn to `stop`
-[] clear all doesn't clear the list
-[x] toast show make window resize
-[x] chrome sync
+* [] Drag n Drop playlist
+* [] apply options in background page
+* [] autocomplete can not go up -1
+* [x] restyle autocomplete color
+* [] clear all doesn't clear the list
+* [x] when repeat is turn off, the track ended, player should be turn to `stop`
+* [x] options page
+* [x] toast show make window resize
+* [x] chrome sync
+
+
+### VERSION 2
+* [] Social Sharing
+* [] Share playlist
 
 ### General
 * [x] Queue up track
@@ -17,8 +24,8 @@
 ** [x] Top charts
 
 ### Playlist
-* [] Delete track
-* [] Play all tracks
+* [x] Delete track
+* [x] Play all tracks
 * [] Queue all tracks
 * [] Rename
 

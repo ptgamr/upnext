@@ -132,14 +132,14 @@ plangular.service('CorePlayer', function(Messaging, NowPlaying, CLIENT_ID) {
     this.tracks = [];
 
     angular.extend(this.state, {
-      currentTrack: false,
+      currentTrack: null,
       currentIndex: 0,
       playing: false,
       currentTime: 0,
       duration: 0
     });
 
-    //Messaging.sendStopMessage();
+    Messaging.sendClearMessage();
     NowPlaying.saveList(this.tracks);
     NowPlaying.saveState(this.state);
   }
@@ -440,6 +440,7 @@ plangular.factory("Messaging", function() {
       sendNextMessage: sendNextMessage,
       sendPrevMessage: sendPrevMessage,
       sendPauseMessage: sendPauseMessage,
+      sendClearMessage: sendClearMessage,
       sendResumeMessage: sendResumeMessage,
       sendSeekMessage: sendSeekMessage,
       sendVolumeMessage: sendVolumeMessage
@@ -477,6 +478,10 @@ plangular.factory("Messaging", function() {
 
   function sendPauseMessage() {
     port.postMessage({message: 'scd.pause'});
+  }
+
+  function sendClearMessage() {
+    port.postMessage({message: 'scd.clear'}); 
   }
 
   function sendResumeMessage() {

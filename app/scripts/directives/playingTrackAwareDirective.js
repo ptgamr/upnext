@@ -38,6 +38,8 @@
                     var track = CorePlayer.state.currentTrack;
                     var index = CorePlayer.state.currentIndex;
 
+                    if (!track) return;
+
                     angular.element($element[0].querySelector('.playing, .pause')).removeClass('playing pause');
 
                     var cssClass = 'playing';
