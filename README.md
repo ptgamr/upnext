@@ -39,7 +39,7 @@
 
 
 #BUGS
-* [] player artwork won't change in some cases
+* [x] player artwork won't change in some cases
 * [x] Toast text color is still white
 
 #Google Analytics

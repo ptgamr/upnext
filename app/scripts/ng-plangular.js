@@ -388,6 +388,7 @@ plangular.filter('scArtwork', function() {
       return value.replace('default.jpg', 'hqdefault.jpg');
     }
 
+    return value;
   };
 });
 
