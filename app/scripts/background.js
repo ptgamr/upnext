@@ -316,12 +316,14 @@ Player.prototype = {
             this.soundcloudPlayer.play(track);
             this.activePlayer = soundcloudPlayer;
         }
+        chrome.browserAction.setIcon({path: 'images/icon-38.png'});
     },
 
     pause: function() {
         if(this.activePlayer) {
             this.activePlayer.pause();
         }
+        chrome.browserAction.setIcon({path: 'images/icon-38-pause.png'});
     },
 
     resume: function() {
@@ -332,6 +334,7 @@ Player.prototype = {
         }
 
         this.activePlayer.resume();
+        chrome.browserAction.setIcon({path: 'images/icon-38.png'});
     },
 
     replay: function() {
@@ -348,6 +351,7 @@ Player.prototype = {
         this.state.playing = false;
         this.state.currentTime = 0;
         chrome.storage.local.set({'nowPlayingState': this.state});
+        chrome.browserAction.setIcon({path: 'images/icon-38-pause.png'});
     },
 
     clear: function() {
@@ -494,9 +498,6 @@ function onPlayerError() {
 chrome.runtime.onConnect.addListener(function(port) {
 
     currentPort = port;
-
-    //chrome.browserAction.setBadgeText({text: 'Playin'g});
-    chrome.browserAction.setIcon({path: 'images/icon-38-play.png'});
 
     port.onMessage.addListener(function(event) {
 
