@@ -12,7 +12,6 @@
                 var toggleClass = 'md-primary';
 
                 attr.$observe('toggleButton', function(val) {
-                    console.log(val);
                     if (val === 'true') {
                         element.addClass(toggleClass)
                     } else {

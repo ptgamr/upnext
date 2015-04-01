@@ -221,7 +221,6 @@ plangular.service('CorePlayer', function(Messaging, NowPlaying, CLIENT_ID, GATra
 
   this.isPlaying = function(trackId) {
     if (!this.state.currentTrack) return false;
-    console.log('check track ' + this.state.currentTrack.id === trackId);
     return this.state.currentTrack.id === trackId;
   };
 

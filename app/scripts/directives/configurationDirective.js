@@ -7,7 +7,7 @@
     function ConfigurationDirective() {
         return {
             restrict: 'E',
-            template: '<span><md-button ng-click="vm.showInformation($event)"><md-icon md-font-icon="icon ion-ios-information"></md-icon></md-button><md-button ng-click="vm.openConfigurationDialog($event)"><md-icon md-font-icon="icon ion-gear-b"></md-icon></md-button></span>',
+            template: '<span><md-button title="about" ng-click="vm.showInformation($event)"><md-icon md-font-icon="icon ion-ios-information"></md-icon></md-button><md-button title="settings" ng-click="vm.openConfigurationDialog($event)"><md-icon md-font-icon="icon ion-gear-b"></md-icon></md-button></span>',
             scope: {},
             controller: ConfigurationController,
             controllerAs: 'vm'
@@ -36,7 +36,7 @@
                 template:
                     '<md-dialog aria-label="Configuration dialog">' +
                     '  <md-content>'+
-                    '    <h2>Options</h2>'+
+                    '    <h2>Settings</h2>'+
                     '    <md-checkbox class="md-primary" ng-model="configuration.showNotification" aria-label="Toggle Desktop Notification">'+
                     '      Show Desktop Notification'+
                     '    </md-checkbox>'+
@@ -80,20 +80,7 @@
             $mdDialog.show({
                 parent: parentEl,
                 targetEvent: $event,
-                template:
-                    '<md-dialog aria-label="Configuration dialog">' +
-                    '  <md-content>'+
-                    '    <h2>Information:</h2>'+
-                    '    <p>'+
-                    '      This extension was developed by Anh Trinh (<a href="https://twitter.com/ptgamr">@ptgamr</a>). All music are taken from SoundCloud and Youtube via their public API.'+
-                    '    </p>'+
-                    '  </md-content>' +
-                    '  <div class="md-actions">' +
-                    '    <md-button ng-click="close()">' +
-                    '      Close' +
-                    '    </md-button>' +
-                    '  </div>' +
-                    '</md-dialog>',
+                templateUrl: 'scripts/views/info.html',
                 locals: {
                     player: vm.player
                 },

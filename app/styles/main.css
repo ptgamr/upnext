@@ -583,6 +583,8 @@ progress {
   background: transparent !important;
 }
 
+a.twitter-link {color: #55ACEE;}
+
 
 
 md-input-container.md-default-theme label, md-input-container.md-default-theme .md-placeholder {

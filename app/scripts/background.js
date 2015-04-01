@@ -1,7 +1,7 @@
 'use strict';
 
 chrome.runtime.onInstalled.addListener(function (details) {
-  console.log('previousVersion', details.previousVersion);
+  //console.log('previousVersion', details.previousVersion);
 });
 
 /**
@@ -19,17 +19,14 @@ var Utils = {
       // Try to lower priority to minimal "shown" priority
       chrome.notifications.update(id, {priority: 0}, function(existed) {
         if(existed) {
-          console.log("notification existed, update priority");
+          // console.log("notification existed, update priority");
           var targetPriority = options.priority || 0;
           options.priority = 1;
           // Update with higher priority
           chrome.notifications.update(id, options, function() {
-            console.log("notification shown");
-            console.log(options);
+            // console.log("notification shown");
+            // console.log(options);
             callback(true);
-            // chrome.notifications.update(id, {priority: targetPriority}, function() {
-            //   callback(true); // Updated
-            // });
           });
         } else {
           chrome.notifications.create(id, options, function() {
@@ -440,7 +437,6 @@ function onYouTubeIframeAPIReady() {
             refererRequestHeader.value = referer;
         }
 
-        console.log('after addded');
         return { requestHeaders: info.requestHeaders };
 
     }, {
@@ -461,7 +457,6 @@ function onYouTubeIframeAPIReady() {
 }
 
 function onPlayerReady(event) {
-  console.log('onPlayerReady');
   youtubePlayer.playerReady = true;
 }
 
