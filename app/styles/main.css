@@ -53,7 +53,7 @@ md-tab-label > span { vertical-align: bottom; line-height: 18px; }
 md-toolbar.bottom-toolbar { background-color: #1C1C1F; min-height: 44px; color: #bbb; box-shadow: none;}
 md-toolbar.bottom-toolbar .md-toolbar-tools { height: 40px; max-height: 40px; padding-left: 0;}
 md-toolbar.bottom-toolbar .md-toolbar-tools .md-button {color: #bbb; font-size: 12px;}
-md-toolbar.bottom-toolbar .md-toolbar-tools .md-button > i { font-size: 16px; margin-right: 5px;}
+md-toolbar.bottom-toolbar .md-toolbar-tools .md-button md-icon { font-size: 18px; line-height: 18px; width: 18px; height: 18px;}
 
 /*
 md-tabs { border-bottom: 1px solid #f2f2f2; }

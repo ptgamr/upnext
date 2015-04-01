@@ -7,7 +7,7 @@
     function ConfigurationDirective() {
         return {
             restrict: 'E',
-            template: '<md-button ng-click="vm.openConfigurationDialog($event)"><md-icon md-font-icon="icon ion-gear-b"></md-icon></md-button>',
+            template: '<span><md-button ng-click="vm.showInformation($event)"><md-icon md-font-icon="icon ion-ios-information"></md-icon></md-button><md-button ng-click="vm.openConfigurationDialog($event)"><md-icon md-font-icon="icon ion-gear-b"></md-icon></md-button></span>',
             scope: {},
             controller: ConfigurationController,
             controllerAs: 'vm'
@@ -20,6 +20,10 @@
 
         vm.openConfigurationDialog = function($event) {
             showDialog($event);
+        };
+
+        vm.showInformation = function($event) {
+            showInfoDialog($event);
         };
 
         function showDialog($event) {
@@ -63,6 +67,40 @@
                     }
                 }, true);
 
+                scope.close = function() {
+                    $mdDialog.hide();   
+                };
+            }
+        };
+
+        function showInfoDialog($event) {
+
+            var parentEl = angular.element(document.body);
+
+            $mdDialog.show({
+                parent: parentEl,
+                targetEvent: $event,
+                template:
+                    '<md-dialog aria-label="Configuration dialog">' +
+                    '  <md-content>'+
+                    '    <h2>Information:</h2>'+
+                    '    <p>'+
+                    '      This extension was developed by Anh Trinh (<a href="https://twitter.com/ptgamr">@ptgamr</a>). All music are taken from SoundCloud and Youtube via their public API.'+
+                    '    </p>'+
+                    '  </md-content>' +
+                    '  <div class="md-actions">' +
+                    '    <md-button ng-click="close()">' +
+                    '      Close' +
+                    '    </md-button>' +
+                    '  </div>' +
+                    '</md-dialog>',
+                locals: {
+                    player: vm.player
+                },
+                controller: DialogController
+            });
+
+            function DialogController(scope, $mdDialog, player) {
                 scope.close = function() {
                     $mdDialog.hide();   
                 };
