@@ -496,6 +496,7 @@ chrome.runtime.onConnect.addListener(function(port) {
     currentPort = port;
 
     //chrome.browserAction.setBadgeText({text: 'Playin'g});
+    chrome.browserAction.setIcon({path: 'images/icon-38-play.png'});
 
     port.onMessage.addListener(function(event) {
 

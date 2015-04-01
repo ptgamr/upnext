@@ -15,7 +15,7 @@
 
 var plangular = angular.module('plangular', []);
 
-plangular.service('CorePlayer', function(Messaging, NowPlaying, CLIENT_ID) {
+plangular.service('CorePlayer', function(Messaging, NowPlaying, CLIENT_ID, GATracker) {
 
   function debounce(fn, delay) {
     var timer = null;
@@ -244,11 +244,13 @@ plangular.service('CorePlayer', function(Messaging, NowPlaying, CLIENT_ID) {
       this.state.repeat = 0; // no repeat
     }
     NowPlaying.saveState(this.state);
+    GATracker.trackPlayer('toggle repeat', this.state.repeat === 1 ? 'all' : this.state.repeat === 2 ? 'one' : 'none');
   };
 
   this.toggleShuffle = function() {
     this.state.shuffle = !this.state.shuffle;
     NowPlaying.saveState(this.state);
+    GATracker.trackPlayer('toggle shuffle', this.state.shuffle ? 'on' : 'off');
   };
 
   this.markCurrentTrackError = function() {
@@ -256,6 +258,7 @@ plangular.service('CorePlayer', function(Messaging, NowPlaying, CLIENT_ID) {
     this.tracks[this.state.currentIndex].error = true;
     NowPlaying.saveState(this.state);
     NowPlaying.saveList(this.tracks);
+    GATracker.trackPlayer('track error');
   };
 });
 
