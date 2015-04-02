@@ -1,6 +1,6 @@
-#SoundCloudify: 
+###SoundCloudify: stream music from SoundCloud and Youtube, Spotify replacement
 
-##Music streaming from SoundCloud and Youtube
+![SoundCloudify](http://i.imgur.com/q3Yi7qw.png)
 
 [SoundCloudify](https://chrome.google.com/webstore/detail/soundcloudify/boblphpidkohagaoinepjgecndchlnbk) helps you listen to endless music from Youtube and SoundCloud, right in your Chrome Browser, without the need to open a new tab. It's an extension, a little player with all the power you need.
 
@@ -25,3 +25,4 @@ And ... it's free, opensource, yaaaay!!!
 
 ##VERSION 2.0
 * Sync music with your devices
+* Music recomendation
