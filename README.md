@@ -1,4 +1,6 @@
-#SoundCloudify: Music streaming from SoundCloud and Youtube
+#SoundCloudify: 
+
+##Music streaming from SoundCloud and Youtube
 
 [SoundCloudify](https://chrome.google.com/webstore/detail/soundcloudify/boblphpidkohagaoinepjgecndchlnbk) helps you listen to endless music from Youtube and SoundCloud, right in your Chrome Browser, without the need to open a new tab. It's an extension, a little player with all the power you need.
 
@@ -6,12 +8,13 @@ It's not just only a player, it's a way to discover new music. SoundCloud is a p
 
 And ... it's free, opensource, yaaaay!!!
 
-##KEY FEATURES:
+##KEY FEATURES: (v1.0)
 - Music Discovery: Top Charts, Search from Youtube & Soundcloud.
 - Player: all you playing history will not be cleared until you do it. 'Up Next' feature help you planning your playback without the need to stop the current song.
 - Playlist: keep track of your loving music. Make them organized.
 
-### VERSION 1.1
+
+##VERSION 1.1
 * Social Sharing
 * Share playlist
 * Drag n Drop playlist
@@ -20,5 +23,5 @@ And ... it's free, opensource, yaaaay!!!
 * Batch action for multiple tracks (checkbox, delete, add to playlist etc)
 * Rename Playlist
 
-### VERSION 2.0
+##VERSION 2.0
 * Sync music with your devices
