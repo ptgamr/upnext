@@ -127,8 +127,9 @@ body#soundcloudify {
   font-size: 26px;
 }
 
-#player .artwork .show-on-hover .fa-youtube { color: #FBFBFC; }
-#player .artwork .show-on-hover .fa-soundcloud { color: #FBFBFC; }
+#player .view-original-link {text-decoration: none;}
+#player .view-original-link .icon-soundcloud { color: #FBFBFC; }
+#player .view-original-link .icon-youtube { color: #FBFBFC; font-size: 16px;}
 
 #player .artwork:hover .show-on-hover {
   opacity: 1;

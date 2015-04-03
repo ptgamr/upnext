@@ -261,12 +261,6 @@ module.exports = function (grunt) {
           cwd: '<%= config.app %>/bower_components/ionicons/fonts',
           dest: '<%= config.dist %>/fonts',
           src: ['*']
-        }, {
-          expand: true,
-          dot: true,
-          cwd: '<%= config.app %>/bower_components/font-awesome/fonts',
-          dest: '<%= config.dist %>/fonts',
-          src: ['*']
         }]
       }
     },
