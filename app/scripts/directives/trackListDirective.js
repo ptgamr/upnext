@@ -86,6 +86,7 @@
                       $mdToast.simple()
                         .content('Track has been queued up next')
                         .position('bottom right')
+                        .parent(angular.element(document.querySelector('#tab-content')))
                         .hideDelay(1000)
                     );
                 };

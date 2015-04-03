@@ -5,6 +5,7 @@
  * 
  */
 html {
+  max-height: 448px;
 }
 
 .overlay {
