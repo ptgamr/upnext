@@ -37,7 +37,7 @@
 		return '_' + Math.random().toString(36).substr(2, 9);
     }
 
-	var soundCloudify = angular.module('soundCloudify', ['ngMaterial', 'plangular', 'ngRoute', 'ui.router', 'react']);
+	var soundCloudify = angular.module('soundCloudify', ['ngMaterial', 'ngRoute', 'ui.router', 'react']);
 
 	soundCloudify.value('CLIENT_ID', '849e84ac5f7843ce1cbc0e004ae4fb69');
 
@@ -128,7 +128,7 @@
 			$compileProvider.imgSrcSanitizationWhitelist(/^\s*((https?|ftp|file|blob|chrome-extension):|data:image\/)/);
 
 			//TODO: reenable it in production
-			$compileProvider.debugInfoEnabled(false);
+			//$compileProvider.debugInfoEnabled(false);
 		}
 	]);
 

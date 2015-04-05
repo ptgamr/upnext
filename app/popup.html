@@ -18,8 +18,8 @@
         <!-- endbuild -->
     </head>
     <body id="soundcloudify">
-        <div layout="row" core-player>
-            <div id="player" plangular>
+        <div layout="row">
+            <div id="player">
                 <scd-player></scd-player>
             </div>
 
@@ -67,9 +67,9 @@
 <!-- endbower -->
 <!-- endbuild -->
 <!-- build:js scripts/popup.js -->
-<script src="scripts/ng-plangular.js"></script>
 <script src="scripts/trackList.js"></script> <!-- React component -->
 <script src="scripts/app.js"></script>
+<script src="scripts/corePlayer.js"></script>
 
 <script src="scripts/controllers/MainController.js"></script>
 <script src="scripts/controllers/DiscoveryController.js"></script>
@@ -91,6 +91,10 @@
 
 <script src="scripts/providers/Paginator.js"></script>
 
+<script src="scripts/filters/scArtworkFilter.js"></script>
+<script src="scripts/filters/prettyTimeFilter.js"></script>
+
+<script src="scripts/services/Messaging.js"></script>
 <script src="scripts/services/CategoryService.js"></script>
 <script src="scripts/services/SearchService.js"></script>
 <script src="scripts/services/SuggestionService.js"></script>
