@@ -6,7 +6,7 @@
 
     function TrackAdapter (PlaylistService) {
         
-        var DEFAULT_THUMBNAIL = 'images/artwork-bar.jpg';
+        var DEFAULT_THUMBNAIL = 'images/artwork-default.jpg';
 
         var ORIGIN_YOUTUBE = 'yt';
         var ORIGIN_SOUNDCLOUD = 'sc';

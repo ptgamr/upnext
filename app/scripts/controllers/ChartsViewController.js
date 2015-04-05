@@ -9,7 +9,7 @@
 
         if (!vm.category) throw new Error('ChartsViewController: category is undefined');
 
-        vm.fallbackArtwork = chrome.extension.getURL('images/artwork-bar.jpg');
+        vm.fallbackArtwork = chrome.extension.getURL('images/artwork-default.jpg');
         vm.tracks = [];
 
         vm.paginator = Paginator.getInstance({
