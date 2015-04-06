@@ -179,6 +179,7 @@ body#soundcloudify {
 
 .player-sub-controls {margin-top: 10px;}
 .player-sub-controls .player-control {color: #bbb; font-size: 18px; width: 40px;}
+.player-sub-controls .player-control.control-last-fm {font-size: 12px; width: 80px;}
 .player-sub-controls .player-control .repeat-one {position: absolute; top: 5px; right: 5px; font-size: 10px; font-weight: bold;}
 .player-sub-controls .player-control md-icon { width: 12px; height: 12px;}
 

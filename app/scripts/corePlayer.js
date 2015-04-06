@@ -4,7 +4,7 @@
 
     var soundCloudify = angular.module('soundCloudify');
 
-    soundCloudify.service('CorePlayer', function($rootScope, $mdToast, Messaging, NowPlaying, CLIENT_ID, GATracker) {
+    soundCloudify.service('CorePlayer', function($rootScope, $window, $mdToast, Messaging, NowPlaying, CLIENT_ID, GATracker) {
 
         function debounce(fn, delay) {
             var timer = null;
@@ -25,7 +25,8 @@
             duration: 0,
             volume: 0.5,
             repeat: 0,
-            shuffle: false
+            shuffle: false,
+            scrobble: false
         };
 
         var self = this;
@@ -239,6 +240,21 @@
             this.state.shuffle = !this.state.shuffle;
             NowPlaying.saveState(this.state);
             GATracker.trackPlayer('toggle shuffle', this.state.shuffle ? 'on' : 'off');
+        };
+
+        this.toggleScrobble = function() {
+
+            var self = this;
+
+            if (!$window.LastFM.isAuth()) {
+                $window.LastFM.auth(function() {
+                    self.state.scrobble = true;
+                });
+            } else {
+                self.state.scrobble = !self.state.scrobble;
+            }
+
+            NowPlaying.saveState(self.state);
         };
 
         this.markCurrentTrackError = function() {
