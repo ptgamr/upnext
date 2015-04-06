@@ -1,6 +1,6 @@
 ###SoundCloudify: stream music from SoundCloud and Youtube, Spotify replacement
 
-The extension is currently in `Pending Review` status by Google!
+The extension is currently in `Pending Review` status by Google! So it is not available in Chrome Web Store. To install it manually, please download the [extension binary here](https://github.com/ptgamr/soundcloudify/blob/master/soundcloudify.crx), and drop it to your Manage Extensions page to install.
 
 ![SoundCloudify](http://i.imgur.com/S12Ix9j.png)
 
