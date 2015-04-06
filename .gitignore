@@ -7,3 +7,5 @@ dist
 app/bower_components
 test/bower_components
 app/scripts/.module-cache
+package
+*.pem
