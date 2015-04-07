@@ -15,6 +15,7 @@ And ... it's free, opensource, yaaaay!!!
 
 
 ##VERSION 1.1
+* LastFM integration
 * Social Sharing
 * Share playlist
 * Drag n Drop playlist
