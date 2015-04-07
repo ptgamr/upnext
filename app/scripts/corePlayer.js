@@ -4,7 +4,7 @@
 
     var soundCloudify = angular.module('soundCloudify');
 
-    soundCloudify.service('CorePlayer', function($rootScope, $window, $mdToast, Messaging, NowPlaying, CLIENT_ID, GATracker) {
+    soundCloudify.service('CorePlayer', function($rootScope, $window, $mdToast, Messaging, NowPlaying, CLIENT_ID, GATracker, LastFMAuthentication) {
 
         function debounce(fn, delay) {
             var timer = null;
@@ -246,8 +246,8 @@
 
             var self = this;
 
-            if (!$window.LastFM.isAuth()) {
-                $window.LastFM.auth(function() {
+            if (!LastFMAuthentication.isAuth()) {
+                LastFMAuthentication.auth(function() {
                     self.state.scrobble = true;
                 });
             } else {

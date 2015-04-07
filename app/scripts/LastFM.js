@@ -104,68 +104,49 @@
 
     window.LastFM = (function(){
 
-        var apiUrl = 'https://ws.audioscrobbler.com/2.0/';
-        var apiKey = '270d7aec2d7de22c88d90f36c66c9a1a';
-        var apiSecret = 'c8a7d4cbfba61e6b777220878bfa8cc1';
+        var API_URL = 'https://ws.audioscrobbler.com/2.0/';
+        var API_KEY = '270d7aec2d7de22c88d90f36c66c9a1a';
+        var API_SECRET = 'c8a7d4cbfba61e6b777220878bfa8cc1';
         
         var sessionKey = localStorage.getItem('lastfm.sessionKey');
         var token = localStorage.getItem('lastfm.token');
 
         return {
-            auth: auth,
-            isAuth: isAuth,
+            checkTrackInfo: checkTrackInfo,
             updateNowPlaying: updateNowPlaying,
             scrobble: scrobble
         };
 
-        function auth() {
-
-            //in the process of auth, continue to fetch the sessionKey
-            if (token) {
-                //open the last.fm auth page
-                // var authUrl = 'https://www.last.fm/api/auth/?api_key=' + apiKey + '&token=' + token;
-                // chrome.tabs.create({active: true, url: authUrl});
-                var params = {
-                    api_key: apiKey,
-                    token: token,
-                    method: 'auth.getSession'
-                };
-
-                //do a signed request
-                _doRequest('GET', params, true, function(data) {
-                    if (data.session && data.session.key) {
-                        console.log('session key: ' + data.session.key);
-                        sessionKey = data.session.key;
-                        localStorage.setItem('lastfm.sessionKey', data.session.key);
-                        token = '';
-                        localStorage.setItem('lastfm.token', '');
-                    } else {
-                        if (data.error === 4) { //Invalid authentication token supplied
-                            _requestToken();            
-                        } else if (data.error = 14) { //This token has not been authorized
-                            _openLastFmAuthentication(token);
-                        }
-                    }
-                });
-
-            } else {
-                _requestToken();
-            }
-        }
-
-        function isAuth() {
-            return !!sessionKey;
-        }
-
-        function updateNowPlaying(track) {
+        function checkTrackInfo(track, successCallback, failCallback) {
 
             var trackInfo = TrackInfoParser.parse(track);
+
+            var params = {
+                method: 'track.getInfo',
+                track: trackInfo.track,
+                artist: trackInfo.artist,
+                api_key: API_KEY
+            };
+
+            function okCb() {
+                
+            }
+
+            function errCb() {
+                
+            }
+
+            _doRequest('GET', params, true, okCb, errCb);
+
+        }
+
+        function updateNowPlaying(trackInfo) {
 
             var params = {
                 method: 'track.updatenowplaying',
                 track: trackInfo.track,
                 artist: trackInfo.artist,
-                api_key: apiKey,
+                api_key: API_KEY,
                 sk: sessionKey
             };
 
@@ -180,7 +161,7 @@
             _doRequest('POST', params, true, okCb, errCb);
         }
 
-        function scrobble(track) {
+        function scrobble(trackInfo) {
 
             var trackInfo = TrackInfoParser.parse(track);
 
@@ -189,7 +170,7 @@
                 'timestamp[0]': track.startTimestamp,
                 'track[0]': trackInfo.track,
                 'artist[0]': trackInfo.artist,
-                api_key: apiKey,
+                api_key: API_KEY,
                 sk: sessionKey
             };
 
@@ -202,10 +183,6 @@
             }
 
             _doRequest('POST', params, true, okCb, errCb);
-        }
-
-        function signCall() {
-
         }
 
         function _createSignature(params) {
@@ -231,37 +208,8 @@
             }
 
             // append secret
-            return md5(o + apiSecret);
+            return md5(o + API_SECRET);
 
-        }
-
-        function _requestToken() {
-
-            //unsigned request
-            _doRequest(
-                'GET',
-                {method: 'auth.getToken', api_key: apiKey},
-                false,
-                function(data) {
-                    if (data.token) {
-                        console.log('token: ' + data.token);
-                        localStorage.setItem('lastfm.token', data.token);
-                        token = data.token;
-                        _openLastFmAuthentication(data.token);
-                    } else {
-                        console.log('LastFM.auth: no token key found');
-                    }
-                },
-                function() {
-                    console.log('LastFM._requestToken: error');
-                }
-            );
-        }
-
-        function _openLastFmAuthentication(token) {
-            //open the last.fm auth page
-            var authUrl = 'https://www.last.fm/api/auth/?api_key=' + apiKey + '&token=' + token;
-            chrome.tabs.create({active: true, url: authUrl});
         }
 
         /**
@@ -277,7 +225,7 @@
          * @param errCb
          */
         function _doRequest(method, params, signed, okCb, errCb) {
-            params.api_key = config.apiKey;
+            params.api_key = config.API_KEY;
 
             if (signed) {
                 params.api_sig = _createSignature(params);
@@ -293,7 +241,7 @@
                 }
             }
 
-            var url = apiUrl + '?' + paramPairs.join('&');
+            var url = API_URL + '?' + paramPairs.join('&');
 
             if (method === 'GET') {
                 $.get(url)
