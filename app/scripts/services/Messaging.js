@@ -37,6 +37,7 @@
                 registerTimeUpdateHandler: registerTimeUpdateHandler,
                 registerEndedHandler: registerEndedHandler,
                 registerTrackChangedFromBackgroundHandler: registerTrackChangedFromBackgroundHandler,
+
                 sendPlayMessage: sendPlayMessage,
                 sendNextMessage: sendNextMessage,
                 sendPrevMessage: sendPrevMessage,
@@ -44,7 +45,9 @@
                 sendClearMessage: sendClearMessage,
                 sendResumeMessage: sendResumeMessage,
                 sendSeekMessage: sendSeekMessage,
-                sendVolumeMessage: sendVolumeMessage
+                sendVolumeMessage: sendVolumeMessage,
+
+                sendLastFmAuthenticationMessage: sendLastFmAuthenticationMessage
         };
 
         function registerErrorHandler(callback) {
@@ -94,10 +97,15 @@
                     xpos: xpos
             }});
         }
+
         function sendVolumeMessage(volume) {
             port.postMessage({message: 'scd.volume', data: {
                     volume: volume
             }});
+        }
+
+        function sendLastFmAuthenticationMessage() {
+            port.postMessage({message: 'lastfm.authentication'});
         }
     }    
 

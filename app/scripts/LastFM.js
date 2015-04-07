@@ -55,7 +55,7 @@
             var separators = [' - ', ' – ', '-', '–', ':'];
 
             // check the string for match.
-            for (i in separators) {
+            for (var i in separators) {
                 var sep = separators[i];
                 var index = str.indexOf(sep);
                 if (index > -1)
@@ -109,13 +109,17 @@
         var API_SECRET = 'c8a7d4cbfba61e6b777220878bfa8cc1';
         
         var sessionKey = localStorage.getItem('lastfm.sessionKey');
-        var token = localStorage.getItem('lastfm.token');
 
         return {
+            onAuthSuccess: onAuthSuccess,
             checkTrackInfo: checkTrackInfo,
             updateNowPlaying: updateNowPlaying,
             scrobble: scrobble
         };
+
+        function onAuthSuccess() {
+            sessionKey = localStorage.getItem('lastfm.sessionKey');
+        }
 
         function checkTrackInfo(track, successCallback, failCallback) {
 
@@ -128,19 +132,15 @@
                 api_key: API_KEY
             };
 
-            function okCb() {
-                
-            }
-
-            function errCb() {
-                
-            }
-
-            _doRequest('GET', params, true, okCb, errCb);
-
+            _doRequest('GET', params, true, successCallback, failCallback);
         }
 
         function updateNowPlaying(trackInfo) {
+
+            if (!sessionKey) {
+                console.log('LastFM: no sessionKey');
+                return;
+            }
 
             var params = {
                 method: 'track.updatenowplaying',
@@ -163,11 +163,14 @@
 
         function scrobble(trackInfo) {
 
-            var trackInfo = TrackInfoParser.parse(track);
+            if (!sessionKey) {
+                console.log('LastFM: no sessionKey');
+                return;
+            }
 
             var params = {
                 method: 'track.scrobble',
-                'timestamp[0]': track.startTimestamp,
+                'timestamp[0]': trackInfo.startTimestamp,
                 'track[0]': trackInfo.track,
                 'artist[0]': trackInfo.artist,
                 api_key: API_KEY,
@@ -225,7 +228,7 @@
          * @param errCb
          */
         function _doRequest(method, params, signed, okCb, errCb) {
-            params.api_key = config.API_KEY;
+            params.api_key = API_KEY;
 
             if (signed) {
                 params.api_sig = _createSignature(params);

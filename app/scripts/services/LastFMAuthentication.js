@@ -4,7 +4,7 @@
     angular.module('soundCloudify')
         .service("LastFMAuthentication", LastFMAuthentication);
 
-    function LastFMAuthentication($http){
+    function LastFMAuthentication($http, Messaging){
 
         var API_URL = 'https://ws.audioscrobbler.com/2.0/',
             API_KEY = '270d7aec2d7de22c88d90f36c66c9a1a',
@@ -43,6 +43,9 @@
                         _token = '';
                         localStorage.setItem('lastfm.sessionKey', data.session.key);
                         localStorage.setItem('lastfm.token', '');
+
+                        Messaging.sendLastFmAuthenticationMessage();
+
                         if (onAuthenticationSuccess) onAuthenticationSuccess.apply();
                     } else {
                         if (data.error === 4) { //Invalid authentication token supplied

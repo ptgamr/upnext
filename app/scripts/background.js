@@ -304,6 +304,7 @@ Player.prototype = {
     },
 
     play: function(track) {
+
         if (track.origin === ORIGIN_YOUTUBE) {
             this.soundcloudPlayer.clear();
             this.youtubePlayer.play(track);
@@ -313,7 +314,29 @@ Player.prototype = {
             this.soundcloudPlayer.play(track);
             this.activePlayer = soundcloudPlayer;
         }
+
+
         chrome.browserAction.setIcon({path: 'images/icon-38.png'});
+
+        if (this.state.scrobble) {
+            var self = this;
+            window.LastFM.checkTrackInfo(track, function(lastFmTrack) {
+                console.log('checkTrackInfo: success');
+                if (lastFmTrack.track) {
+                    self.state.currentTrack.startTimestamp = Math.floor(Date.now() / 1000);
+                    self.state.currentTrack.lastFmTrack = lastFmTrack.track.name;
+                    self.state.currentTrack.lastFmArtirst = lastFmTrack.track.artist.name;
+                    //TODO: inform frontend?
+                    window.LastFM.updateNowPlaying({
+                        track: lastFmTrack.track.name,
+                        artist: lastFmTrack.track.artist.name
+                    });
+                }
+            }, function() {
+                self.state.currentTrack.lastFmValidate = false;
+                console.log('checkTrackInfo: error');
+            })
+        }
     },
 
     pause: function() {
@@ -383,6 +406,17 @@ var youtubePlayer = new YoutubePlayer({
 var mainPlayer = new Player(soundcloudPlayer, youtubePlayer);
 
 function onTimeUpdate(currentTime, duration) {
+    
+    if (currentTime > 10 && mainPlayer.state.currentTrack.lastFmTrack && !mainPlayer.state.currentTrack.hasScrobbled) {
+        window.LastFM.scrobble({
+            track: mainPlayer.state.currentTrack.lastFmTrack,
+            artist: mainPlayer.state.currentTrack.lastFmArtirst,
+            startTimestamp: mainPlayer.state.currentTrack.startTimestamp
+        });
+
+        mainPlayer.state.currentTrack.hasScrobbled = true;
+    }
+
     if (!currentPort) return;
     currentPort.postMessage({message: 'scd.timeupdate', data: {
         currentTime: currentTime,
@@ -523,6 +557,8 @@ chrome.runtime.onConnect.addListener(function(port) {
             case 'scd.volume':
                 mainPlayer.setVolume(data.volume);
                 break;
+            case 'lastfm.authentication':
+                window.LastFM.onAuthSuccess();
         }
     });
 
