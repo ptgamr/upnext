@@ -23,7 +23,7 @@
     <section class="page-header">
       <h1 class="project-name">SoundCloudify</h1>
       <h2 class="project-tagline">Music streaming for SoundCloud and Youtube</h2>
-      <a href="#" onclick='install()' class="btn">Install Now!</a>
+      <a href="#" onclick='chrome.webstore.install()' id="install-button" class="btn">Install Now!</a>
       <a href="https://github.com/ptgamr/soundcloudify" class="btn">View on GitHub</a>
     </section>
 
@@ -107,6 +107,12 @@ Unless required by applicable law or agreed to in writing, software distributed 
   
     ga('create', 'UA-61308350-1', 'auto');
     ga('send', 'pageview');
+  </script>
+  
+  <script>
+    if (document.getElementById('extension-is-installed')) {
+      document.getElementById('install-button').style.display = 'none';
+    }
   </script>
 
   </body>
