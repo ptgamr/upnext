@@ -262,6 +262,7 @@
 
             this.tracks[this.state.currentIndex].manualTrack = manualScrobble.track;
             this.tracks[this.state.currentIndex].manualArtist = manualScrobble.artist;
+
             NowPlaying.saveList(this.tracks);
         };
 
@@ -308,6 +309,9 @@
         Messaging.registerLastFmScrobbledHandler(function() {
             self.state.currentTrack.scrobbled = true;
             self.state.currentTrack.lastFmValidate = true;
+
+            this.tracks[this.state.currentIndex].lastFmValidate = true;
+            NowPlaying.saveList(this.tracks);
         })
     });
 })();

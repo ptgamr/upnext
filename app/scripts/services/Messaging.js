@@ -131,7 +131,7 @@
             port.postMessage({message: 'lastfm.manualScrobble', data: {
                 track: manualScrobble.track,
                 artist: manualScrobble.artist
-            }});   
+            }});
         }
     }    
 
