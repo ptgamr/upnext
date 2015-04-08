@@ -4,7 +4,7 @@
     angular.module('soundCloudify')
         .directive('scdPlayer', soundCloudifyPlayerDirective);
 
-    function soundCloudifyPlayerDirective($mdSidenav, $document, CorePlayer) {
+    function soundCloudifyPlayerDirective(CorePlayer) {
         return {
             restrict: 'E',
             templateUrl: 'scripts/views/player.html',
@@ -12,26 +12,23 @@
 
                 scope.player = CorePlayer;
                 scope.volume = scope.player.state.volume * 100;
-
-                scope.toggleNowPlaying = function() {
-                    $mdSidenav('right').toggle()
-                        .then(function(){
-                            $document.find('md-backdrop').addClass('md-locked-open');
-                        });
+                scope.manualScrobble = {
+                    track: '',
+                    artist: ''
                 };
 
-                scope.isNowPlayingOpen = function() {
-                    return $mdSidenav('right').isOpen();
-                };
+                scope.sendManualScrobble = function() {
 
-                scope.closeNowPlaying = function() {
-                    $mdSidenav('right').toggle()
+                    if (!scope.manualScrobble.track || !scope.manualScrobble.artist) {
+                        return;
+                    }
+                    CorePlayer.sendManualScrobble(scope.manualScrobble);
                 };
 
                 scope.doSeek = function(e) {
                     var xpos = e.offsetX / e.target.offsetWidth;
                     CorePlayer.seek(xpos);
-                }
+                };
 
                 scope.$watch('volume', function(val) {
                     if (val) {

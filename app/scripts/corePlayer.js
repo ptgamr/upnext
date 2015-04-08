@@ -257,6 +257,14 @@
             NowPlaying.saveState(self.state);
         };
 
+        this.sendManualScrobble = function(manualScrobble) {
+            Messaging.sendManualScrobbleMessage(manualScrobble);
+
+            this.tracks[this.state.currentIndex].manualTrack = manualScrobble.track;
+            this.tracks[this.state.currentIndex].manualArtist = manualScrobble.artist;
+            NowPlaying.saveList(this.tracks);
+        };
+
         this.markCurrentTrackError = function() {
             this.state.currentTrack.error = true;
             this.tracks[this.state.currentIndex].error = true;
@@ -299,6 +307,7 @@
 
         Messaging.registerLastFmScrobbledHandler(function() {
             self.state.currentTrack.scrobbled = true;
+            self.state.currentTrack.lastFmValidate = true;
         })
     });
 })();

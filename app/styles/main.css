@@ -120,6 +120,14 @@ body#soundcloudify {
   -webkit-transition: all .25s ease-in-out;
 }
 
+#player .artwork .show-on-hover.always-show {
+  opacity: 1;
+}
+
+#player .artwork:hover .show-on-hover {
+  opacity: 1;
+}
+
 #player .artwork .show-on-hover  a {
   position: absolute;
   bottom: 10px;
@@ -127,13 +135,35 @@ body#soundcloudify {
   font-size: 26px;
 }
 
+#player .lastfm-manual {
+  position: absolute;
+  left: 0;
+  right: 0;
+  padding: 20px 10px;
+}
+
+#player .lastfm-manual strong {
+  display: block;
+  color: rgb(244,67,54);
+  padding-bottom: 10px;
+}
+
+#player .lastfm-manual md-input-container {
+  padding-bottom: 10px;
+}
+
+#player .lastfm-manual .md-button {
+  float: right;
+}
+
+#player .lastfm-manual h4{
+  color: #fff;
+}
+
 #player .view-original-link {text-decoration: none;}
 #player .view-original-link .icon-soundcloud { color: #FBFBFC; }
 #player .view-original-link .icon-youtube { color: #FBFBFC; font-size: 16px;}
 
-#player .artwork:hover .show-on-hover {
-  opacity: 1;
-}
 
 
 #player .artwork > img{
@@ -179,7 +209,7 @@ body#soundcloudify {
 
 .player-sub-controls {margin-top: 10px;}
 .player-sub-controls .player-control {color: #bbb; font-size: 18px; width: 40px;}
-.player-sub-controls .player-control.control-last-fm {}
+.player-sub-controls .player-control.control-last-fm > span {font-size: 12px; position: absolute; top: 0; right: 2px;}
 .player-sub-controls .player-control .repeat-one {position: absolute; top: 5px; right: 5px; font-size: 10px; font-weight: bold;}
 .player-sub-controls .player-control md-icon { width: 12px; height: 12px;}
 

@@ -315,40 +315,52 @@ Player.prototype = {
             this.activePlayer = soundcloudPlayer;
         }
 
+        this.state.currentTrack.startTimestamp = Math.floor(Date.now() / 1000);
+
 
         chrome.browserAction.setIcon({path: 'images/icon-38.png'});
 
         if (this.state.scrobble) {
             var self = this;
-            window.LastFM.checkTrackInfo(track, function(lastFmTrack) {
-                console.log('checkTrackInfo: success');
-                if (lastFmTrack.track) {
-                    self.state.currentTrack.startTimestamp = Math.floor(Date.now() / 1000);
-                    self.state.currentTrack.lastFmTrack = lastFmTrack.track.name;
-                    self.state.currentTrack.lastFmArtirst = lastFmTrack.track.artist.name;
-                    chrome.storage.local.set({'nowPlayingState': self.state});
 
-                    //TODO: inform frontend?
-                    window.LastFM.updateNowPlaying({
-                        track: lastFmTrack.track.name,
-                        artist: lastFmTrack.track.artist.name
-                    });
-                } else if (lastFmTrack.error) {
+            if(self.state.currentTrack.lastFmTrack || self.state.currentTrack.manualTrack) {
+
+                window.LastFM.updateNowPlaying({
+                    track: self.state.currentTrack.lastFmTrack || self.state.currentTrack.manualTrack,
+                    artist: self.state.currentTrack.lastFmArtirst || self.state.currentTrack.manualArtist
+                });
+
+            } else {
+                window.LastFM.checkTrackInfo(track, function(lastFmTrack) {
+                    console.log('checkTrackInfo: success');
+                    if (lastFmTrack.track) {
+                        self.state.currentTrack.lastFmTrack = lastFmTrack.track.name;
+                        self.state.currentTrack.lastFmArtirst = lastFmTrack.track.artist.name;
+                        chrome.storage.local.set({'nowPlayingState': self.state});
+
+                        //TODO: inform frontend?
+                        window.LastFM.updateNowPlaying({
+                            track: lastFmTrack.track.name,
+                            artist: lastFmTrack.track.artist.name
+                        });
+                    } else if (lastFmTrack.error) {
+                        self.state.currentTrack.lastFmValidate = false;
+                        chrome.storage.local.set({'nowPlayingState': self.state});
+
+                        if (!currentPort) return;
+                        currentPort.postMessage({message: 'lastfm.trackInvalid'});    
+                    }
+                }, function() {
                     self.state.currentTrack.lastFmValidate = false;
                     chrome.storage.local.set({'nowPlayingState': self.state});
 
                     if (!currentPort) return;
-                    currentPort.postMessage({message: 'lastfm.trackInvalid'});    
-                }
-            }, function() {
-                self.state.currentTrack.lastFmValidate = false;
-                chrome.storage.local.set({'nowPlayingState': self.state});
+                    currentPort.postMessage({message: 'lastfm.trackInvalid'});
 
-                if (!currentPort) return;
-                currentPort.postMessage({message: 'lastfm.trackInvalid'});
+                    console.log('checkTrackInfo: error');
+                });
+            }
 
-                console.log('checkTrackInfo: error');
-            })
         }
     },
 
@@ -400,6 +412,47 @@ Player.prototype = {
     setVolume: function(volume) {
         this.soundcloudPlayer.setVolume(volume);
         this.youtubePlayer.setVolume(volume);
+    },
+
+    scrobble: function(manualScrobble) {
+
+        this.scrobbling = true;
+
+        var self = this, track, artist;
+
+        if (manualScrobble.track && manualScrobble.artist) {
+            self.state.currentTrack.manualTrack = manualScrobble.track;
+            self.state.currentTrack.manualArtist = manualScrobble.artist;
+        }
+
+        track = self.state.currentTrack.lastFmTrack || self.state.currentTrack.manualTrack;
+        artist = self.state.currentTrack.lastFmArtirst || self.state.currentTrack.manualArtist;
+
+        if (!track || !artist) {
+            throw new Error('LastFM scrobbling has failed because of missing information!');
+        }
+
+        window.LastFM.scrobble({
+            track: track,
+            artist: artist,
+            startTimestamp: self.state.currentTrack.startTimestamp
+        }, function() {
+            self.scrobbling = false;
+            self.state.currentTrack.scrobbled = true;
+            self.state.currentTrack.lastFmValidate = true;
+            //TODO: replace with savePlayerState() method
+            chrome.storage.local.set({'nowPlayingState': self.state});
+
+            if (!currentPort) return;
+            currentPort.postMessage({message: 'lastfm.scrobbled'});
+        });
+    },
+
+    shouldScrobble: function(currentTime) {
+        return currentTime > 30 &&
+                !this.scrobbling &&
+                !this.state.currentTrack.scrobbled &&
+                (this.state.currentTrack.lastFmTrack || this.state.currentTrack.manualTrack);
     }
 };
 
@@ -417,27 +470,11 @@ var youtubePlayer = new YoutubePlayer({
 });
 
 var mainPlayer = new Player(soundcloudPlayer, youtubePlayer);
-var isScrobbling = false;
 
 function onTimeUpdate(currentTime, duration) {
 
-    if (!isScrobbling && currentTime > 30 && !mainPlayer.state.currentTrack.scrobbled && mainPlayer.state.currentTrack.lastFmTrack) {
-        
-        isScrobbling = true;
-
-        window.LastFM.scrobble({
-            track: mainPlayer.state.currentTrack.lastFmTrack,
-            artist: mainPlayer.state.currentTrack.lastFmArtirst,
-            startTimestamp: mainPlayer.state.currentTrack.startTimestamp
-        }, function() {
-            isScrobbling = false;
-            mainPlayer.state.currentTrack.scrobbled = true;
-            //TODO: replace with savePlayerState() method
-            chrome.storage.local.set({'nowPlayingState': mainPlayer.state});
-
-            if (!currentPort) return;
-            currentPort.postMessage({message: 'lastfm.scrobbled'});
-        });
+    if (mainPlayer.shouldScrobble(currentTime)) {
+        mainPlayer.scrobble();
     }
 
     if (!currentPort) return;
@@ -582,6 +619,9 @@ chrome.runtime.onConnect.addListener(function(port) {
                 break;
             case 'lastfm.authentication':
                 window.LastFM.onAuthSuccess();
+            case 'lastfm.manualScrobble':
+                mainPlayer.scrobble({track: data.track, artist: data.artist});
+
         }
     });
 

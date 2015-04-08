@@ -33,6 +33,10 @@
                     if(lastFmInvalidHandler)
                         lastFmInvalidHandler();
                     break;
+                case 'lastfm.scrobbled':
+                    if(lastFmScrobbledHandler)
+                        lastFmScrobbledHandler();
+                    break;
             }
         });
             
@@ -53,7 +57,8 @@
                 sendSeekMessage: sendSeekMessage,
                 sendVolumeMessage: sendVolumeMessage,
 
-                sendLastFmAuthenticationMessage: sendLastFmAuthenticationMessage
+                sendLastFmAuthenticationMessage: sendLastFmAuthenticationMessage,
+                sendManualScrobbleMessage: sendManualScrobbleMessage
         };
 
         function registerErrorHandler(callback) {
@@ -120,6 +125,13 @@
 
         function sendLastFmAuthenticationMessage() {
             port.postMessage({message: 'lastfm.authentication'});
+        }
+
+        function sendManualScrobbleMessage(manualScrobble) {
+            port.postMessage({message: 'lastfm.manualScrobble', data: {
+                track: manualScrobble.track,
+                artist: manualScrobble.artist
+            }});   
         }
     }    
 
