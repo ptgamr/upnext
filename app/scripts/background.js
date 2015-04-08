@@ -326,14 +326,27 @@ Player.prototype = {
                     self.state.currentTrack.startTimestamp = Math.floor(Date.now() / 1000);
                     self.state.currentTrack.lastFmTrack = lastFmTrack.track.name;
                     self.state.currentTrack.lastFmArtirst = lastFmTrack.track.artist.name;
+                    chrome.storage.local.set({'nowPlayingState': self.state});
+
                     //TODO: inform frontend?
                     window.LastFM.updateNowPlaying({
                         track: lastFmTrack.track.name,
                         artist: lastFmTrack.track.artist.name
                     });
+                } else if (lastFmTrack.error) {
+                    self.state.currentTrack.lastFmValidate = false;
+                    chrome.storage.local.set({'nowPlayingState': self.state});
+
+                    if (!currentPort) return;
+                    currentPort.postMessage({message: 'lastfm.trackInvalid'});    
                 }
             }, function() {
                 self.state.currentTrack.lastFmValidate = false;
+                chrome.storage.local.set({'nowPlayingState': self.state});
+
+                if (!currentPort) return;
+                currentPort.postMessage({message: 'lastfm.trackInvalid'});
+
                 console.log('checkTrackInfo: error');
             })
         }
@@ -404,17 +417,27 @@ var youtubePlayer = new YoutubePlayer({
 });
 
 var mainPlayer = new Player(soundcloudPlayer, youtubePlayer);
+var isScrobbling = false;
 
 function onTimeUpdate(currentTime, duration) {
-    
-    if (currentTime > 10 && mainPlayer.state.currentTrack.lastFmTrack && !mainPlayer.state.currentTrack.hasScrobbled) {
+
+    if (!isScrobbling && currentTime > 30 && !mainPlayer.state.currentTrack.scrobbled && mainPlayer.state.currentTrack.lastFmTrack) {
+        
+        isScrobbling = true;
+
         window.LastFM.scrobble({
             track: mainPlayer.state.currentTrack.lastFmTrack,
             artist: mainPlayer.state.currentTrack.lastFmArtirst,
             startTimestamp: mainPlayer.state.currentTrack.startTimestamp
-        });
+        }, function() {
+            isScrobbling = false;
+            mainPlayer.state.currentTrack.scrobbled = true;
+            //TODO: replace with savePlayerState() method
+            chrome.storage.local.set({'nowPlayingState': mainPlayer.state});
 
-        mainPlayer.state.currentTrack.hasScrobbled = true;
+            if (!currentPort) return;
+            currentPort.postMessage({message: 'lastfm.scrobbled'});
+        });
     }
 
     if (!currentPort) return;

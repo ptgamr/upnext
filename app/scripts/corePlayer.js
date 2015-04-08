@@ -292,6 +292,14 @@
         Messaging.registerEndedHandler(function() {
             self.stop();
         });
+
+        Messaging.registerLastFmInvalidHandler(function() {
+            self.state.currentTrack.lastFmValidate = false;
+        });
+
+        Messaging.registerLastFmScrobbledHandler(function() {
+            self.state.currentTrack.scrobbled = true;
+        })
     });
 })();
 

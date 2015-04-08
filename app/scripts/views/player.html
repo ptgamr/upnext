@@ -41,12 +41,12 @@
             <md-icon md-font-icon="icon ion-android-volume-up" alt="Volume"></md-icon>
         </section>
         <section layout="row" layout-margin layout-align="center center" class="player-sub-controls">
-            <md-button ng-class="{'md-primary': player.state.repeat !== 0}" aria-label="Toggle Repeat" class="player-control control-repeat" ng-click="player.toggleRepeat()">
+            <md-button ng-class="{'md-primary': player.state.repeat !== 0}" aria-label="Toggle Repeat" class="player-control control-repeat" ng-click="player.toggleRepeat()" title="shuffle">
                 <i class="icon ion-arrow-swap" title="{{player.state.repeat === 2 ? 'repeat one' : 'repeat all'}}"></i>
                 <span class="repeat-one" ng-if="player.state.repeat === 2">1</span>
             </md-button>
-            <md-button ng-class="{'md-primary': player.state.shuffle}" aria-label="Toggle Shuffle" class="player-control control-shuffle" ng-click="player.toggleShuffle()">
-                <i class="icon ion-shuffle" title="shuffle"></i>
+            <md-button ng-class="{'md-primary': player.state.shuffle}" aria-label="Toggle Shuffle" class="player-control control-shuffle" ng-click="player.toggleShuffle()" title="shuffle">
+                <i class="icon ion-shuffle"></i>
             </md-button>
             <md-button ng-class="{'md-primary': player.state.scrobble, 'md-warn': player.state.scrobble && player.state.currentTrack.lastFmValidate === false}" 
                         class="player-control control-last-fm" 

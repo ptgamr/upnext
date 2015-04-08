@@ -135,7 +135,7 @@
             _doRequest('GET', params, true, successCallback, failCallback);
         }
 
-        function updateNowPlaying(trackInfo) {
+        function updateNowPlaying(trackInfo, successCallback, failCallback) {
 
             if (!sessionKey) {
                 console.log('LastFM: no sessionKey');
@@ -150,18 +150,10 @@
                 sk: sessionKey
             };
 
-            function okCb() {
-                console.log('update now playing successfully');
-            }
-
-            function errCb() {
-                console.log('update now playing error');   
-            }
-
-            _doRequest('POST', params, true, okCb, errCb);
+            _doRequest('POST', params, true, successCallback, failCallback);
         }
 
-        function scrobble(trackInfo) {
+        function scrobble(trackInfo, successCallback, failCallback) {
 
             if (!sessionKey) {
                 console.log('LastFM: no sessionKey');
@@ -177,15 +169,7 @@
                 sk: sessionKey
             };
 
-            function okCb() {
-                console.log('scrobbling successfully');
-            }
-
-            function errCb() {
-                console.log('scrobbling error');   
-            }
-
-            _doRequest('POST', params, true, okCb, errCb);
+            _doRequest('POST', params, true, successCallback, failCallback);
         }
 
         function _createSignature(params) {

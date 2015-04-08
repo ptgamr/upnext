@@ -5,7 +5,7 @@
         .factory("Messaging", MessagingService);
 
     function MessagingService() {
-        var onTimeUpdate, onEnded, onTrackChanged, onError;
+        var onTimeUpdate, onEnded, onTrackChanged, onError, lastFmInvalidHandler, lastFmScrobbledHandler;
 
         var port = chrome.runtime.connect({name: "soundcloudify"});
 
@@ -29,6 +29,10 @@
                     if(onError)
                         onError();
                     break;
+                case 'lastfm.trackInvalid':
+                    if(lastFmInvalidHandler)
+                        lastFmInvalidHandler();
+                    break;
             }
         });
             
@@ -37,6 +41,8 @@
                 registerTimeUpdateHandler: registerTimeUpdateHandler,
                 registerEndedHandler: registerEndedHandler,
                 registerTrackChangedFromBackgroundHandler: registerTrackChangedFromBackgroundHandler,
+                registerLastFmInvalidHandler: registerLastFmInvalidHandler,
+                registerLastFmScrobbledHandler: registerLastFmScrobbledHandler,
 
                 sendPlayMessage: sendPlayMessage,
                 sendNextMessage: sendNextMessage,
@@ -64,6 +70,14 @@
 
         function registerTrackChangedFromBackgroundHandler(callback) {
             onTrackChanged = callback;
+        }
+
+        function registerLastFmInvalidHandler(callback) {
+            lastFmInvalidHandler = callback;
+        }
+
+        function registerLastFmScrobbledHandler(callback) {
+            lastFmScrobbledHandler = callback;
         }
 
         function sendPlayMessage(track) {
