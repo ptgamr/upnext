@@ -1,7 +1,9 @@
 <div ui-view></div>
 <md-toolbar class="bottom-toolbar">
     <div class="md-toolbar-tools">
-        <span flex></span>
+        <span flex>
+            <md-button ng-click="chartsCtrl.playAll()" ng-show="'charts.detail' | isState">play all</md-button>
+        </span>
         <span flex></span>
         <span>
         	<configuration></configuration>

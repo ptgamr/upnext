@@ -45,6 +45,7 @@
                   $mdToast.simple()
                     .content('No track to play')
                     .position('bottom right')
+                    .parent(angular.element(document.querySelector('#tab-content')))
                     .hideDelay(2000)
                 );
                 return;
