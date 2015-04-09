@@ -8,14 +8,13 @@ It's not just only a player, it's a way to discover new music. SoundCloud is a p
 
 And ... it's free, opensource, yaaaay!!!
 
-##KEY FEATURES: (v1.0)
-- Music Discovery: Top Charts, Search from Youtube & Soundcloud.
-- Player: all you playing history will not be cleared until you do it. 'Up Next' feature help you planning your playback without the need to stop the current song.
-- Playlist: keep track of your loving music. Make them organized.
+##KEY FEATURES: (v1.1)
+- Music Discovery
+- Playback history
+- Playlist management
+- Last.fm scrobbling
 
-
-##VERSION 1.1
-* LastFM integration
+##VESION 1.x TODO LIST
 * Social Sharing
 * Share playlist
 * Drag n Drop playlist
@@ -27,6 +26,13 @@ And ... it's free, opensource, yaaaay!!!
 ##VERSION 2.0
 * Sync music with your devices
 * Music recomendation
+
+##CHANGES LOG
+###v1.1
+- last.fm integration
+- better repeat logic
+- "play all" button when view a chart
+- background.js enhancements for syncing data with foreground
 
 ##License
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use any files in this repository except in compliance with the License. You may obtain a copy of the License at
