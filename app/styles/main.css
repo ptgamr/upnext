@@ -69,6 +69,13 @@ md-dialog {color: #bbb;}
 md-dialog .md-actions .md-button{color: #bbb;}
 md-dialog md-input-container.md-default-theme .md-input {text-shadow: none;}
 
+#configuration .float-container { margin: 15px; }
+#configuration .float-container .float-left{ float: left; }
+#configuration .float-container .float-right{ float: right; }
+#configuration .float-container .float-right span { line-height: 20px;}
+#configuration .float-container md-icon {font-size: 18px; line-height: 18px; width: 29px;}
+#configuration .float-container md-input-container {padding-bottom: 0;}
+
 md-autocomplete ul li:hover, md-autocomplete ul li.selected {
   background-color: #ddd;
 }

@@ -43,16 +43,18 @@
                     scope.configuration = data['scConfig'] || {showNotification: true, scrobbleDuration: 30};
                 });
 
-                scope.$watch('configuration', function(newConf, oldConf) {
-                    if (newConf && oldConf) {
-                        var configObj = {};
-                        configObj['scConfig'] = newConf;
-                        chrome.storage.sync.set(configObj);
-                    }
-                }, true);
-
                 scope.close = function() {
                     $mdDialog.hide();   
+                };
+
+                scope.save = function() {
+
+                    if (!scope.configuration.scrobbleDuration || isNaN(scope.configuration.scrobbleDuration)) {
+                        scope.configuration.scrobbleDuration = 30;
+                    }
+
+                    chrome.storage.sync.set({'scConfig': scope.configuration});
+                    $mdDialog.hide();
                 };
             }
         };

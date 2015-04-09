@@ -488,7 +488,7 @@ Player.prototype = {
     },
 
     shouldScrobble: function(currentTime) {
-        return currentTime > 30 &&
+        return currentTime > (this.configuration.scrobbleDuration || 30) &&
                 !this.scrobbling &&
                 !this.state.currentTrack.scrobbled &&
                 (this.state.currentTrack.lastFmTrack || this.state.currentTrack.manualTrack);
