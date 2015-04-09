@@ -4,7 +4,7 @@
     angular.module('soundCloudify')
         .directive('scdPlayer', soundCloudifyPlayerDirective);
 
-    function soundCloudifyPlayerDirective(CorePlayer, $mdDialog) {
+    function soundCloudifyPlayerDirective(CorePlayer, $mdDialog, GATracker) {
         return {
             restrict: 'E',
             templateUrl: 'scripts/views/player.html',
@@ -14,6 +14,8 @@
                 scope.volume = scope.player.state.volume * 100;
 
                 scope.openManualScrobble = function($event) {
+
+                    GATracker.trackCustomEvent('lastfm', 'open manual scrobble');
 
                     if (!CorePlayer.state.scrobble || CorePlayer.state.currentTrack.scrobbled || CorePlayer.state.currentTrack.lastFmValidate !== false) {
                         return;
@@ -26,7 +28,7 @@
                         controller: DialogController
                     });
 
-                    function DialogController(scope, $mdDialog, CorePlayer) {
+                    function DialogController(scope, $mdDialog, CorePlayer, GATracker) {
                         
                         scope.close = function() {
                             $mdDialog.hide();
@@ -48,6 +50,7 @@
                             }
                             scope.scrobbling = true;
                             CorePlayer.sendManualScrobble(scope.manualScrobble);
+                            GATracker.trackCustomEvent('lastfm', 'send manual scrobble');
                         };
                     }
                 };

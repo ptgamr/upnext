@@ -474,6 +474,9 @@ Player.prototype = {
 
                 if (!currentPort) return;
                 currentPort.postMessage({message: 'lastfm.scrobbled'});
+
+                if (ga)
+                    ga('send', 'event', 'lastfm', 'scrobble success');
             } else {
                 if (!currentPort) return;
                 currentPort.postMessage({message: 'lastfm.scrobbleError', data: {

@@ -263,6 +263,7 @@
             }
 
             NowPlaying.saveState(self.state);
+            GATracker.trackPlayer('toggle scrobble', this.state.scrobble ? 'on' : 'off');
         };
 
         this.sendManualScrobble = function(manualScrobble) {
