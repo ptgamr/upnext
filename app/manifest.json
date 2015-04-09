@@ -1,5 +1,5 @@
 {
-    "name": "Soundcloudify",
+    "name": "SoundCloudify",
     "version": "1.0.6",
     "manifest_version": 2,
     "description": "__MSG_appDescription__",
@@ -26,8 +26,9 @@
     "content_scripts": [
         {
             "matches": [
-                "http://*/*",
-                "https://*/*"
+                "*://*.youtube.com/*",
+                "*://*.soundcloud.com/*",
+                "*://suggestqueries.google.com/*"
             ],
             "css": [],
             "js": [
@@ -37,15 +38,12 @@
             "all_frames": false
         }
     ],
-    "content_security_policy": "script-src 'self' 'unsafe-eval' https://www.google-analytics.com https://api.soundcloud.com https://api-v2.soundcloud.com; object-src 'self'",
+    "content_security_policy": "script-src 'self' 'unsafe-eval' https://www.google-analytics.com https://api-v2.soundcloud.com; object-src 'self'",
     "permissions": [
         "webRequest",
         "webRequestBlocking",
         "storage",
-        "notifications",
-        "https://api.soundcloud.com/*",
-        "https://api-v2.soundcloud.com/*",
-        "*://*.youtube.com/*"
+        "notifications"
     ],
     "web_accessible_resources": [
         "images/*"

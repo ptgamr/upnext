@@ -49,7 +49,8 @@
                 <i class="icon ion-shuffle"></i>
             </md-button>
             <md-button ng-class="{'md-primary': player.state.scrobble, 'md-warn': player.state.scrobble && player.state.currentTrack.lastFmValidate === false}" 
-                        class="player-control control-last-fm" 
+                        class="player-control control-last-fm"
+                        aria-label="Last.fm scrobbling"
                         title="{{getScrobbleTitle()}}"
                         ng-click="player.toggleScrobble()"
                         right-click="openManualScrobble($event)">
