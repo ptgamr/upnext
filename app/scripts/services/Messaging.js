@@ -4,7 +4,7 @@
     angular.module('soundCloudify')
         .factory("Messaging", MessagingService);
 
-    function MessagingService() {
+    function MessagingService($rootScope) {
         var onTimeUpdate, onEnded, onTrackChanged, onError, lastFmInvalidHandler, lastFmScrobbledHandler;
 
         var port = chrome.runtime.connect({name: "soundcloudify"});
@@ -34,9 +34,12 @@
                         lastFmInvalidHandler();
                     break;
                 case 'lastfm.scrobbled':
+                    $rootScope.$broadcast('lastfm.scrobbled');
                     if(lastFmScrobbledHandler)
                         lastFmScrobbledHandler();
                     break;
+                case 'lastfm.scrobbleError':
+                    $rootScope.$broadcast('lastfm.scrobbleError');
             }
         });
             

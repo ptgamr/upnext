@@ -43,6 +43,14 @@
             }
         });
 
+        NowPlaying.registerNowPlayingChangeHandler(function(tracks) {
+            self.tracks = tracks;
+        });
+
+        NowPlaying.registerNowPlayingStateChangeHandler(function(state) {
+            self.state = state;
+        });
+
         this.add = function(track, andPlay) {
 
             andPlay = andPlay || true;
@@ -282,10 +290,10 @@
             });
         });
 
-        Messaging.registerTrackChangedFromBackgroundHandler(function(data) {
-            console.log('tack changed from background');
-            self.state = data;
-        });
+        // Messaging.registerTrackChangedFromBackgroundHandler(function(data) {
+        //     console.log('tack changed from background');
+        //     self.state = data;
+        // });
 
         Messaging.registerErrorHandler(function() {
             $mdToast.show({
@@ -309,9 +317,6 @@
         Messaging.registerLastFmScrobbledHandler(function() {
             self.state.currentTrack.scrobbled = true;
             self.state.currentTrack.lastFmValidate = true;
-
-            this.tracks[this.state.currentIndex].lastFmValidate = true;
-            NowPlaying.saveList(this.tracks);
         })
     });
 })();

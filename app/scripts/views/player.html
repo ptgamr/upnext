@@ -5,18 +5,8 @@
             ng-click="doSeek($event)">
             {{ player.state.currentTime / player.state.duration }}
         </progress>
-        <div class="show-on-hover" ng-class="{'always-show': player.state.scrobble && player.state.currentTrack.lastFmValidate === false}">
+        <div class="show-on-hover">
             <div class="overlay">
-            </div>
-            <div class="lastfm-manual" ng-if="player.state.scrobble && player.state.currentTrack.lastFmValidate === false">
-                <strong>Help last.fm regconize the track</strong>
-                <md-input-container md-no-float>
-                    <input ng-model="manualScrobble.track" type="text" placeholder="Enter track name">
-                </md-input-container>
-                <md-input-container md-no-float>
-                    <input ng-model="manualScrobble.artist" type="text" placeholder="Enter artist name" />
-                </md-input-container>
-                <md-button class="md-primary" ng-click="sendManualScrobble()">send</md-button>
             </div>
             <a class="view-original-link" href="{{player.state.currentTrack.originalUrl}}" title="View Original">
                 <i ng-if="player.state.currentTrack.origin === 'sc'" class="icon-soundcloud"></i>

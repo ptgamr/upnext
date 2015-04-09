@@ -67,6 +67,7 @@ md-divider.md-default-theme {
 
 md-dialog {color: #bbb;}
 md-dialog .md-actions .md-button{color: #bbb;}
+md-dialog md-input-container.md-default-theme .md-input {text-shadow: none;}
 
 md-autocomplete ul li:hover, md-autocomplete ul li.selected {
   background-color: #ddd;
