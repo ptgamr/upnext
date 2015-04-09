@@ -33,30 +33,14 @@
             $mdDialog.show({
                 parent: parentEl,
                 targetEvent: $event,
-                template:
-                    '<md-dialog aria-label="Configuration dialog">' +
-                    '  <md-content>'+
-                    '    <h2>Settings</h2>'+
-                    '    <md-checkbox class="md-primary" ng-model="configuration.showNotification" aria-label="Toggle Desktop Notification">'+
-                    '      Show Desktop Notification'+
-                    '    </md-checkbox>'+
-                    '  </md-content>' +
-                    '  <div class="md-actions">' +
-                    '    <md-button ng-click="close()">' +
-                    '      Close' +
-                    '    </md-button>' +
-                    '  </div>' +
-                    '</md-dialog>',
-                locals: {
-                    player: vm.player
-                },
+                templateUrl: 'scripts/views/configuration.html',
                 controller: DialogController
             });
 
-            function DialogController(scope, $mdDialog, player) {
+            function DialogController(scope, $mdDialog) {
 
                 chrome.storage.sync.get('scConfig', function(data) {
-                    scope.configuration = data['scConfig'] || {showNotification: true};
+                    scope.configuration = data['scConfig'] || {showNotification: true, scrobbleDuration: 30};
                 });
 
                 scope.$watch('configuration', function(newConf, oldConf) {
