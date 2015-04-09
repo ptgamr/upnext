@@ -1,7 +1,7 @@
  <section id="search">
  	<md-content class="md-padding tab-content " playing-track-aware="track">
 	    <md-autocomplete
-	    	md-autofocus="true"
+	    	md-autofocus="!vm.search.term"
 	        md-selected-item="vm.selectedItem"
 	        md-search-text="vm.search.term"
 	        md-search-text-change="vm.search.term"
@@ -22,7 +22,7 @@
 			</md-checkbox>
 		</section>
 
-	    <section ng-show="!vm.filteredResults.length && vm.soundcloudPaginator.lastPromise.$$state.status === 1 && vm.youtubePaginator.lastPromise.$$state.status === 1">No results for <strong>{{vm.recentSearch[0]}}</strong></section>
+	    <section ng-show="vm.selectedItem && !vm.filteredResults.length && vm.soundcloudPaginator.lastPromise.$$state.status === 1 && vm.youtubePaginator.lastPromise.$$state.status === 1">No results for <strong>{{vm.recentSearch[0]}}</strong></section>
 
 	    <section class="recent-search" ng-show="vm.recentSearch.length && !vm.filteredResults.length && !(vm.soundcloudPaginator.lastPromise.$$state.status === 0 || vm.youtubePaginator.lastPromise.$$state.status === 0)">
 	        <h3>Recent search:</h3>

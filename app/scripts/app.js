@@ -54,8 +54,7 @@
 				.state('search', {
 					url: "/search",
 					templateUrl: "partials/search.html",
-					controller: 'SearchController',
-					controllerAs: 'vm'
+					controller: 'SearchController'
 				})
 				//===============================================
 				// PLAYLIST
