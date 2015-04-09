@@ -4,8 +4,8 @@
     angular.module('soundCloudify')
         .factory("Messaging", MessagingService);
 
-    function MessagingService() {
-        var onTimeUpdate, onEnded, onTrackChanged, onError;
+    function MessagingService($rootScope) {
+        var onTimeUpdate, onEnded, onTrackChanged, onError, lastFmInvalidHandler, lastFmScrobbledHandler;
 
         var port = chrome.runtime.connect({name: "soundcloudify"});
 
@@ -29,6 +29,17 @@
                     if(onError)
                         onError();
                     break;
+                case 'lastfm.trackInvalid':
+                    if(lastFmInvalidHandler)
+                        lastFmInvalidHandler();
+                    break;
+                case 'lastfm.scrobbled':
+                    $rootScope.$broadcast('lastfm.scrobbled');
+                    if(lastFmScrobbledHandler)
+                        lastFmScrobbledHandler();
+                    break;
+                case 'lastfm.scrobbleError':
+                    $rootScope.$broadcast('lastfm.scrobbleError');
             }
         });
             
@@ -37,6 +48,9 @@
                 registerTimeUpdateHandler: registerTimeUpdateHandler,
                 registerEndedHandler: registerEndedHandler,
                 registerTrackChangedFromBackgroundHandler: registerTrackChangedFromBackgroundHandler,
+                registerLastFmInvalidHandler: registerLastFmInvalidHandler,
+                registerLastFmScrobbledHandler: registerLastFmScrobbledHandler,
+
                 sendPlayMessage: sendPlayMessage,
                 sendNextMessage: sendNextMessage,
                 sendPrevMessage: sendPrevMessage,
@@ -44,7 +58,10 @@
                 sendClearMessage: sendClearMessage,
                 sendResumeMessage: sendResumeMessage,
                 sendSeekMessage: sendSeekMessage,
-                sendVolumeMessage: sendVolumeMessage
+                sendVolumeMessage: sendVolumeMessage,
+
+                sendLastFmAuthenticationMessage: sendLastFmAuthenticationMessage,
+                sendManualScrobbleMessage: sendManualScrobbleMessage
         };
 
         function registerErrorHandler(callback) {
@@ -61,6 +78,14 @@
 
         function registerTrackChangedFromBackgroundHandler(callback) {
             onTrackChanged = callback;
+        }
+
+        function registerLastFmInvalidHandler(callback) {
+            lastFmInvalidHandler = callback;
+        }
+
+        function registerLastFmScrobbledHandler(callback) {
+            lastFmScrobbledHandler = callback;
         }
 
         function sendPlayMessage(track) {
@@ -94,9 +119,21 @@
                     xpos: xpos
             }});
         }
+
         function sendVolumeMessage(volume) {
             port.postMessage({message: 'scd.volume', data: {
                     volume: volume
+            }});
+        }
+
+        function sendLastFmAuthenticationMessage() {
+            port.postMessage({message: 'lastfm.authentication'});
+        }
+
+        function sendManualScrobbleMessage(manualScrobble) {
+            port.postMessage({message: 'lastfm.manualScrobble', data: {
+                track: manualScrobble.track,
+                artist: manualScrobble.artist
             }});
         }
     }    

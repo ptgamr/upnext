@@ -4,7 +4,7 @@
     angular.module('soundCloudify')
         .directive('scdPlayer', soundCloudifyPlayerDirective);
 
-    function soundCloudifyPlayerDirective($mdSidenav, $document, CorePlayer) {
+    function soundCloudifyPlayerDirective(CorePlayer, $mdDialog) {
         return {
             restrict: 'E',
             templateUrl: 'scripts/views/player.html',
@@ -13,25 +13,54 @@
                 scope.player = CorePlayer;
                 scope.volume = scope.player.state.volume * 100;
 
-                scope.toggleNowPlaying = function() {
-                    $mdSidenav('right').toggle()
-                        .then(function(){
-                            $document.find('md-backdrop').addClass('md-locked-open');
+                scope.openManualScrobble = function($event) {
+
+                    if (CorePlayer.state.currentTrack.scrobbled || CorePlayer.state.currentTrack.lastFmValidate !== false) {
+                        return;
+                    }
+
+                    $mdDialog.show({
+                        parent: angular.element(document.body),
+                        targetEvent: $event,
+                        templateUrl: 'scripts/views/manualScrobble.html',
+                        controller: DialogController
+                    });
+
+                    function DialogController(scope, $mdDialog, CorePlayer) {
+                        
+                        scope.close = function() {
+                            $mdDialog.hide();
+                        };
+
+                        scope.$on('lastfm.scrobbled', function() {
+                            $mdDialog.hide();
                         });
-                };
 
-                scope.isNowPlayingOpen = function() {
-                    return $mdSidenav('right').isOpen();
-                };
+                        scope.$on('lastfm.scrobbled', function() {
+                            scope.error = 'Can not scrobble the track you enter';
+                        });
 
-                scope.closeNowPlaying = function() {
-                    $mdSidenav('right').toggle()
+                        scope.sendManualScrobble = function() {
+                            if (!scope.manualScrobble.track || !scope.manualScrobble.artist) {
+                                return;
+                            }
+                            CorePlayer.sendManualScrobble(scope.manualScrobble);
+                        };
+                    }
                 };
 
                 scope.doSeek = function(e) {
                     var xpos = e.offsetX / e.target.offsetWidth;
                     CorePlayer.seek(xpos);
-                }
+                };
+
+                scope.getScrobbleTitle = function() {
+                    return CorePlayer.state.currentTrack.lastFmValidate === false ?
+                                'track unregconized by last.fm, right click to edit' : 
+                                CorePlayer.state.currentTrack.scrobbled ?
+                                    'track has been scrobbled' :
+                                    'last.fm scrobble';
+                };
 
                 scope.$watch('volume', function(val) {
                     if (val) {

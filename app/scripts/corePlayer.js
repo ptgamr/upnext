@@ -4,7 +4,7 @@
 
     var soundCloudify = angular.module('soundCloudify');
 
-    soundCloudify.service('CorePlayer', function($rootScope, $mdToast, Messaging, NowPlaying, CLIENT_ID, GATracker) {
+    soundCloudify.service('CorePlayer', function($rootScope, $window, $mdToast, Messaging, NowPlaying, CLIENT_ID, GATracker, LastFMAuthentication) {
 
         function debounce(fn, delay) {
             var timer = null;
@@ -25,7 +25,8 @@
             duration: 0,
             volume: 0.5,
             repeat: 0,
-            shuffle: false
+            shuffle: false,
+            scrobble: false
         };
 
         var self = this;
@@ -40,6 +41,14 @@
             if (savedState && typeof savedState.volume !== 'undefined') {
                 self.state = savedState;
             }
+        });
+
+        NowPlaying.registerNowPlayingChangeHandler(function(tracks) {
+            self.tracks = tracks;
+        });
+
+        NowPlaying.registerNowPlayingStateChangeHandler(function(state) {
+            self.state = state;
         });
 
         this.add = function(track, andPlay) {
@@ -241,6 +250,30 @@
             GATracker.trackPlayer('toggle shuffle', this.state.shuffle ? 'on' : 'off');
         };
 
+        this.toggleScrobble = function() {
+
+            var self = this;
+
+            if (!LastFMAuthentication.isAuth()) {
+                LastFMAuthentication.auth(function() {
+                    self.state.scrobble = true;
+                });
+            } else {
+                self.state.scrobble = !self.state.scrobble;
+            }
+
+            NowPlaying.saveState(self.state);
+        };
+
+        this.sendManualScrobble = function(manualScrobble) {
+            Messaging.sendManualScrobbleMessage(manualScrobble);
+
+            this.tracks[this.state.currentIndex].manualTrack = manualScrobble.track;
+            this.tracks[this.state.currentIndex].manualArtist = manualScrobble.artist;
+
+            NowPlaying.saveList(this.tracks);
+        };
+
         this.markCurrentTrackError = function() {
             this.state.currentTrack.error = true;
             this.tracks[this.state.currentIndex].error = true;
@@ -257,10 +290,10 @@
             });
         });
 
-        Messaging.registerTrackChangedFromBackgroundHandler(function(data) {
-            console.log('tack changed from background');
-            self.state = data;
-        });
+        // Messaging.registerTrackChangedFromBackgroundHandler(function(data) {
+        //     console.log('tack changed from background');
+        //     self.state = data;
+        // });
 
         Messaging.registerErrorHandler(function() {
             $mdToast.show({
@@ -276,6 +309,15 @@
         Messaging.registerEndedHandler(function() {
             self.stop();
         });
+
+        Messaging.registerLastFmInvalidHandler(function() {
+            self.state.currentTrack.lastFmValidate = false;
+        });
+
+        Messaging.registerLastFmScrobbledHandler(function() {
+            self.state.currentTrack.scrobbled = true;
+            self.state.currentTrack.lastFmValidate = true;
+        })
     });
 })();
 

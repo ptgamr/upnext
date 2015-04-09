@@ -1,0 +1,27 @@
+<md-dialog id="configuration" aria-label="Configuration dialog">
+  <md-content>
+    <h2>Settings</h2>
+    <md-checkbox class="md-primary" ng-model="configuration.showNotification" aria-label="Toggle Desktop Notification">
+      Show desktop notification
+    </md-checkbox>
+    <div class="float-container">
+      <div class="float-left">
+        <md-icon md-font-icon="icon-lastfm"></md-icon>
+      </div>
+      <div class="float-right">
+        <span>Scrobbling after: (seconds)</span>
+        <md-input-container class="md-no-float">
+          <input ng-model="configuration.scrobbleDuration" type="number">
+        </md-input-container>
+      </div>
+    </div>
+  </md-content>
+  <div class="md-actions">
+    <md-button ng-click="close()">
+      Close
+    </md-button>
+    <md-button class="md-primary" ng-click="save()">
+      Save
+    </md-button>
+  </div>
+</md-dialog>

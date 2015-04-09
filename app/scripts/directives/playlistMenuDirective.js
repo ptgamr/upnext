@@ -46,14 +46,12 @@
 
                     $rootScope.$emit('playlist.menu.close');
 
-                    var parentEl = angular.element(document.querySelector('#tab-content'));
-
                     $mdToast.show(
                       $mdToast.simple()
                         .content('Track has been added to playlist successfully')
                         .position('bottom right')
                         .hideDelay(1000)
-                        .parent(parentEl)
+                        .parent(angular.element(document.querySelector('#tab-content')))
                     );
                 };
             }

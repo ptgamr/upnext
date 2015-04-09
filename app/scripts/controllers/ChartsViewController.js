@@ -3,7 +3,7 @@
     angular.module('soundCloudify')
             .controller('ChartsViewController', ChartsViewController)
 
-    function ChartsViewController(Category, $state, $stateParams, CorePlayer, Paginator) {
+    function ChartsViewController($scope, Category, $state, $stateParams, CorePlayer, Paginator, $mdToast, GATracker) {
         var vm = this;
         vm.category = $stateParams.category;
 
@@ -28,5 +28,31 @@
         vm.backToTopChart = function() {
             $state.go('charts.list');
         };
+
+        $scope.$on('charts.playAll', function() {
+
+            GATracker.trackDiscovery('play all', vm.category);
+
+            if (!vm.tracks.length) {
+                $mdToast.show(
+                  $mdToast.simple()
+                    .content('No track to play')
+                    .position('bottom right')
+                    .parent(angular.element(document.querySelector('#tab-content')))
+                    .hideDelay(2000)
+                );
+                return;
+            }
+
+            CorePlayer.playAll(vm.tracks);
+
+            $mdToast.show(
+                  $mdToast.simple()
+                    .content('All tracks has been addded to Now Playing list')
+                    .position('bottom right')
+                    .parent(angular.element(document.querySelector('#tab-content')))
+                    .hideDelay(2000)
+                );
+        });
     }
 }());
