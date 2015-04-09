@@ -525,9 +525,13 @@ function onTimeUpdate(currentTime, duration) {
 
 function onEnded() {
     if (mainPlayer.state.repeat === 0) {
-        mainPlayer.stop();
-        mainPlayer.seek(0);
-        currentPort.postMessage({message: 'scd.ended'});
+        if (mainPlayer.state.currentIndex === mainPlayer.tracks.length - 1) {
+            mainPlayer.stop();
+            mainPlayer.seek(0);
+            currentPort.postMessage({message: 'scd.ended'});
+        } else {
+            mainPlayer.next.call(mainPlayer);
+        }
     } else if (mainPlayer.state.repeat === 1) {
         mainPlayer.next.call(mainPlayer);
     } else {
