@@ -11,6 +11,7 @@
      </md-content>
      <div class="md-actions">
           <md-button ng-click="close()">close</md-button>
-          <md-button class="md-primary" ng-click="sendManualScrobble()">scrobble</md-button>
+          <md-button class="md-primary" ng-click="sendManualScrobble()" ng-show="!scrobbling">scrobble</md-button>
+          <md-progress-circular class="md-primary" md-mode="indeterminate" md-diameter="14" ng-show="scrobbling"></md-progress-circular>
      </div>
 </md-dialog>

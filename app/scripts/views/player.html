@@ -55,7 +55,7 @@
                         ng-click="player.toggleScrobble()"
                         right-click="openManualScrobble($event)">
                 <i class="icon-lastfm"></i>
-                <span class="icon ion-help" ng-if="player.state.currentTrack.lastFmValidate === false"></span>
+                <span class="icon ion-help" ng-if="player.state.scrobble && player.state.currentTrack.lastFmValidate === false"></span>
                 <span class="icon ion-checkmark-circled" ng-if="player.state.currentTrack.scrobbled"></span>
             </md-button>
         </section>

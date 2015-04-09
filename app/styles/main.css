@@ -66,6 +66,7 @@ md-divider.md-default-theme {
 }
 
 md-dialog {color: #bbb;}
+md-dialog .md-actions {padding: 0 16px 16px 16px; height: 40px;}
 md-dialog .md-actions .md-button{color: #bbb;}
 md-dialog md-input-container.md-default-theme .md-input {text-shadow: none;}
 
