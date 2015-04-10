@@ -64,6 +64,7 @@
             if (newSearch) {
                 mixedResults = [];
                 vm.filteredResults = [];
+                vm.showNoResultMessage = false;
                 vm.soundcloudPaginator.reset();
                 vm.youtubePaginator.reset();
 
@@ -113,6 +114,13 @@
         function concatAndMixedResult(data) {
             mixedResults = mixedResults.concat(data);
             vm.filteredResults = $filter('filter')(mixedResults, getOriginFilter(vm.toggle));
+
+            if(vm.filteredResults.length === 0 &&
+                    vm.soundcloudPaginator.lastPromise.$$state.status === 1 &&
+                    vm.youtubePaginator.lastPromise.$$state.status === 1) {
+
+                vm.showNoResultMessage = true;
+            }
         }
 
         function suggest (query) {

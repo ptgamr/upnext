@@ -158,6 +158,12 @@
                 this.state.duration = 0;
                 this.state.currentTrack = track;
                 this.state.currentIndex = index;
+
+                if (track.error) {
+                    track.error = false
+                    NowPlaying.saveList(this.tracks);
+                };
+
                 NowPlaying.saveState(this.state);
                 Messaging.sendPlayMessage(track);
             }

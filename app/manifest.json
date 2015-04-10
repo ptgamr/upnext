@@ -43,7 +43,8 @@
         "webRequest",
         "webRequestBlocking",
         "storage",
-        "notifications"
+        "notifications",
+        "*://*.youtube.com/*"
     ],
     "web_accessible_resources": [
         "images/*"
