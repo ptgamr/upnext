@@ -1,4 +1,4 @@
-###SoundCloudify: stream music from SoundCloud and Youtube, Spotify replacement
+###SoundCloudify: stream music from SoundCloud and Youtube, Last.fm Scrobbling
 
 ![SoundCloudify](http://i.imgur.com/S12Ix9j.png)
 
