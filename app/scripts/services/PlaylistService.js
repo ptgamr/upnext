@@ -36,7 +36,7 @@
         playlist.tracks.splice(trackIndex, 1);
     }
 
-    function PlaylistService($q){
+    function PlaylistService($q, $http, UserService){
 
         var PLAYLIST_STORAGE_KEY = 'playlist';
 
@@ -75,11 +75,24 @@
                 chrome.storage.local.get(PLAYLIST_STORAGE_KEY, function(data) {
                     playlistStore.items = data[PLAYLIST_STORAGE_KEY] || [];
 
-                    //the Starred Playlist should be automatically added & can not be removed
-                    if (!playlistStore.items.length) {
-                        playlistStore.items.push(new Playlist('Starred'));
-                        updateStorage();
+                    if (!playlistStore.items.length && UserService.getUser()) {
+                        $http({
+                            url: 'http://localhost:3000/playlist',
+                            method: 'GET'
+                        }).success(function(playlistFromServer) {
+                            playlistStore.items = playlistFromServer;
+                            updateStorage();
+                        }).error(function() {
+                            console.log('error get playlist from server');
+                        });
                     }
+
+
+                    // //the Starred Playlist should be automatically added & can not be removed
+                    // if (!playlistStore.items.length) {
+                    //     playlistStore.items.push(new Playlist('Starred'));
+                    //     updateStorage();
+                    // }
 
                     defer.resolve(playlistStore);
                 });

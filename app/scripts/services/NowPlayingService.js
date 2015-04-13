@@ -32,6 +32,10 @@
                 }
             }
         });
+        
+        chrome.identity.getProfileUserInfo(function(info) {
+            console.log(info);
+        })
 
         return {
             getList: getList,
