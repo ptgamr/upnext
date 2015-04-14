@@ -4,12 +4,15 @@
     angular.module('soundCloudify')
         .service("UserService", UserService);
 
-    function UserService($http){
-        var user = {
-            id: '123456',
-            email: 'anh.trinhtrung@gmail.com'
-        };
-        
+    function UserService($rootScope, $http){
+
+        var user;
+
+        chrome.identity.getProfileUserInfo(function(info) {
+            user = info;
+            $rootScope.$broadcast('chrome.identity', {user: info});
+        })
+
         return {
             getUser: getUser
         };
