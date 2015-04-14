@@ -3,7 +3,7 @@
     angular.module('soundCloudify')
             .controller('PlaylistController', PlaylistController)
 
-    function PlaylistController($rootScope, $mdToast, $state, PlaylistService, CorePlayer, GATracker) {
+    function PlaylistController($mdToast, $state, PlaylistService, CorePlayer, GATracker) {
         var vm = this;
 
         PlaylistService

@@ -36,43 +36,18 @@
         playlist.tracks.splice(trackIndex, 1);
     }
 
-    function PlaylistService($q, $http, $timeout, UserService, Pouch){
+    function PlaylistService($q, $http, UserService){
 
         var PLAYLIST_STORAGE_KEY = 'playlist';
 
         var ready = false;
 
-        var playlistDoc;
+        var playlistStore = {
+            items: null
+        };
 
-        Pouch.allDocs({include_docs: true}, function(err, doc) {
-
-            if (doc.rows.length) {
-                for (var i = 0 ; i < doc.rows.length; i++) {
-                    if (doc.rows[i].doc.type === 'playlist') {
-                        playlistDoc = doc.rows[i].doc;
-                        break;
-                    }
-                }
-            }
-
-            if (!playlistDoc) {
-
-                var starredList = new Playlist('Starred');
-
-                playlistDoc = {
-                    _id: new Date().toISOString(),
-                    type: 'playlist',
-                    items: [starredList]
-                };
-
-                Pouch.put(playlistDoc, function callback(err, result) {
-
-                    if (!err) {
-                        console.log('Successfully created a playlist doc!');
-                    }
-
-                });
-            }
+        getList().then(function() {
+            ready = true;
         });
 
         return {
@@ -94,31 +69,43 @@
 
         function getList() {
 
-            return $q(function(resolve, reject) {
-                getPlaylistDoc(resolve, reject);
-            });
+            var defer = $q.defer();
 
-            function getPlaylistDoc(resolve, reject) {
-                var timer;
+            if (playlistStore.items === null) {
+                chrome.storage.local.get(PLAYLIST_STORAGE_KEY, function(data) {
+                    playlistStore.items = data[PLAYLIST_STORAGE_KEY] || [];
 
-                if (playlistDoc) {
-                    resolve(playlistDoc);
-                } else {
-                    if (timer) {
-                        $timeout.cancel(timer);
+                    if (!playlistStore.items.length && UserService.getUser()) {
+                        $http({
+                            url: 'http://localhost:3000/playlist',
+                            method: 'GET'
+                        }).success(function(playlistFromServer) {
+                            playlistStore.items = playlistFromServer;
+                            updateStorage();
+                        }).error(function() {
+                            console.log('error get playlist from server');
+                        });
                     }
 
-                    console.log('playlist has not initialized. retrying...');
-                    timer = $timeout(function() {
-                        getPlaylistDoc(resolve, reject);
-                    }, 100);   
-                }
+
+                    // //the Starred Playlist should be automatically added & can not be removed
+                    // if (!playlistStore.items.length) {
+                    //     playlistStore.items.push(new Playlist('Starred'));
+                    //     updateStorage();
+                    // }
+
+                    defer.resolve(playlistStore);
+                });
+            } else {
+                defer.resolve(playlistStore);
             }
+
+            return defer.promise;
         }
 
         function newPlaylist(name) {
             var playlist = new Playlist(name);
-            playlistDoc.items.splice(1, 0, playlist);
+            playlistStore.items.splice(1, 0, playlist);
             updateStorage();
             return playlist;
         }
@@ -127,7 +114,7 @@
             if (typeof index === 'undefined' || isNaN(index))
                     throw new Error('Error when remove playlist: index must be specified as number');
 
-            playlistDoc.items.splice(index, 1);
+            playlistStore.items.splice(index, 1);
             updateStorage();
         }
 
@@ -135,12 +122,12 @@
             if (typeof index === 'undefined' || isNaN(index))
                     throw new Error('Error when remove playlist: index must be specified as number');
 
-            return playlistDoc.items[index];
+            return playlistStore.items[index];
         }
 
         function addTrackToPlaylist(track, index) {
 
-            var playlist = playlistDoc.items[index];
+            var playlist = playlistStore.items[index];
 
             if(!playlist)
                 throw new Error('Error when adding track: Playlist not found.');
@@ -163,7 +150,7 @@
 
         function removeTrackFromPlaylist(trackIndex, playlistIndex) {
 
-            var playlist = playlistDoc.items[playlistIndex];
+            var playlist = playlistStore.items[playlistIndex];
 
             if(!playlist)
                 throw new Error('Error when adding track: Playlist not found.');
@@ -173,7 +160,7 @@
         }
 
         function starTrack(track) {
-            var starList = playlistDoc.items[0];
+            var starList = playlistStore.items[0];
 
             if(!starList)
                 throw new Error('starTrack(): Star Playlist not found. This should be reported.');
@@ -183,7 +170,7 @@
         }
 
         function unstarTrack(track) {
-            var starList = playlistDoc.items[0];
+            var starList = playlistStore.items[0];
 
             if(!starList)
                 throw new Error('unstarTrack(): Star Playlist not found. This should be reported.');
@@ -198,7 +185,7 @@
         }
 
         function isTrackStarred(track) {
-            var starList = playlistDoc.items[0];
+            var starList = playlistStore.items[0];
 
             if(!starList)
                 throw new Error('isTrackStarred() : Star Playlist not found. This should be reported.');
@@ -211,11 +198,9 @@
         }
 
         function updateStorage() {
-            Pouch.put(playlistDoc, function(err, result) {
-                if (!err) {
-                    console.log('Successfully updated to db!');
-                }
-            });
+            var storageObj = {};
+            storageObj[PLAYLIST_STORAGE_KEY] = playlistStore.items;
+            chrome.storage.local.set(storageObj);
         }
     };
 
