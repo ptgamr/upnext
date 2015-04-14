@@ -21,11 +21,11 @@
             }
 
             if (!vm.newPlaylistName) return;
-            PlaylistService.newPlaylist(vm.newPlaylistName);
+            PlaylistService.newPlaylist(vm.newPlaylistName).then(function() {
+                vm.newPlaylistName = '';
+                GATracker.trackPlaylist('add new');
+            });
 
-            vm.newPlaylistName = '';
-
-            GATracker.trackPlaylist('add new');
         };
 
         vm.remove = function($event, index) {
