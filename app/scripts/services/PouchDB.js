@@ -6,16 +6,8 @@
 
     function Pouch($rootScope, UserService){
         var localDb = new PouchDB('soundcloudify');
-        var publicDb = new PouchDB('public');
-
-        publicDb.put({
-          _id: '_design/publicDesign',
-          filters: {
-            publicPlaylist: function (doc, req) {
-              return doc.public === true;
-            }.toString()
-          }
-        });
+        //var localPublicDb = new PouchDB('public');
+        var remotePublicDb = new PouchDB('http://127.0.0.1:5984/public');
 
         $rootScope.$on('chrome.identity', function(event, data) {
             if (data.user.id) {
@@ -24,14 +16,18 @@
                     live: true,
                     retry: true
                 });
+                // remotePublicDb.replicate.to(localPublicDb, {
+                //     filter: 'app/by_user',
+                //     query_params: { "user": data.user.id }
+                // });
             }
         });
 
         $rootScope.$on('playlist.share', function(event, data) {
             console.log('share playlist');
-            localDb.replicate.to(publicDb, {
+            localDb.replicate.to(remotePublicDb, {
                 filter: function(doc) {
-                    return doc.public === true;
+                    return doc.type === 'playlist' && doc.public === true;
                 }
             });
         });

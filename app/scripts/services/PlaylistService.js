@@ -47,6 +47,8 @@
             items: []
         };
 
+        var user = UserService.getUser();
+
         Pouch.allDocs({include_docs: true}, function(err, doc) {
 
             if (doc.rows.length) {
@@ -221,6 +223,10 @@
         function updateStorage(playlist, action) {
 
             if (!action || !Pouch[action]) throw new Error("correct action has to specified when update Pouch");
+
+            if (user && user.id) {
+                playlist.user = user.id;
+            }
 
             Pouch[action](playlist, function(err, result) {
                 if (!err) {

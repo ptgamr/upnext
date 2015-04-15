@@ -6,7 +6,10 @@
 
     function UserService($rootScope, $http){
 
-        var user;
+        var user = {
+            id: '',
+            email: ''
+        };
 
         chrome.identity.getProfileUserInfo(function(info) {
             user = info;
