@@ -10,6 +10,7 @@
 
         this.tracks = [];
         this.name = name;
+        this.type = 'playlist';
         this.id = Date.now();
     }
 
@@ -42,35 +43,28 @@
 
         var ready = false;
 
-        var playlistDoc;
+        var playlistDoc = {
+            items: []
+        };
 
         Pouch.allDocs({include_docs: true}, function(err, doc) {
 
             if (doc.rows.length) {
                 for (var i = 0 ; i < doc.rows.length; i++) {
                     if (doc.rows[i].doc.type === 'playlist') {
-                        playlistDoc = doc.rows[i].doc;
-                        break;
+                        playlistDoc.items.push(doc.rows[i].doc);
                     }
                 }
             }
 
-            if (!playlistDoc) {
+            if (!playlistDoc.items.length) {
 
                 var starredList = new Playlist('Starred');
 
-                playlistDoc = {
-                    _id: new Date().toISOString(),
-                    type: 'playlist',
-                    items: [starredList]
-                };
-
-                Pouch.put(playlistDoc, function callback(err, result) {
-
+                Pouch.post(starredList, function callback(err, result) {
                     if (!err) {
                         console.log('Successfully created a playlist doc!');
                     }
-
                 });
             }
         });
@@ -81,6 +75,7 @@
             newPlaylist: newPlaylist,
             removePlaylist: removePlaylist,
             getPlaylist: getPlaylist,
+            sharePlaylist: sharePlaylist,
             addTrackToPlaylist: addTrackToPlaylist,
             addTracksToPlaylist: addTracksToPlaylist,
             starTrack: starTrack,
@@ -101,7 +96,7 @@
             function getPlaylistDoc(resolve, reject) {
                 var timer;
 
-                if (playlistDoc) {
+                if (playlistDoc.items.length) {
                     resolve(playlistDoc);
                 } else {
                     if (timer) {
@@ -119,7 +114,7 @@
         function newPlaylist(name) {
             var playlist = new Playlist(name);
             playlistDoc.items.splice(1, 0, playlist);
-            updateStorage();
+            updateStorage(playlist, 'post');
             return playlist;
         }
 
@@ -127,8 +122,8 @@
             if (typeof index === 'undefined' || isNaN(index))
                     throw new Error('Error when remove playlist: index must be specified as number');
 
-            playlistDoc.items.splice(index, 1);
-            updateStorage();
+            var removed = playlistDoc.items.splice(index, 1);
+            updateStorage(removed, 'delete');
         }
 
         function getPlaylist(index) {
@@ -136,6 +131,19 @@
                     throw new Error('Error when remove playlist: index must be specified as number');
 
             return playlistDoc.items[index];
+        }
+
+        function sharePlaylist(index) {
+            if (typeof index === 'undefined' || isNaN(index))
+                    throw new Error('Error when remove playlist: index must be specified as number');
+
+            var playlist = playlistDoc.items[index];
+
+            playlist.public = true;
+
+            updateStorage(playlist, 'put');
+
+            return playlist.id;
         }
 
         function addTrackToPlaylist(track, index) {
@@ -146,7 +154,7 @@
                 throw new Error('Error when adding track: Playlist not found.');
 
             _addTrackToPlaylist(track, playlist);
-            updateStorage();
+            updateStorage(playlist, 'put');
         }
 
         function addTracksToPlaylist(tracks, playlist) {
@@ -158,7 +166,7 @@
                 throw new Error('Error when adding track: Playlist not found.');
 
             _addTracksToPlaylist(tracks, playlist);
-            updateStorage();
+            updateStorage(playlist, 'put');
         }
 
         function removeTrackFromPlaylist(trackIndex, playlistIndex) {
@@ -169,7 +177,7 @@
                 throw new Error('Error when adding track: Playlist not found.');
 
             _removeTrackFromPlaylist(trackIndex);
-            updateStorage();
+            updateStorage(playlist, 'put');
         }
 
         function starTrack(track) {
@@ -179,7 +187,7 @@
                 throw new Error('starTrack(): Star Playlist not found. This should be reported.');
 
             _addTrackToPlaylist(track, starList);
-            updateStorage();
+            updateStorage(starList, 'put');
         }
 
         function unstarTrack(track) {
@@ -194,7 +202,7 @@
                     break;
                 }
             }
-            updateStorage();
+            updateStorage(starList, 'put');
         }
 
         function isTrackStarred(track) {
@@ -210,9 +218,13 @@
             }
         }
 
-        function updateStorage() {
-            Pouch.put(playlistDoc, function(err, result) {
+        function updateStorage(playlist, action) {
+
+            if (!action || !Pouch[action]) throw new Error("correct action has to specified when update Pouch");
+
+            Pouch[action](playlist, function(err, result) {
                 if (!err) {
+                    playlist._rev = result.rev;
                     console.log('Successfully updated to db!');
                 }
             });

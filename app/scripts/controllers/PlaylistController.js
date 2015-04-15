@@ -56,6 +56,12 @@
             GATracker.trackPlaylist('play all', index);
         };
 
+        vm.share = function($event, index) {
+            $event.stopPropagation();
+            var playlistId = PlaylistService.sharePlaylist(index);
+            $rootScope.$broadcast('playlist.share', {playlistId: playlistId});
+        };
+
         vm.selectPlaylist = function(index) {
             $state.go('playlist.view', {playlistIndex: index});
         };

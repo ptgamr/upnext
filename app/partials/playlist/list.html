@@ -15,6 +15,9 @@
                     <h4>{{playlist.tracks.length}} tracks</h4>
                 </div>
                 <div class="md-tile-hover" layout="row" layout-margin layout-align="center center" >
+                    <md-button title="Play All" aria-label="Share" ng-click="playlistCtrl.share($event, $index)">
+                        <md-icon md-font-icon="icon ion-share"></md-icon>
+                    </md-button>
                     <md-button title="Play All" aria-label="Play All" ng-click="playlistCtrl.playAll($event, $index)">
                         <md-icon md-font-icon="icon ion-play"></md-icon>
                     </md-button>
