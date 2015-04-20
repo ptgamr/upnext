@@ -4,6 +4,9 @@
     angular.module('soundCloudify')
         .service("PlaylistService", PlaylistService);
 
+    var ORIGIN_LOCAL = 'l';
+    var ORIGIN_SERVER = 's';
+
     function Playlist(name) {
         if (!name)
             throw new Error('You have to specify a name when create a playlist');
@@ -11,6 +14,7 @@
         this.tracks = [];
         this.name = name;
         this.id = Date.now();
+        this.origin = ORIGIN_LOCAL; //playlist in local only
     }
 
     function PlaylistService($q, $http, UserService){
@@ -19,13 +23,19 @@
 
         var PLAYLIST_ENDPOINT = 'http://localhost:3000/playlist';
 
-        var user = UserService.getUser();
-
         var playlistStore = {
             items: null
         };
 
+        var user;
+
         init();
+
+        $rootScope.$on('identity.confirm', function(event, data) {
+            if (data.identity.id && data.identity.email) {
+                onUserAuthenticated(data.identity);
+            }
+        });
 
         return {
             isReady: isReady,
@@ -51,6 +61,10 @@
             });
         }
 
+        function onUserAuthenticated(user) {
+            user = user;
+        }
+
         function isReady() {
             return ready;
         }
@@ -68,6 +82,7 @@
                 var playlist = new Playlist(name);
 
                 if (user) {
+
                     $http({
                         url: PLAYLIST_ENDPOINT,
                         method: 'POST',
@@ -75,6 +90,7 @@
                     }).success(function(playlistId) {
 
                         playlist.id = playlistId;
+                        playlist.origin = ORIGIN_SERVER;
 
                         playlistStore.items.splice(1, 0, playlist);
                         updateStorage();
