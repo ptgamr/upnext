@@ -17,11 +17,11 @@
         this.origin = ORIGIN_LOCAL; //playlist in local only
     }
 
-    function PlaylistService($rootScope, $q, $http, SyncService){
+    function PlaylistService($rootScope, $q, $http, SyncService, API_ENDPOINT){
 
         var PLAYLIST_STORAGE_KEY = 'playlist';
 
-        var PLAYLIST_ENDPOINT = 'http://localhost:3000/playlist';
+        var PLAYLIST_ENDPOINT = API_ENDPOINT + '/playlist';
 
         var playlistStore = {
             items: null
@@ -33,7 +33,6 @@
 
 
         return {
-            isReady: isReady,
             getList: getList,
             newPlaylist: newPlaylist,
             removePlaylist: removePlaylist,
@@ -62,12 +61,16 @@
 
         function syncWithChromeStorage() {
             chrome.storage.local.get(PLAYLIST_STORAGE_KEY, function(data) {
-                playlistStore.items = data[PLAYLIST_STORAGE_KEY] || [];
+                $rootScope.$apply(function() {
+                    playlistStore.items = data[PLAYLIST_STORAGE_KEY] || [];
 
-                //the Starred Playlist should be automatically added & can not be removed
-                if (!playlistStore.items.length) {
-                    newPlaylist('Starred');
-                }
+                    //the Starred Playlist should be automatically added & can not be removed
+                    if (!playlistStore.items.length) {
+                        newPlaylist('Starred', false);
+                    }
+
+                    $rootScope.$broadcast('playlist.ready');
+                })
             });
         }
 
@@ -75,23 +78,19 @@
             user = identity;
         }
 
-        function isReady() {
-            return ready;
-        }
-
         function getList() {
-            return $q(function(resolve, reject) {
-                resolve(playlistStore)
-            });
+            return playlistStore;
         }
 
-        function newPlaylist(name) {
+        function newPlaylist(name, saveToServer) {
+
+            saveToServer = typeof saveToServer === 'undefined' ? true : saveToServer;
 
             return $q(function(resolve, reject) {
 
                 var playlist = new Playlist(name);
 
-                if (user) {
+                if (user && saveToServer) {
 
                     $http({
                         url: PLAYLIST_ENDPOINT,
@@ -123,7 +122,6 @@
                 }
 
             });
-            
         }
 
         function removePlaylist(index) {

@@ -6,7 +6,9 @@
 
     function HttpRequestInterceptor($injector){
 
-        var $rootScope = $injector.get('$rootScope'), user;
+        var $rootScope = $injector.get('$rootScope'),
+            API_ENDPOINT = $injector.get('API_ENDPOINT'),
+            user;
 
         $rootScope.$on('identity.confirm', function(event, data) {
             if (data.identity.id && data.identity.email) {
@@ -21,7 +23,7 @@
 
                 if (!user) return $config;
 
-                if($config && $config.url && $config.url.indexOf('http://localhost') === 0) {
+                if($config && $config.url && $config.url.indexOf(API_ENDPOINT) === 0) {
                     $config.headers['uid'] = user.id;
                 }
                 return $config;

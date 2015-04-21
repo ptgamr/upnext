@@ -48,7 +48,7 @@
         "storage",
         "notifications",
         "*://*.youtube.com/*",
-        "http://localhost:3000/*"
+        "http://52.11.108.36/*"
     ],
     "oauth2": {
         "client_id": "393554771612-pgq8aevpbcd33qrdd3veaqg0d2jvqqfv.apps.googleusercontent.com",

@@ -97,24 +97,31 @@
 
                 for (var i = 0 ; i < serverData.playlists.length; i++) {
 
-                    var localIndex = _.findIndex(localPlaylists, function(item) {
-                        return item.id === serverData.playlists[i].id;
-                    });
+                    if (serverData.playlists[i].name === 'Starred') {
 
-                    //if the playlist is found on local, mean that playlist is being updated somewhere
-                    //we then override the local playlist
-                    if (localIndex !== -1) {
-                        localPlaylists[localIndex] = serverData.playlists[i];
+                        localPlaylists[0] = serverData.playlists[i];
 
-                    //otherwise, the playlist is newly created
-                    //put it in the queue, waiting to be pushed
                     } else {
-                        newPlaylistQueue.push(serverData.playlists[i]);
+
+                        var localIndex = _.findIndex(localPlaylists, function(item) {
+                            return item.id === serverData.playlists[i].id;
+                        });
+
+                        //if the playlist is found on local, mean that playlist is being updated somewhere
+                        //we then override the local playlist
+                        if (localIndex !== -1) {
+                            localPlaylists[localIndex] = serverData.playlists[i];
+                        //otherwise, the playlist is newly created
+                        //put it in the queue, waiting to be pushed
+                        } else {
+                            newPlaylistQueue.push(serverData.playlists[i]);
+                        }
                     }
+
                 }
 
                 if (newPlaylistQueue.length) {
-                    localPlaylists = newPlaylistQueue.concat(localPlaylists);
+                    localPlaylists = localPlaylists.concat(_.sortBy(newPlaylistQueue, 'order').reverse());
                 }
 
                 //save changes

@@ -6,11 +6,7 @@
     function PlaylistController($mdToast, $state, PlaylistService, CorePlayer, GATracker) {
         var vm = this;
 
-        PlaylistService
-            .getList()
-            .then(function(data) {
-                vm.playlists = data;
-            });
+        vm.playlists = PlaylistService.getList();
 
         vm.newPlaylistName = '';
 
@@ -25,7 +21,6 @@
                 vm.newPlaylistName = '';
                 GATracker.trackPlaylist('add new');
             });
-
         };
 
         vm.remove = function($event, index) {
