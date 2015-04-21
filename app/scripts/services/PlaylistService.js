@@ -17,7 +17,7 @@
         this.origin = ORIGIN_LOCAL; //playlist in local only
     }
 
-    function PlaylistService($q, $http, UserService){
+    function PlaylistService($rootScope, $q, $http){
 
         var PLAYLIST_STORAGE_KEY = 'playlist';
 

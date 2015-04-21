@@ -9,20 +9,28 @@
     var PLAYLIST_STORAGE_KEY = 'playlist';
     var NOW_PLAYING_LIST_KEY = 'nowPlaying';
 
-    function SyncService($rootScope, $q, $http, API_ENDPOINT){
+    function SyncService($rootScope, $q, $http, $timeout, API_ENDPOINT){
 
         var user;
         var lastSynced = localStorage.getItem('lastSynced');
 
-        $rootScope.$on('identity.confirm', function(data) {
-            if (data.identity.id) {
-                user = data.identity;
-                sync();
-            }
-        });
-            
         return {
+            init: init,
             sync: sync
+        };
+
+        function init() {
+            $rootScope.$on('identity.confirm', function(event, data) {
+                if (data.identity.id) {
+                    user = data.identity;
+                    console.log('let sync!');
+
+                    //start sync after 1s
+                    $timeout(function() {
+                        sync();
+                    }, 1000);
+                }
+            });
         };
 
         /**
@@ -43,26 +51,43 @@
          */
         function sync() {
 
-            if (!lastSynced) {
-                //all data
-                $http.get(API_ENDPOINT + '/data').success(function(data) {
-                    console.log(data);
-                });
+            var dataURL = API_ENDPOINT + '/data';
+
+            if (lastSynced) {
+                dataURL += '?from=' + lastSynced;
             }
+
+            //fetch the changes
+            $http.get(dataURL).success(function(serverData) {
+                pipeWithLocalData(serverData)
+                    .then(applyChanges)
+                    .then(uploadLocalDataToServer);
+            });
 
         }
 
-        function applyChanges(serverData) {
+        function pipeWithLocalData(serverData) {
+            return $q(function(resolve, reject) {
+                chrome.storage.local.get(null, function(localData) {
+                    resolve({
+                        localData: localData,
+                        serverData: serverData
+                    });
+                });
+            });
+        };
 
-            serverData.playlists = serverData.playlists || [];
-            serverData.nowplaying = serverData.nowplaying || [];
-            serverData.activities = serverData.activities || [];
+        function applyChanges(dataStream) {
 
-            var localPlaylists, localNowPlaying, newPlaylistQueue = [];
+            var defer = $q.defer();
 
-            chrome.storage.local.get(null, function(data) {
-                localPlaylists = data[PLAYLIST_STORAGE_KEY] || [];
-                localNowPlaying = data[NOW_PLAYING_LIST_KEY] || [];
+            var localData = dataStream.localData,
+                serverData = dataStream.serverData,
+                localPlaylists = localData[PLAYLIST_STORAGE_KEY] || [],
+                localNowPlaying = localData[NOW_PLAYING_LIST_KEY] || [],
+                newPlaylistQueue = [];
+
+            $timeout(function() {
 
                 for (var i = 0 ; i < serverData.playlists.length; i++) {
 
@@ -84,18 +109,24 @@
                     localPlaylists = newPlaylistQueue.concat(localPlaylists);
                 }
 
-                //finished server -> local
-                //now local -> server
-                
-                var unsyncedPlaylists = _.filter(playlists, function(item) {
-                    return item.origin === ORIGIN_LOCAL;
-                });
+                //save changes
+                localData[PLAYLIST_STORAGE_KEY] = localPlaylists;
 
-                uploadLocalDataToServer(unsyncedPlaylists);
+                defer.resolve(localData);
             });
+
+            
+            return defer.promise;
         }
 
-        function uploadLocalDataToServer(unsyncedPlaylists) {
+        //now local -> server
+        function uploadLocalDataToServer(localData) {
+
+            var playlists = localData[PLAYLIST_STORAGE_KEY] || [];
+            
+            var unsyncedPlaylists = _.filter(playlists, function(item) {
+                return item.origin === ORIGIN_LOCAL;
+            });
 
             var promises = [];
 
@@ -105,14 +136,14 @@
                         $http({
                             url: API_ENDPOINT + '/playlist',
                             method: 'POST',
-                            data: playlist,
+                            data: unsyncedPlaylists[i],
                         })
                     );
                 }
             }
 
             $q.all(promises).then(function(data) {
-                
+                console.log('all done');
             });
         }
 

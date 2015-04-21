@@ -134,10 +134,14 @@
 		}
 	);
 
-	soundCloudify.run(function($rootScope, GATracker, $location) {
+	soundCloudify.run(function($rootScope, GATracker, $location, UserService, SyncService) {
 		$rootScope.$on('$stateChangeSuccess', function(event) {
 			GATracker.trackPageView($location.path());
 		});
+
+		UserService.init();
+
+		SyncService.init();
 	});
 
 	angular.element(document).ready(function() {

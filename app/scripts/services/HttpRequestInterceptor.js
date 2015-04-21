@@ -6,20 +6,22 @@
 
     function HttpRequestInterceptor($injector){
 
-        var $rootScope = $injector.get('$rootScope'), _user;
+        var $rootScope = $injector.get('$rootScope'), user;
 
         $rootScope.$on('identity.confirm', function(event, data) {
             if (data.identity.id && data.identity.email) {
-                _user = data.identity;
+                user = data.identity;
             }
         });
+    
+        var user;
 
         return {
             request: function($config) {
 
-                if (!user) return;
+                if (!user) return $config;
 
-                if($config.url.indexOf('http://localhost') === 0) {
+                if($config && $config.url && $config.url.indexOf('http://localhost') === 0) {
                     $config.headers['uid'] = user.id;
                 }
                 return $config;

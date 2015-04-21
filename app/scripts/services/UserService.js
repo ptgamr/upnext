@@ -10,18 +10,23 @@
             email: ''
         };
 
-        chrome.identity.getProfileUserInfo(function(info) {
-            user.id = info.id;
-            user.email = info.email;
-
-            $rootScope.$broadcast('identity.confirm', {
-                identity: info
-            });
-        });
-        
         return {
+            init: init,
             getUser: getUser
         };
+
+        function init() {
+            chrome.identity.getProfileUserInfo(function(info) {
+                user.id = info.id;
+                user.email = info.email;
+
+                $rootScope.$apply(function() {
+                    $rootScope.$broadcast('identity.confirm', {
+                        identity: info
+                    });
+                });
+            });
+        }
 
         function getUser() {
             return user;
