@@ -20,11 +20,12 @@
                 user.id = info.id;
                 user.email = info.email;
 
-                $rootScope.$apply(function() {
+                if (user.id && user.email) {
                     $rootScope.$broadcast('identity.confirm', {
                         identity: info
                     });
-                });
+                }
+
             });
         }
 

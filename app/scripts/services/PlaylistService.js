@@ -31,11 +31,6 @@
 
         init();
 
-        $rootScope.$on('identity.confirm', function(event, data) {
-            if (data.identity.id && data.identity.email) {
-                onUserAuthenticated(data.identity);
-            }
-        });
 
         return {
             isReady: isReady,
@@ -51,6 +46,21 @@
         };
 
         function init() {
+            
+            $rootScope.$on('identity.confirm', function(event, data) {
+                if (data.identity.id && data.identity.email) {
+                    onUserAuthenticated(data.identity);
+                }
+            });
+
+            $rootScope.$on('sync', function() {
+                syncWithChromeStorage();
+            });
+
+            syncWithChromeStorage();
+        }
+
+        function syncWithChromeStorage() {
             chrome.storage.local.get(PLAYLIST_STORAGE_KEY, function(data) {
                 playlistStore.items = data[PLAYLIST_STORAGE_KEY] || [];
 
@@ -61,8 +71,8 @@
             });
         }
 
-        function onUserAuthenticated(user) {
-            user = user;
+        function onUserAuthenticated(identity) {
+            user = identity;
         }
 
         function isReady() {
@@ -87,9 +97,11 @@
                         url: PLAYLIST_ENDPOINT,
                         method: 'POST',
                         data: playlist,
-                    }).success(function(playlistId) {
+                    }).success(function(response) {
 
-                        playlist.id = playlistId;
+                        playlist.id = response.id;
+                        playlist.updated = response.updated;
+
                         playlist.origin = ORIGIN_SERVER;
 
                         playlistStore.items.splice(1, 0, playlist);
@@ -212,7 +224,9 @@
                     $http({
                         url: PLAYLIST_ENDPOINT + '/' + playlist.id,
                         method: 'PUT',
-                        data: track,
+                        data: {
+                            added: track
+                        }
                     }).success(function() {
 
                         var copy = angular.copy(track);

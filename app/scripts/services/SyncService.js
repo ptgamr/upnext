@@ -91,12 +91,14 @@
 
                 for (var i = 0 ; i < serverData.playlists.length; i++) {
 
-                    var playlistLocal = findPlaylistById(localPlaylists, serverData.playlists[i].id);
+                    var localIndex = _.findIndex(localPlaylists, function(item) {
+                        return item.id === serverData.playlists[i].id;
+                    });
 
                     //if the playlist is found on local, mean that playlist is being updated somewhere
                     //we then override the local playlist
-                    if (playlistLocal) {
-                        playlistLocal = serverData.playlists[i];
+                    if (localIndex !== -1) {
+                        localPlaylists[localIndex] = serverData.playlists[i];
 
                     //otherwise, the playlist is newly created
                     //put it in the queue, waiting to be pushed
@@ -142,13 +144,38 @@
                 }
             }
 
-            $q.all(promises).then(function(data) {
+            $q.all(promises).then(function(responses) {
+
+                var count = 0 ; 
+                responses.map(function(response) {
+
+                    if (response.data) {
+                        unsyncedPlaylists[count].id = response.data.id;
+                        unsyncedPlaylists[count].updated = response.data.updated;
+                        unsyncedPlaylists[count].origin = ORIGIN_SERVER;
+                    }
+                    count ++;
+                });
+
+                saveChanges(localData);
+
                 console.log('all done');
+                console.log(localData);
+
+                lastSynced = Date.now();
+
+                localStorage.setItem('lastSynced', lastSynced);
             });
+
+
         }
 
-        function findPlaylistById(playlists, id) {
-            return _.findWhere(playlists, {id: id});
+        function saveChanges(data) {
+            var toBeSaved = {};
+            toBeSaved[PLAYLIST_STORAGE_KEY] = data[PLAYLIST_STORAGE_KEY];
+            chrome.storage.local.set(toBeSaved, function() {
+                $rootScope.$broadcast('sync');
+            });
         }
     };
 
