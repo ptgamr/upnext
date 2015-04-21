@@ -16,8 +16,14 @@
 
         return {
             init: init,
+            bumpLastSynced: bumpLastSynced,
             sync: sync
         };
+
+        function bumpLastSynced() {
+            lastSynced = Date.now();
+            localStorage.setItem('lastSynced', lastSynced);
+        }
 
         function init() {
             $rootScope.$on('identity.confirm', function(event, data) {
@@ -162,12 +168,8 @@
                 console.log('all done');
                 console.log(localData);
 
-                lastSynced = Date.now();
-
-                localStorage.setItem('lastSynced', lastSynced);
+                bumpLastSynced();
             });
-
-
         }
 
         function saveChanges(data) {

@@ -17,7 +17,7 @@
         this.origin = ORIGIN_LOCAL; //playlist in local only
     }
 
-    function PlaylistService($rootScope, $q, $http){
+    function PlaylistService($rootScope, $q, $http, SyncService){
 
         var PLAYLIST_STORAGE_KEY = 'playlist';
 
@@ -106,6 +106,8 @@
 
                         playlistStore.items.splice(1, 0, playlist);
                         updateStorage();
+
+                        SyncService.bumpLastSynced();
 
                         resolve();
 
@@ -227,12 +229,15 @@
                         data: {
                             added: track
                         }
-                    }).success(function() {
+                    }).success(function(response) {
 
                         var copy = angular.copy(track);
                         copy.uuid = window.ServiceHelpers.ID();
+                        copy.internalId = response.internalId;
                         playlist.tracks.push(copy);
                         updateStorage();
+
+                        SyncService.bumpLastSynced();
 
                         resolve();
 
