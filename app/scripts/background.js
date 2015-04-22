@@ -198,6 +198,16 @@ Player.prototype = {
 
         chrome.storage.local.get('nowPlayingState', function(data) {
             self.state = data['nowPlayingState'] || {};
+
+            //on load, reset the state
+            self.state.playing = false;
+            self.state.currentTime = 0;
+            self.state.duration = 0;
+
+            chrome.storage.local.set({
+                'nowPlayingState': self.state,
+                'nowPlayingStateUpdatedBy': getStorageUpdateKey()
+            });
         });
 
         chrome.storage.sync.get('scConfig', function(data) {
