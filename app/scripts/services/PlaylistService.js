@@ -10,6 +10,7 @@
 
         this.tracks = [];
         this.name = name;
+        this.type = 'playlist';
         this.id = Date.now();
     }
 
@@ -36,18 +37,38 @@
         playlist.tracks.splice(trackIndex, 1);
     }
 
-    function PlaylistService($q){
+    function PlaylistService($q, $http, $timeout, UserService, Pouch){
 
         var PLAYLIST_STORAGE_KEY = 'playlist';
 
         var ready = false;
 
-        var playlistStore = {
-            items: null
+        var playlistDoc = {
+            items: []
         };
 
-        getList().then(function() {
-            ready = true;
+        var user = UserService.getUser();
+
+        Pouch.allDocs({include_docs: true}, function(err, doc) {
+
+            if (doc.rows.length) {
+                for (var i = 0 ; i < doc.rows.length; i++) {
+                    if (doc.rows[i].doc.type === 'playlist') {
+                        playlistDoc.items.push(doc.rows[i].doc);
+                    }
+                }
+            }
+
+            if (!playlistDoc.items.length) {
+
+                var starredList = new Playlist('Starred');
+
+                Pouch.post(starredList, function callback(err, result) {
+                    if (!err) {
+                        console.log('Successfully created a playlist doc!');
+                    }
+                });
+            }
         });
 
         return {
@@ -56,6 +77,7 @@
             newPlaylist: newPlaylist,
             removePlaylist: removePlaylist,
             getPlaylist: getPlaylist,
+            sharePlaylist: sharePlaylist,
             addTrackToPlaylist: addTrackToPlaylist,
             addTracksToPlaylist: addTracksToPlaylist,
             starTrack: starTrack,
@@ -69,31 +91,32 @@
 
         function getList() {
 
-            var defer = $q.defer();
+            return $q(function(resolve, reject) {
+                getPlaylistDoc(resolve, reject);
+            });
 
-            if (playlistStore.items === null) {
-                chrome.storage.local.get(PLAYLIST_STORAGE_KEY, function(data) {
-                    playlistStore.items = data[PLAYLIST_STORAGE_KEY] || [];
+            function getPlaylistDoc(resolve, reject) {
+                var timer;
 
-                    //the Starred Playlist should be automatically added & can not be removed
-                    if (!playlistStore.items.length) {
-                        playlistStore.items.push(new Playlist('Starred'));
-                        updateStorage();
+                if (playlistDoc.items.length) {
+                    resolve(playlistDoc);
+                } else {
+                    if (timer) {
+                        $timeout.cancel(timer);
                     }
 
-                    defer.resolve(playlistStore);
-                });
-            } else {
-                defer.resolve(playlistStore);
+                    console.log('playlist has not initialized. retrying...');
+                    timer = $timeout(function() {
+                        getPlaylistDoc(resolve, reject);
+                    }, 100);   
+                }
             }
-
-            return defer.promise;
         }
 
         function newPlaylist(name) {
             var playlist = new Playlist(name);
-            playlistStore.items.splice(1, 0, playlist);
-            updateStorage();
+            playlistDoc.items.splice(1, 0, playlist);
+            updateStorage(playlist, 'post');
             return playlist;
         }
 
@@ -101,26 +124,39 @@
             if (typeof index === 'undefined' || isNaN(index))
                     throw new Error('Error when remove playlist: index must be specified as number');
 
-            playlistStore.items.splice(index, 1);
-            updateStorage();
+            var removed = playlistDoc.items.splice(index, 1);
+            updateStorage(removed, 'delete');
         }
 
         function getPlaylist(index) {
             if (typeof index === 'undefined' || isNaN(index))
                     throw new Error('Error when remove playlist: index must be specified as number');
 
-            return playlistStore.items[index];
+            return playlistDoc.items[index];
+        }
+
+        function sharePlaylist(index) {
+            if (typeof index === 'undefined' || isNaN(index))
+                    throw new Error('Error when remove playlist: index must be specified as number');
+
+            var playlist = playlistDoc.items[index];
+
+            playlist.public = true;
+
+            updateStorage(playlist, 'put');
+
+            return playlist.id;
         }
 
         function addTrackToPlaylist(track, index) {
 
-            var playlist = playlistStore.items[index];
+            var playlist = playlistDoc.items[index];
 
             if(!playlist)
                 throw new Error('Error when adding track: Playlist not found.');
 
             _addTrackToPlaylist(track, playlist);
-            updateStorage();
+            updateStorage(playlist, 'put');
         }
 
         function addTracksToPlaylist(tracks, playlist) {
@@ -132,32 +168,32 @@
                 throw new Error('Error when adding track: Playlist not found.');
 
             _addTracksToPlaylist(tracks, playlist);
-            updateStorage();
+            updateStorage(playlist, 'put');
         }
 
         function removeTrackFromPlaylist(trackIndex, playlistIndex) {
 
-            var playlist = playlistStore.items[playlistIndex];
+            var playlist = playlistDoc.items[playlistIndex];
 
             if(!playlist)
                 throw new Error('Error when adding track: Playlist not found.');
 
             _removeTrackFromPlaylist(trackIndex);
-            updateStorage();
+            updateStorage(playlist, 'put');
         }
 
         function starTrack(track) {
-            var starList = playlistStore.items[0];
+            var starList = playlistDoc.items[0];
 
             if(!starList)
                 throw new Error('starTrack(): Star Playlist not found. This should be reported.');
 
             _addTrackToPlaylist(track, starList);
-            updateStorage();
+            updateStorage(starList, 'put');
         }
 
         function unstarTrack(track) {
-            var starList = playlistStore.items[0];
+            var starList = playlistDoc.items[0];
 
             if(!starList)
                 throw new Error('unstarTrack(): Star Playlist not found. This should be reported.');
@@ -168,11 +204,11 @@
                     break;
                 }
             }
-            updateStorage();
+            updateStorage(starList, 'put');
         }
 
         function isTrackStarred(track) {
-            var starList = playlistStore.items[0];
+            var starList = playlistDoc.items[0];
 
             if(!starList)
                 throw new Error('isTrackStarred() : Star Playlist not found. This should be reported.');
@@ -184,10 +220,20 @@
             }
         }
 
-        function updateStorage() {
-            var storageObj = {};
-            storageObj[PLAYLIST_STORAGE_KEY] = playlistStore.items;
-            chrome.storage.local.set(storageObj);
+        function updateStorage(playlist, action) {
+
+            if (!action || !Pouch[action]) throw new Error("correct action has to specified when update Pouch");
+
+            if (user && user.id) {
+                playlist.user = user.id;
+            }
+
+            Pouch[action](playlist, function(err, result) {
+                if (!err) {
+                    playlist._rev = result.rev;
+                    console.log('Successfully updated to db!');
+                }
+            });
         }
     };
 

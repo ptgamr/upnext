@@ -3,7 +3,7 @@
     angular.module('soundCloudify')
             .controller('PlaylistController', PlaylistController)
 
-    function PlaylistController($mdToast, $state, PlaylistService, CorePlayer, GATracker) {
+    function PlaylistController($rootScope, $mdToast, $state, PlaylistService, CorePlayer, GATracker) {
         var vm = this;
 
         PlaylistService
@@ -54,6 +54,12 @@
             CorePlayer.playAll(playlist.tracks);
 
             GATracker.trackPlaylist('play all', index);
+        };
+
+        vm.share = function($event, index) {
+            $event.stopPropagation();
+            var playlistId = PlaylistService.sharePlaylist(index);
+            $rootScope.$broadcast('playlist.share', {playlistId: playlistId});
         };
 
         vm.selectPlaylist = function(index) {

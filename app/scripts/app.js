@@ -41,8 +41,7 @@
 
 	soundCloudify.value('CLIENT_ID', '849e84ac5f7843ce1cbc0e004ae4fb69');
 
-	soundCloudify.config(['$stateProvider', '$urlRouterProvider', '$mdThemingProvider', '$compileProvider',
-		function($stateProvider, $urlRouterProvider, $mdThemingProvider, $compileProvider) {
+	soundCloudify.config(function($stateProvider, $urlRouterProvider, $mdThemingProvider, $compileProvider, $httpProvider) {
 
 			$stateProvider
 				.state('nowPlaying', {
@@ -126,10 +125,12 @@
 
 			$compileProvider.imgSrcSanitizationWhitelist(/^\s*((https?|ftp|file|blob|chrome-extension):|data:image\/)/);
 
+			$httpProvider.interceptors.push('HttpRequestInterceptor');
+
 			//TODO: reenable it in production
 			$compileProvider.debugInfoEnabled(false);
 		}
-	]);
+	);
 
 	soundCloudify.run(function($rootScope, GATracker, $location) {
 		$rootScope.$on('$stateChangeSuccess', function(event) {
