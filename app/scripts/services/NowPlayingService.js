@@ -7,11 +7,12 @@
     var ORIGIN_LOCAL = 'l';
     var ORIGIN_SERVER = 's';
 
-    function NowPlayingService($http, CLIENT_ID, $rootScope){
+    function NowPlayingService($http, $q, CLIENT_ID, $rootScope, API_ENDPOINT, SyncService){
         
         var NOW_PLAYING_LIST_KEY = 'nowPlaying';
         var NOW_PLAYING_STATE_KEY = 'nowPlayingState';
         var onNowPlayingChange = null, onNowPlayingStateChange = null;
+        var user;
         var nowPlaying = {
             tracks: []
         };
@@ -36,47 +37,100 @@
             }
         });
 
-        chrome.storage.local.get(NOW_PLAYING_LIST_KEY, function(data) {
-            nowPlaying.tracks = data[NOW_PLAYING_LIST_KEY] || [];
+        $rootScope.$on('identity.confirm', function(event, data) {
+            if (data.identity.id && data.identity.email) {
+                user = data.identity;
+            }
         });
+
+        $rootScope.$on('sync', function() {
+            syncWithChromeStorage();
+        });
+
+        syncWithChromeStorage();
 
         return {
             getList: getList,
             addTrack: addTrack,
             addTracks: addTracks,
             removeTrack: removeTrack,
+            clear: clear,
             updateStorage: updateStorage,
             getState: getState,
             saveState: saveState,
             registerNowPlayingStateChangeHandler: registerNowPlayingStateChangeHandler
         };
 
+        function syncWithChromeStorage() {
+            chrome.storage.local.get(NOW_PLAYING_LIST_KEY, function(data) {
+                nowPlaying.tracks = data[NOW_PLAYING_LIST_KEY] || [];
+            });
+        };
 
         function getList(callback){
             return nowPlaying;
         }
 
         function addTrack(track, position) {
-            //we need to do a copy here to ensure each track we add
-            //to the playlist will have a unique id
-            track = angular.copy(track);
-            track.uuid = window.ServiceHelpers.ID();
-            track.sync = 0;
 
-            if (position) {
-                nowPlaying.tracks.splice(position, 0, track);
-            } else {
-                nowPlaying.tracks.unshift(track);
-            }
+            return $q(function(resolve, reject) {
 
-            updateStorage();
+                //we need to do a copy here to ensure each track we add
+                //to the playlist will have a unique id
+                track = angular.copy(track);
+                track.uuid = window.ServiceHelpers.ID();
+                track.sync = 0;
+
+                if (user) {
+
+                    $http({
+                        url: API_ENDPOINT + '/nowplaying',
+                        method: 'PUT',
+                        data: {
+                            added: track
+                        }
+                    }).success(function(response) {
+
+                        track.internalId = response.internalId;
+                        track.sync = 1;
+
+                        if (position) {
+                            nowPlaying.tracks.splice(position, 0, track);
+                        } else {
+                            nowPlaying.tracks.unshift(track);
+                        }
+
+                        updateStorage();
+
+                        SyncService.bumpLastSynced();
+
+                        resolve();
+
+                    }).error(function() {
+                        console.log('error POST a playlist');
+                        reject();
+                    });
+
+                } else {
+                    
+                    if (position) {
+                        nowPlaying.tracks.splice(position, 0, track);
+                    } else {
+                        nowPlaying.tracks.unshift(track);
+                    }
+
+                    updateStorage();
+                    resolve();
+                }
+
+            });
         }
 
         function addTracks(tracks) {
             nowPlaying.tracks = _.map(tracks, function(track) {
                 track = angular.copy(track);
                 track.uuid = window.ServiceHelpers.ID();
-                track.sync = 1;
+                track.sync = 0;
                 return track;
             });
             updateStorage();

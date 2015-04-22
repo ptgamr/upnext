@@ -48,10 +48,11 @@
             andPlay = andPlay || true;
 
             if (track) {
-                NowPlaying.addTrack(track);
-                if (andPlay) {
-                    this.play(0);
-                }
+                NowPlaying.addTrack(track).then(function() {
+                    if (andPlay) {
+                        self.play(0);
+                    }
+                });
             }
         };
 

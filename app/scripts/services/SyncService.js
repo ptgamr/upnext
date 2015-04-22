@@ -127,6 +127,13 @@
                 //save changes
                 localData[PLAYLIST_STORAGE_KEY] = localPlaylists;
 
+                if (serverData.nowplaying && serverData.nowplaying.tracks && serverData.nowplaying.tracks.length) {
+                    localData[NOW_PLAYING_LIST_KEY] = serverData.nowplaying.tracks.map(function(track) {
+                        track.sync = 1;
+                        return track;
+                    });
+                }
+
                 defer.resolve(localData);
             });
 
@@ -138,9 +145,14 @@
         function uploadLocalDataToServer(localData) {
 
             var playlists = localData[PLAYLIST_STORAGE_KEY] || [];
+            var nowPlayingTracks = localData[NOW_PLAYING_LIST_KEY] || [];
             
             var unsyncedPlaylists = _.filter(playlists, function(item) {
                 return item.origin === ORIGIN_LOCAL;
+            });
+
+            var unsyncedNowPlayingTracks = _.filter(nowPlayingTracks, function(track) {
+                return track.sync === 0;
             });
 
             var promises = [];
@@ -157,16 +169,37 @@
                 }
             }
 
+            if (unsyncedNowPlayingTracks.length) {
+                promises.push(
+                    $http({
+                        url: API_ENDPOINT + '/nowplaying',
+                        method: 'PUT',
+                        data: {
+                            added : unsyncedNowPlayingTracks
+                        }
+                    })
+                );
+            }
+
             $q.all(promises).then(function(responses) {
 
-                var count = 0 ; 
+                var count = 0,
+                    playlistCount = unsyncedPlaylists.length;
+
                 responses.map(function(response) {
 
-                    if (response.data) {
+                    if (response.data && count < playlistCount - 1) {
                         unsyncedPlaylists[count].id = response.data.id;
                         unsyncedPlaylists[count].updated = response.data.updated;
                         unsyncedPlaylists[count].origin = ORIGIN_SERVER;
+                    } else {
+                        console.log('now playing');
+                        console.log(response);
+                        _.each(unsyncedNowPlayingTracks, function(track) {
+                            track.sync = 1;
+                        });
                     }
+
                     count ++;
                 });
 
@@ -182,6 +215,7 @@
         function saveChanges(data) {
             var toBeSaved = {};
             toBeSaved[PLAYLIST_STORAGE_KEY] = data[PLAYLIST_STORAGE_KEY];
+            toBeSaved[NOW_PLAYING_LIST_KEY] = data[NOW_PLAYING_LIST_KEY];
             chrome.storage.local.set(toBeSaved, function() {
                 $rootScope.$broadcast('sync');
             });
