@@ -7,11 +7,11 @@
     var ORIGIN_LOCAL = 'l';
     var ORIGIN_SERVER = 's';
 
-    function Playlist(name) {
+    function Playlist(name, tracks) {
         if (!name)
             throw new Error('You have to specify a name when create a playlist');
 
-        this.tracks = [];
+        this.tracks = tracks || [];
         this.name = name;
         this.id = Date.now();
         this.origin = ORIGIN_LOCAL; //playlist in local only
@@ -82,13 +82,15 @@
             return playlistStore;
         }
 
-        function newPlaylist(name, saveToServer) {
+        function newPlaylist(name, saveToServer, tracks) {
 
             saveToServer = typeof saveToServer === 'undefined' ? true : saveToServer;
 
+            tracks = tracks || [];
+
             return $q(function(resolve, reject) {
 
-                var playlist = new Playlist(name);
+                var playlist = new Playlist(name, tracks);
 
                 if (user && saveToServer) {
 

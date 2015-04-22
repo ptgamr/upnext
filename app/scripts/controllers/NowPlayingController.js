@@ -10,10 +10,10 @@
         vm.player = CorePlayer;
 
         $rootScope.$on('playlist.ready', function() {
-            vm.tracks = TrackAdapter.decorateStar(CorePlayer.tracks);
+            vm.tracks = TrackAdapter.decorateStar(CorePlayer.nowPlaying.tracks);
         });
 
-        vm.tracks = TrackAdapter.decorateStar(CorePlayer.tracks);
+        vm.tracks = TrackAdapter.decorateStar(CorePlayer.nowPlaying.tracks);
 
         vm.saveStream = function($event) {
             
@@ -55,12 +55,11 @@
                         if (!scope.newPlaylistName) {
                             return;
                         }
-                        var newPlaylist = PlaylistService.newPlaylist(scope.newPlaylistName);
-                        scope.newPlaylistName = '';
-
-                        PlaylistService.addTracksToPlaylist(player.tracks, newPlaylist);
-
-                        $mdDialog.hide();
+                        var newPlaylist = PlaylistService.newPlaylist(scope.newPlaylistName, true, vm.tracks)
+                                                .then(function() {
+                                                    scope.newPlaylistName = '';
+                                                    $mdDialog.hide();
+                                                });
                     };
 
                     scope.cancel = function() {

@@ -30,21 +30,13 @@
         };
 
         var self = this;
-        this.tracks = [];
+        this.nowPlaying = NowPlaying.getList();
         this.state = DEFAULT_STATE;
-
-        NowPlaying.getList(function(tracks) {
-            self.tracks = tracks;
-        });
 
         NowPlaying.getState(function(savedState) {
             if (savedState && typeof savedState.volume !== 'undefined') {
                 self.state = savedState;
             }
-        });
-
-        NowPlaying.registerNowPlayingChangeHandler(function(tracks) {
-            self.tracks = tracks;
         });
 
         NowPlaying.registerNowPlayingStateChangeHandler(function(state) {
@@ -56,37 +48,20 @@
             andPlay = andPlay || true;
 
             if (track) {
-                //we need to do a copy here to ensure each track we add
-                //to the playlist will have a unique id
-                track = angular.copy(track);
-                track.uuid = window.ServiceHelpers.ID();
-                
-                this.tracks.unshift(track);
-
-                NowPlaying.saveList(this.tracks);
+                NowPlaying.addTrack(track);
+                if (andPlay) {
+                    this.play(0);
+                }
             }
-
-            if (andPlay) {
-                this.play(0);
-            }
-
         };
 
         /**
          * Add track to position after the current index, in order to play this track  next
          */
         this.playNext = function(track) {
-            
             if (track) {
-                track = angular.copy(track);
-                track.uuid = window.ServiceHelpers.ID();
-                
-                var currentIndex = this.state.currentIndex;
-                this.tracks.splice(currentIndex + 1, 0, track);
-
-                NowPlaying.saveList(this.tracks);
+                NowPlaying.addTrack(this.nowPlaying.tracks, currentIndex + 1);
             }
-
         };
 
         /*
@@ -95,10 +70,7 @@
          * Start play at position 0s
          */
         this.playAll = function(tracks) {
-
-            this.tracks = tracks;
-            NowPlaying.saveList(this.tracks);
-
+            NowPlaying.addTracks(tracks);
             angular.extend(this.state, {
                 currentTrack: false,
                 currentIndex: 0,
@@ -106,7 +78,6 @@
                 currentTime: 0,
                 duration: 0
             });
-
             this.play(0);
         };
 
@@ -114,7 +85,7 @@
          * Remove track at specific index
          */
         this.remove = function(index) {
-            this.tracks.splice(index, 1);
+            NowPlaying.removeTrack(index);
 
             if (this.state.currentIndex === index) {
                 this.play(index);
@@ -122,12 +93,11 @@
                 this.state.currentIndex --;
             }
 
-            NowPlaying.saveList(this.tracks);
             NowPlaying.saveState(this.state);
         };
 
         this.clear = function() {
-            this.tracks = [];
+            NowPlaying.clear();
 
             angular.extend(this.state, {
                 currentTrack: null,
@@ -138,7 +108,6 @@
             });
 
             Messaging.sendClearMessage();
-            NowPlaying.saveList(this.tracks);
             NowPlaying.saveState(this.state);
         }
 
@@ -146,7 +115,7 @@
 
             index = index || 0;
 
-            var track = this.tracks[index];
+            var track = this.nowPlaying.tracks[index];
 
             if (!track) {
                 throw 'No track found for playing, index=' + index;
@@ -159,9 +128,10 @@
                 this.state.currentTrack = track;
                 this.state.currentIndex = index;
 
+                //un-flagged the error flag when retry
                 if (track.error) {
                     track.error = false
-                    NowPlaying.saveList(this.tracks);
+                    NowPlaying.updateStorage();
                 };
 
                 NowPlaying.saveState(this.state);
@@ -275,17 +245,18 @@
         this.sendManualScrobble = function(manualScrobble) {
             Messaging.sendManualScrobbleMessage(manualScrobble);
 
-            this.tracks[this.state.currentIndex].manualTrack = manualScrobble.track;
-            this.tracks[this.state.currentIndex].manualArtist = manualScrobble.artist;
+            this.nowPlaying.tracks[this.state.currentIndex].manualTrack = manualScrobble.track;
+            this.nowPlaying.tracks[this.state.currentIndex].manualArtist = manualScrobble.artist;
 
-            NowPlaying.saveList(this.tracks);
+            NowPlaying.updateStorage();
         };
 
         this.markCurrentTrackError = function() {
             this.state.currentTrack.error = true;
-            this.tracks[this.state.currentIndex].error = true;
+            this.nowPlaying.tracks[this.state.currentIndex].error = true;
+            NowPlaying.updateStorage();
+            
             NowPlaying.saveState(this.state);
-            NowPlaying.saveList(this.tracks);
             GATracker.trackPlayer('track error');
         };
 
