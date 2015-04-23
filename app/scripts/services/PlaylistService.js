@@ -45,14 +45,14 @@
         };
 
         function init() {
-            
+
             $rootScope.$on('identity.confirm', function(event, data) {
                 if (data.identity.id && data.identity.email) {
                     onUserAuthenticated(data.identity);
                 }
             });
 
-            $rootScope.$on('sync', function() {
+            $rootScope.$on('sync.completed', function() {
                 syncWithChromeStorage();
             });
 
@@ -152,7 +152,7 @@
         }
 
         function addTracksToPlaylist(tracks, playlist) {
-            
+
             if(!tracks)
                 throw new Error('Error when adding tracks: Track is undefined');
 
@@ -247,7 +247,7 @@
                     });
 
                 } else {
-                    
+
                     var copy = angular.copy(track);
                     copy.uuid = window.ServiceHelpers.ID();
                     playlist.tracks.push(copy);

@@ -43,7 +43,7 @@
             }
         });
 
-        $rootScope.$on('sync', function() {
+        $rootScope.$on('sync.completed', function() {
             syncWithChromeStorage();
         });
 
@@ -153,6 +153,7 @@
                             });
 
                             nowPlaying.tracks = tracksToAdd;
+                            updateStorage();
                             SyncService.bumpLastSynced();
                             resolve();
                         }).error(function() {
@@ -229,6 +230,8 @@
                             console.log('error remove multiple tracks from nowPlaying list');
                             reject();
                         });
+                    } else {
+                        resolve();
                     }
 
                 } else {

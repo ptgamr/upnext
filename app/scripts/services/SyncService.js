@@ -57,6 +57,8 @@
          */
         function sync() {
 
+            $rootScope.$broadcast('sync.start');
+
             var dataURL = API_ENDPOINT + '/data';
 
             if (lastSynced) {
@@ -127,11 +129,19 @@
                 //save changes
                 localData[PLAYLIST_STORAGE_KEY] = localPlaylists;
 
-                if (serverData.nowplaying && serverData.nowplaying.tracks && serverData.nowplaying.tracks.length) {
-                    localData[NOW_PLAYING_LIST_KEY] = serverData.nowplaying.tracks.map(function(track) {
-                        track.sync = 1;
-                        return track;
-                    });
+                /**
+                 * if all tracks are deleted -> server will response an empty list
+                 * if nothing changes -> server will not response with any list
+                 */
+                if (serverData.nowplaying.tracks) {
+                    if (serverData.nowplaying.tracks.length === 0) {
+                        localData[NOW_PLAYING_LIST_KEY] = [];
+                    } else {
+                        localData[NOW_PLAYING_LIST_KEY] = serverData.nowplaying.tracks.map(function(track) {
+                            track.sync = 1;
+                            return track;
+                        });
+                    }
                 }
 
                 defer.resolve(localData);
@@ -205,10 +215,6 @@
                 });
 
                 saveChanges(localData);
-
-                console.log('all done');
-                console.log(localData);
-
                 bumpLastSynced();
             });
         }
@@ -218,7 +224,7 @@
             toBeSaved[PLAYLIST_STORAGE_KEY] = data[PLAYLIST_STORAGE_KEY];
             toBeSaved[NOW_PLAYING_LIST_KEY] = data[NOW_PLAYING_LIST_KEY];
             chrome.storage.local.set(toBeSaved, function() {
-                $rootScope.$broadcast('sync');
+                $rootScope.$broadcast('sync.completed');
             });
         }
     };
