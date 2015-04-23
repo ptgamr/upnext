@@ -96,9 +96,9 @@
                         return iterator.id === track.id;
                     });
 
-                    //since $scope.tracks is always a decorated array, means we have no reference to it
-                    //we have to remove track in this to update the UI
-                    $scope.tracks.splice(index, 1);
+                    // //since $scope.tracks is always a decorated array, means we have no reference to it
+                    // //we have to remove track in this to update the UI
+                    // $scope.tracks.splice(index, 1);
 
                     if ($scope.listContext === 'nowplaying') {
                         CorePlayer.remove(index);

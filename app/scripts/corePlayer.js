@@ -71,15 +71,17 @@
          * Start play at position 0s
          */
         this.playAll = function(tracks) {
-            NowPlaying.addTracks(tracks);
-            angular.extend(this.state, {
-                currentTrack: false,
-                currentIndex: 0,
-                playing: false,
-                currentTime: 0,
-                duration: 0
-            });
-            this.play(0);
+            NowPlaying.addTracks(tracks)
+                .then(function() {
+                    angular.extend(self.state, {
+                        currentTrack: false,
+                        currentIndex: 0,
+                        playing: false,
+                        currentTime: 0,
+                        duration: 0
+                    });
+                    self.play(0);
+                });
         };
 
         /**
@@ -98,18 +100,21 @@
         };
 
         this.clear = function() {
-            NowPlaying.clear();
+            NowPlaying
+                .removeAllTracks()
+                .then(function() {
+                    angular.extend(self.state, {
+                        currentTrack: null,
+                        currentIndex: 0,
+                        playing: false,
+                        currentTime: 0,
+                        duration: 0
+                    });
 
-            angular.extend(this.state, {
-                currentTrack: null,
-                currentIndex: 0,
-                playing: false,
-                currentTime: 0,
-                duration: 0
-            });
+                    Messaging.sendClearMessage();
+                    NowPlaying.saveState(self.state);
+                });
 
-            Messaging.sendClearMessage();
-            NowPlaying.saveState(this.state);
         }
 
         this.play = function(index) {
@@ -256,7 +261,7 @@
             this.state.currentTrack.error = true;
             this.nowPlaying.tracks[this.state.currentIndex].error = true;
             NowPlaying.updateStorage();
-            
+
             NowPlaying.saveState(this.state);
             GATracker.trackPlayer('track error');
         };
@@ -299,5 +304,3 @@
         })
     });
 })();
-
-

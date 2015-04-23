@@ -8,7 +8,7 @@
     var ORIGIN_SERVER = 's';
 
     function NowPlayingService($http, $q, CLIENT_ID, $rootScope, API_ENDPOINT, SyncService){
-        
+
         var NOW_PLAYING_LIST_KEY = 'nowPlaying';
         var NOW_PLAYING_STATE_KEY = 'nowPlayingState';
         var onNowPlayingChange = null, onNowPlayingStateChange = null;
@@ -54,6 +54,7 @@
             addTrack: addTrack,
             addTracks: addTracks,
             removeTrack: removeTrack,
+            removeAllTracks: removeAllTracks,
             clear: clear,
             updateStorage: updateStorage,
             getState: getState,
@@ -112,7 +113,7 @@
                     });
 
                 } else {
-                    
+
                     if (position) {
                         nowPlaying.tracks.splice(position, 0, track);
                     } else {
@@ -127,19 +128,119 @@
         }
 
         function addTracks(tracks) {
-            nowPlaying.tracks = _.map(tracks, function(track) {
-                track = angular.copy(track);
-                track.uuid = window.ServiceHelpers.ID();
-                track.sync = 0;
-                return track;
+            return $q(function(resolve, reject) {
+                removeAllTracks().then(function() {
+                    var tracksToAdd = _.map(tracks, function(track) {
+                        track = angular.copy(track);
+                        track.uuid = window.ServiceHelpers.ID();
+                        track.sync = 0;
+                        return track;
+                    });
+
+                    if (user) {
+
+                        $http({
+                            url: API_ENDPOINT + '/nowplaying',
+                            method: 'PUT',
+                            data: {
+                                added: tracksToAdd
+                            }
+                        }).success(function(response) {
+
+                            _.each(response, function(info, index) {
+                                tracksToAdd[index].internalId = info.internalId;
+                                tracksToAdd[index].sync = 1;
+                            });
+
+                            nowPlaying.tracks = tracksToAdd;
+                            SyncService.bumpLastSynced();
+                            resolve();
+                        }).error(function() {
+                            console.log('error adding multiple tracks to NowPlaying list');
+                            reject();
+                        });
+
+
+                    } else {
+                        nowPlaying.tracks = tracksToAdd;
+                        updateStorage();
+                        resolve();
+                    }
+
+                });
+
             });
-            updateStorage();
+
         }
 
         function removeTrack(position) {
-            nowPlaying.tracks.splice(position, 1);
-            updateStorage();
+            return $q(function(resolve, reject) {
+                var internalId = nowPlaying.tracks[position].internalId;
+                if (user && internalId) {
+                    $http({
+                        url: API_ENDPOINT + '/nowplaying',
+                        method: 'PUT',
+                        data: {
+                            removed: internalId
+                        }
+                    }).success(function(response) {
+
+                        nowPlaying.tracks.splice(position, 1);
+                        updateStorage();
+                        SyncService.bumpLastSynced();
+                        resolve();
+
+                    }).error(function() {
+                        console.log('error POST a playlist');
+                        reject();
+                    });
+                } else {
+                    nowPlaying.tracks.splice(position, 1);
+                    updateStorage();
+                    resolve();
+                }
+            });
         }
+
+        function removeAllTracks() {
+            return $q(function(resolve, reject) {
+
+                if (user) {
+
+                    var internalIds = _.map(nowPlaying.tracks, function(track) {
+                        return track.internalId;
+                    });
+
+                    if (internalIds.length) {
+                        $http({
+                            url: API_ENDPOINT + '/nowplaying',
+                            method: 'PUT',
+                            data: {
+                                removed: internalIds
+                            }
+                        }).success(function(response) {
+
+                            nowPlaying.tracks = [];
+                            updateStorage();
+                            SyncService.bumpLastSynced();
+                            resolve();
+
+                        }).error(function() {
+                            console.log('error remove multiple tracks from nowPlaying list');
+                            reject();
+                        });
+                    }
+
+                } else {
+                    nowPlaying.tracks = [];
+                    updateStorage();
+                    SyncService.bumpLastSynced();
+                    resolve();
+                }
+
+            });
+        }
+
 
         function clear() {
             nowPlaying.tracks = [];

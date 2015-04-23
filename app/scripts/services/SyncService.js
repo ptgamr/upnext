@@ -42,7 +42,7 @@
         /**
          * after noticed user has logined in to Chrome, sync funciton will do the following things:
          * 1. request for the most updated `lastUpdated`
-         * 
+         *
          * [lastUpdated === undefined]
          * 2. get all data from server by userId
          * 3. update the local db with the data comming from server (if existed)
@@ -52,7 +52,7 @@
          * 2. query server for all changes from that lastUpdated
          * 3. apply the changes
          * 4. upload local db to server
-         * 
+         *
          * @return {[type]} [description]
          */
         function sync() {
@@ -137,7 +137,7 @@
                 defer.resolve(localData);
             });
 
-            
+
             return defer.promise;
         }
 
@@ -146,7 +146,7 @@
 
             var playlists = localData[PLAYLIST_STORAGE_KEY] || [];
             var nowPlayingTracks = localData[NOW_PLAYING_LIST_KEY] || [];
-            
+
             var unsyncedPlaylists = _.filter(playlists, function(item) {
                 return item.origin === ORIGIN_LOCAL;
             });
@@ -193,11 +193,12 @@
                         unsyncedPlaylists[count].updated = response.data.updated;
                         unsyncedPlaylists[count].origin = ORIGIN_SERVER;
                     } else {
-                        console.log('now playing');
-                        console.log(response);
-                        _.each(unsyncedNowPlayingTracks, function(track) {
-                            track.sync = 1;
-                        });
+                        if (response.data.length) {
+                            _.each(unsyncedNowPlayingTracks, function(track, index) {
+                                track.internalId = response.data[index] ? response.data[index].internalId || '' : '';
+                                track.sync = 1;
+                            });
+                        }
                     }
 
                     count ++;

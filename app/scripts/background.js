@@ -700,23 +700,22 @@ chrome.runtime.onConnect.addListener(function(port) {
 //KEYBOARD COMMAND
 //===========================
 chrome.commands.onCommand.addListener(function(command) {
-  console.log('Command:', command);
 
-  switch(command) {
-    case 'next':
-      mainPlayer.next();
-      break;
-    case 'previous':
-      mainPlayer.prev();
-      break;
-    case 'playpause':
-      if (mainPlayer.isPlaying()) {
-        mainPlayer.pause();
-      } else {
-        mainPlayer.resume();
-      }
-      break;
-  }
+    switch(command) {
+        case 'next':
+            mainPlayer.next();
+            break;
+        case 'previous':
+            mainPlayer.prev();
+            break;
+        case 'playpause':
+            if (mainPlayer.isPlaying()) {
+                mainPlayer.pause();
+            } else {
+                mainPlayer.resume();
+            }
+            break;
+    };
 
 });
 
