@@ -24,6 +24,26 @@
     "omnibox": {
         "keyword": "SoundCloudify"
     },
+    "commands": {
+      "next": {
+        "suggested_key": {
+          "default": "Alt+N"
+        },
+        "description": "Play the next track"
+      },
+      "previous": {
+        "suggested_key": {
+          "default": "Alt+Shift+N"
+        },
+        "description": "Play the previous track"
+      },
+      "playpause": {
+        "suggested_key": {
+          "default": "Alt+P"
+        },
+        "description": "Play/Pause the playing track"
+      }
+    },
     "content_scripts": [
         {
             "matches": [
@@ -48,6 +68,7 @@
         "storage",
         "notifications",
         "*://*.youtube.com/*",
+        "*://*.ytimg.com/*",
         "http://52.11.108.36/*"
     ],
     "oauth2": {

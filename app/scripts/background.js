@@ -71,7 +71,7 @@ var SoundCloudPlayer = function(opts) {
 };
 
 SoundCloudPlayer.prototype = {
-    
+
     constructor: SoundCloudPlayer,
 
     play: function(track) {
@@ -127,7 +127,7 @@ var YoutubePlayer = function(opts) {
 };
 
 YoutubePlayer.prototype = {
-    
+
     constructor: YoutubePlayer,
 
     setPlayer: function(player) {
@@ -277,7 +277,7 @@ Player.prototype = {
                                     });
 
                                     if (!currentPort) return;
-                                    currentPort.postMessage({message: 'lastfm.trackInvalid'});    
+                                    currentPort.postMessage({message: 'lastfm.trackInvalid'});
                                 }
                             }, function() {
                                 self.state.currentTrack.lastFmValidate = false;
@@ -309,11 +309,11 @@ Player.prototype = {
         var nextIndex;
 
         if (this.state.shuffle) {
-            
+
             nextIndex = Utils.random(0, this.tracks.length - 1);
 
         } else {
-            
+
             nextIndex = this.state.currentIndex + 1;
 
             if (nextIndex >= this.tracks.length) {
@@ -329,7 +329,6 @@ Player.prototype = {
 
             this.state.currentIndex = nextIndex;
             this.state.currentTrack = nextTrack;
-            this.state.playing = true;
 
             chrome.storage.local.set({
                 'nowPlayingState': this.state,
@@ -354,8 +353,7 @@ Player.prototype = {
 
             this.state.currentIndex = nextIndex;
             this.state.currentTrack = nextTrack;
-            this.state.playing = true;
-            
+
             chrome.storage.local.set({
                 'nowPlayingState': this.state,
                 'nowPlayingStateUpdatedBy': getStorageUpdateKey()
@@ -375,6 +373,8 @@ Player.prototype = {
             this.activePlayer = soundcloudPlayer;
         }
 
+        this.state.playing = true;
+
         this.startTimestamp = Math.floor(Date.now() / 1000);
 
 
@@ -385,6 +385,7 @@ Player.prototype = {
         if(this.activePlayer) {
             this.activePlayer.pause();
         }
+        this.state.playing = false;
         chrome.browserAction.setIcon({path: 'images/icon-38-pause.png'});
     },
 
@@ -396,6 +397,7 @@ Player.prototype = {
         }
 
         this.activePlayer.resume();
+        this.state.playing = true;
         chrome.browserAction.setIcon({path: 'images/icon-38.png'});
     },
 
@@ -432,6 +434,10 @@ Player.prototype = {
     setVolume: function(volume) {
         this.soundcloudPlayer.setVolume(volume);
         this.youtubePlayer.setVolume(volume);
+    },
+
+    isPlaying: function() {
+      return this.state.playing;
     },
 
     scrobble: function(manualScrobble) {
@@ -691,6 +697,30 @@ chrome.runtime.onConnect.addListener(function(port) {
 });
 
 //===========================
+//KEYBOARD COMMAND
+//===========================
+chrome.commands.onCommand.addListener(function(command) {
+  console.log('Command:', command);
+
+  switch(command) {
+    case 'next':
+      mainPlayer.next();
+      break;
+    case 'previous':
+      mainPlayer.prev();
+      break;
+    case 'playpause':
+      if (mainPlayer.isPlaying()) {
+        mainPlayer.pause();
+      } else {
+        mainPlayer.resume();
+      }
+      break;
+  }
+
+});
+
+//===========================
 //GOOGLE ANALYTICS
 //===========================
 (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
@@ -701,5 +731,3 @@ m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 ga('create', 'UA-61308350-1', 'auto');
 ga('set', 'checkProtocolTask', function(){});
 ga('send', 'pageview');
-
-
