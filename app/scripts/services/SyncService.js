@@ -162,7 +162,7 @@
             });
 
             var unsyncedNowPlayingTracks = _.filter(nowPlayingTracks, function(track) {
-                return track.sync === 0;
+                return !track.sync;
             });
 
             var promises = [];
