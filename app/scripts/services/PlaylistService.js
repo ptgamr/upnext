@@ -4,33 +4,57 @@
     angular.module('soundCloudify')
         .service("PlaylistService", PlaylistService);
 
-    var ORIGIN_LOCAL = 'l';
-    var ORIGIN_SERVER = 's';
-
     function Playlist(name, tracks) {
         if (!name)
             throw new Error('You have to specify a name when create a playlist');
 
         this.tracks = tracks || [];
         this.name = name;
-        this.id = Date.now();
-        this.origin = ORIGIN_LOCAL; //playlist in local only
+        this.uuid = window.ServiceHelpers.ID();
+        this.sync = 0; //playlist in local only
     }
 
-    function PlaylistService($rootScope, $q, $http, SyncService, API_ENDPOINT){
+    function PlaylistService($rootScope, $q, $http, SyncService, API_ENDPOINT, $indexedDB){
 
         var PLAYLIST_STORAGE_KEY = 'playlist';
 
         var PLAYLIST_ENDPOINT = API_ENDPOINT + '/playlist';
 
+        //Storage API for simplify IndexedDB interaction
+        var Storage = {
+            upsert: function (playlist) {
+                $indexedDB.openStore('playlist', function(store) {
+                    store.upsert(playlist);
+                });
+            },
+            insert: function (playlist) {
+                $indexedDB.openStore('playlist', function(store) {
+                    store.insert(playlist);
+                });
+            },
+            delete: function(playlist) {
+                $indexedDB.openStore('playlist', function(store) {
+                    store.delete(playlist);
+                });
+            },
+            getAllPlaylists: function() {
+                return $q(function(resolve, reject) {
+                    $indexedDB.openStore('playlist', function(store) {
+                        store.getAll().then(function(playlist) {  
+                            resolve(_.sortBy(playlist, 'order').reverse());
+                        });
+                    });
+                });
+            }
+        };
+
         var playlistStore = {
-            items: null
+            items: []
         };
 
         var user;
 
         init();
-
 
         return {
             getList: getList,
@@ -38,44 +62,31 @@
             removePlaylist: removePlaylist,
             getPlaylist: getPlaylist,
             addTrackToPlaylist: addTrackToPlaylist,
-            addTracksToPlaylist: addTracksToPlaylist,
-            starTrack: starTrack,
-            unstarTrack: unstarTrack,
-            isTrackStarred: isTrackStarred
+            addTracksToPlaylist: addTracksToPlaylist
         };
 
         function init() {
 
             $rootScope.$on('identity.confirm', function(event, data) {
                 if (data.identity.id && data.identity.email) {
-                    onUserAuthenticated(data.identity);
+                    user = data.identity;
                 }
             });
 
             $rootScope.$on('sync.completed', function() {
-                syncWithChromeStorage();
+                getFromStorage();
             });
 
-            syncWithChromeStorage();
+            getFromStorage();
         }
 
-        function syncWithChromeStorage() {
-            chrome.storage.local.get(PLAYLIST_STORAGE_KEY, function(data) {
-                $rootScope.$apply(function() {
-                    playlistStore.items = data[PLAYLIST_STORAGE_KEY] || [];
+        function getFromStorage() {
 
-                    //the Starred Playlist should be automatically added & can not be removed
-                    if (!playlistStore.items.length) {
-                        newPlaylist('Starred', false);
-                    }
-
-                    $rootScope.$broadcast('playlist.ready');
-                })
-            });
-        }
-
-        function onUserAuthenticated(identity) {
-            user = identity;
+            Storage.getAllPlaylists()
+                    .then(function(playlists) {
+                        playlistStore.items = playlists || [];
+                        $rootScope.$broadcast('playlist.ready');
+                    });
         }
 
         function getList() {
@@ -84,13 +95,18 @@
 
         function newPlaylist(name, saveToServer, tracks) {
 
-            saveToServer = typeof saveToServer === 'undefined' ? true : saveToServer;
-
-            tracks = tracks || [];
-
             return $q(function(resolve, reject) {
 
+                saveToServer = typeof saveToServer === 'undefined' ? true : saveToServer;
+
+                tracks = tracks || [];
+
                 var playlist = new Playlist(name, tracks);
+
+                //always insert after the 'Starred' list
+                playlist.order = playlistStore.items.length ? playlistStore.items[0].order + 1 : 0; 
+                playlistStore.items.unshift(playlist);
+                Storage.insert(playlist);
 
                 if (user && saveToServer) {
 
@@ -103,11 +119,9 @@
                         playlist.id = response.id;
                         playlist.updated = response.updated;
 
-                        playlist.origin = ORIGIN_SERVER;
+                        playlist.sync = 1;
 
-                        playlistStore.items.splice(1, 0, playlist);
-                        updateStorage();
-
+                        Storage.upsert(playlist);
                         SyncService.bumpLastSynced();
 
                         resolve();
@@ -118,8 +132,6 @@
                     });
 
                 } else {
-                    playlistStore.items.splice(1, 0, playlist);
-                    updateStorage();
                     resolve();
                 }
 
@@ -130,8 +142,8 @@
             if (typeof index === 'undefined' || isNaN(index))
                     throw new Error('Error when remove playlist: index must be specified as number');
 
-            playlistStore.items.splice(index, 1);
-            updateStorage();
+            var deleted = playlistStore.items.splice(index, 1);
+            Storage.delete(deleted[0].uuid);
         }
 
         function getPlaylist(index) {
@@ -160,7 +172,6 @@
                 throw new Error('Error when adding track: Playlist not found.');
 
             _addTracksToPlaylist(tracks, playlist);
-            updateStorage();
         }
 
         function removeTrackFromPlaylist(trackIndex, playlistIndex) {
@@ -171,55 +182,16 @@
                 throw new Error('Error when adding track: Playlist not found.');
 
             _removeTrackFromPlaylist(trackIndex);
-            updateStorage();
-        }
-
-        function starTrack(track) {
-            var starList = playlistStore.items[0];
-
-            if(!starList)
-                throw new Error('starTrack(): Star Playlist not found. This should be reported.');
-
-            _addTrackToPlaylist(track, starList);
-        }
-
-        function unstarTrack(track) {
-            var starList = playlistStore.items[0];
-
-            if(!starList)
-                throw new Error('unstarTrack(): Star Playlist not found. This should be reported.');
-
-            for (var i = 0 ; i < starList.tracks.length; i++) {
-                if (starList.tracks[i].id === track.id) {
-                    _removeTrackFromPlaylist(i, starList);
-                    break;
-                }
-            }
-            updateStorage();
-        }
-
-        function isTrackStarred(track) {
-            var starList = playlistStore.items[0];
-
-            if(!starList)
-                throw new Error('isTrackStarred() : Star Playlist not found. This should be reported.');
-
-            for (var i = 0 ; i < starList.tracks.length; i++) {
-                if (starList.tracks[i].id === track.id) {
-                    return true;
-                }
-            }
-        }
-
-        function updateStorage() {
-            var storageObj = {};
-            storageObj[PLAYLIST_STORAGE_KEY] = playlistStore.items;
-            chrome.storage.local.set(storageObj);
         }
 
         function _addTrackToPlaylist(track, playlist) {
 
             return $q(function(resolve, reject) {
+
+                var copy = angular.copy(track);
+                copy.uuid = window.ServiceHelpers.ID();
+                playlist.tracks.push(copy);
+                Storage.upsert(playlist);
 
                 if (user) {
 
@@ -230,15 +202,11 @@
                             added: track
                         }
                     }).success(function(response) {
-
-                        var copy = angular.copy(track);
-                        copy.uuid = window.ServiceHelpers.ID();
-                        copy.internalId = response.internalId;
-                        playlist.tracks.push(copy);
-                        updateStorage();
+                        
+                        //TODO: check with Khoi
+                        //copy.internalId = response.internalId;
 
                         SyncService.bumpLastSynced();
-
                         resolve();
 
                     }).error(function() {
@@ -247,11 +215,6 @@
                     });
 
                 } else {
-
-                    var copy = angular.copy(track);
-                    copy.uuid = window.ServiceHelpers.ID();
-                    playlist.tracks.push(copy);
-                    updateStorage();
                     resolve();
                 }
 
@@ -267,12 +230,16 @@
             })
 
             playlist.tracks = playlist.tracks.concat(copies);
+
+            Storage.upsert(playlist);
         }
 
         function _removeTrackFromPlaylist(trackIndex, playlist) {
             if (typeof trackIndex === 'undefined' || isNaN(trackIndex))
                 throw new Error('Error when remove track: trackIndex must be specified as number');
             playlist.tracks.splice(trackIndex, 1);
+
+            Storage.upsert(playlist);
         }
     };
 

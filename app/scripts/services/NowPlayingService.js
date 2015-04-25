@@ -18,7 +18,7 @@
         //local cache, used by CorePlayer, and is watched by AngularJS for changes
         var nowplaying = {
             tracks: [],
-            tracksId: []
+            trackIds: []
         };
         var state = backgroundPage.mainPlayer.state;
 
@@ -27,7 +27,7 @@
             upsert: function (tracks) {
                 $indexedDB.openStore('nowplaying', function(store) {
                     _.each(tracks, function(track) {
-                        store.upsearch(track);
+                        store.upsert(track);
                     });
                 });
             },
@@ -62,7 +62,7 @@
                     });
                 });
             }
-        }
+        };
 
         $rootScope.$on('identity.confirm', function(event, data) {
             if (data.identity.id && data.identity.email) {

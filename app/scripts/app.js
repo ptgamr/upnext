@@ -133,8 +133,10 @@
             $indexedDBProvider
                 .connection('soundcloudify')
                 .upgradeDatabase(1, function(event, db, tx){
-                    var playlistStore = db.createObjectStore('playlist', {keyPath: 'id'});
-                    var nowplayingStore = db.createObjectStore('nowplaying', {keyPath: 'uuid'});
+                    console.log('upgradeDatabase');
+                    // var playlistStore = db.createObjectStore('playlist', {keyPath: 'uuid'});
+                    // var nowplayingStore = db.createObjectStore('nowplaying', {keyPath: 'uuid'});
+                    // var starStore = db.createObjectStore('starred', {keyPath: 'id'});
                 });
 
 			//TODO: reenable it in production

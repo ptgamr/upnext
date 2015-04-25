@@ -30,9 +30,9 @@ window.SCIndexedDB = (function () {
 
         req.onupgradeneeded = function (evt) {
             console.log("openDb.onupgradeneeded");
-            var store = evt.currentTarget.result.createObjectStore(
-                                DB_STORE_NAME,
-                                { keyPath: 'uuid'});
+            var playlistStore = evt.currentTarget.result.createObjectStore('playlist', {keyPath: 'uuid'});
+            var nowplayingStore = evt.currentTarget.result.createObjectStore('nowplaying', {keyPath: 'uuid'});
+            var starStore = evt.currentTarget.result.createObjectStore('starred', {keyPath: 'id'});
         };
     }
 
