@@ -17,31 +17,14 @@
             };
         }
 
-        var DEFAULT_STATE = {
-            currentTrack: false,
-            currentIndex: 0,
-            playing: false,
-            currentTime: 0,
-            duration: 0,
-            volume: 0.5,
-            repeat: 0,
-            shuffle: false,
-            scrobble: false
-        };
 
         var self = this;
-        this.nowPlaying = NowPlaying.getList();
-        this.state = DEFAULT_STATE;
 
-        NowPlaying.getState(function(savedState) {
-            if (savedState && typeof savedState.volume !== 'undefined') {
-                self.state = savedState;
-            }
-        });
-
-        NowPlaying.registerNowPlayingStateChangeHandler(function(state) {
-            self.state = state;
-        });
+        //this is used for commincating with background (one way)
+        var backgroundPage = chrome.extension.getBackgroundPage();
+        
+        this.nowplaying = NowPlaying.getList();
+        this.state = NowPlaying.getState();
 
         this.add = function(track, andPlay) {
 
@@ -61,7 +44,7 @@
          */
         this.playNext = function(track) {
             if (track) {
-                NowPlaying.addTrack(this.nowPlaying.tracks, currentIndex + 1);
+                NowPlaying.addTrack(this.nowplaying.tracks, currentIndex + 1);
             }
         };
 
@@ -121,7 +104,7 @@
 
             index = index || 0;
 
-            var track = this.nowPlaying.tracks[index];
+            var track = this.nowplaying.tracks[index];
 
             if (!track) {
                 throw 'No track found for playing, index=' + index;
@@ -141,26 +124,26 @@
                 };
 
                 NowPlaying.saveState(this.state);
-                Messaging.sendPlayMessage(track);
+                backgroundPage.mainPlayer.play(track);
             }
         };
 
         this.pause = function() {
             this.state.playing = false;
             NowPlaying.saveState(this.state);
-            Messaging.sendPauseMessage();
+            backgroundPage.mainPlayer.pause();
         };
 
         this.resume = function() {
             this.state.playing = true;
             NowPlaying.saveState(this.state);
-            Messaging.sendResumeMessage();
+            backgroundPage.mainPlayer.resume();
         };
 
         this.stop = function() {
-            this.state.playing = false;
-            this.state.currentTime = 0;
-            NowPlaying.saveState(this.state);
+            // this.state.playing = false;
+            // this.state.currentTime = 0;
+            // NowPlaying.saveState(this.state);
         };
 
         this.playPause = function(index) {
@@ -177,16 +160,16 @@
         };
 
         this.next = function() {
-            Messaging.sendNextMessage();
+            backgroundPage.mainPlayer.next();
         };
 
         this.previous = function() {
-            Messaging.sendPrevMessage();
+            backgroundPage.mainPlayer.prev();
         };
 
         this.seek = function(xpos) {
             this.state.currentTime = xpos * this.state.duration;
-            Messaging.sendSeekMessage(xpos);
+            backgroundPage.mainPlayer.seek(xpos);
         };
 
         this.updateState = function(data) {
@@ -210,7 +193,7 @@
 
         this.setVolume = function(volume) {
             this.state.volume = volume;
-            Messaging.sendVolumeMessage(volume);
+            backgroundPage.mainPlayer.setVolume(volume);
             deboundSaveVolume();
         };
 
@@ -251,15 +234,15 @@
         this.sendManualScrobble = function(manualScrobble) {
             Messaging.sendManualScrobbleMessage(manualScrobble);
 
-            this.nowPlaying.tracks[this.state.currentIndex].manualTrack = manualScrobble.track;
-            this.nowPlaying.tracks[this.state.currentIndex].manualArtist = manualScrobble.artist;
+            this.nowplaying.tracks[this.state.currentIndex].manualTrack = manualScrobble.track;
+            this.nowplaying.tracks[this.state.currentIndex].manualArtist = manualScrobble.artist;
 
             NowPlaying.updateStorage();
         };
 
         this.markCurrentTrackError = function() {
             this.state.currentTrack.error = true;
-            this.nowPlaying.tracks[this.state.currentIndex].error = true;
+            this.nowplaying.tracks[this.state.currentIndex].error = true;
             NowPlaying.updateStorage();
 
             NowPlaying.saveState(this.state);
@@ -273,11 +256,6 @@
                 self.updateState.call(self, data);
             });
         });
-
-        // Messaging.registerTrackChangedFromBackgroundHandler(function(data) {
-        //     console.log('tack changed from background');
-        //     self.state = data;
-        // });
 
         Messaging.registerErrorHandler(function() {
             $mdToast.show({

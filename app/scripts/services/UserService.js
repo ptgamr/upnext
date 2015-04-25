@@ -16,17 +16,17 @@
         };
 
         function init() {
-            chrome.identity.getProfileUserInfo(function(info) {
-                user.id = info.id;
-                user.email = info.email;
+            // chrome.identity.getProfileUserInfo(function(info) {
+            //     user.id = info.id;
+            //     user.email = info.email;
 
-                if (user.id && user.email) {
-                    $rootScope.$broadcast('identity.confirm', {
-                        identity: info
-                    });
-                }
+            //     if (user.id && user.email) {
+            //         $rootScope.$broadcast('identity.confirm', {
+            //             identity: info
+            //         });
+            //     }
 
-            });
+            // });
         }
 
         function getUser() {

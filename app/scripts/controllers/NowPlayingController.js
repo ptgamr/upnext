@@ -10,10 +10,10 @@
         vm.player = CorePlayer;
 
         $rootScope.$on('playlist.ready', function() {
-            vm.tracks = TrackAdapter.decorateStar(CorePlayer.nowPlaying.tracks);
+            vm.tracks = TrackAdapter.decorateStar(CorePlayer.nowplaying.tracks);
         });
 
-        vm.tracks = TrackAdapter.decorateStar(CorePlayer.nowPlaying.tracks);
+        vm.tracks = TrackAdapter.decorateStar(CorePlayer.nowplaying.tracks);
 
         vm.saveStream = function($event) {
             

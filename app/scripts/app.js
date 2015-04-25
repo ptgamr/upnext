@@ -37,13 +37,14 @@
 		return '_' + Math.random().toString(36).substr(2, 9);
     }
 
-	var soundCloudify = angular.module('soundCloudify', ['ngMaterial', 'ngRoute', 'ui.router', 'react']);
+	var soundCloudify = angular.module('soundCloudify', ['ngMaterial', 'ngRoute', 'ui.router', 'react', 'indexedDB']);
 
     soundCloudify.value('API_ENDPOINT', 'http://52.11.108.36');
 
 	soundCloudify.value('CLIENT_ID', '849e84ac5f7843ce1cbc0e004ae4fb69');
 
-	soundCloudify.config(function($stateProvider, $urlRouterProvider, $mdThemingProvider, $compileProvider, $httpProvider) {
+	soundCloudify.config(function($stateProvider, $urlRouterProvider, $mdThemingProvider, 
+                                    $compileProvider, $httpProvider, $indexedDBProvider) {
 
 			$stateProvider
 				.state('nowPlaying', {
@@ -128,6 +129,13 @@
 			$compileProvider.imgSrcSanitizationWhitelist(/^\s*((https?|ftp|file|blob|chrome-extension):|data:image\/)/);
 
 			$httpProvider.interceptors.push('HttpRequestInterceptor');
+
+            $indexedDBProvider
+                .connection('soundcloudify')
+                .upgradeDatabase(1, function(event, db, tx){
+                    var playlistStore = db.createObjectStore('playlist', {keyPath: 'id'});
+                    var nowplayingStore = db.createObjectStore('nowplaying', {keyPath: 'uuid'});
+                });
 
 			//TODO: reenable it in production
 			$compileProvider.debugInfoEnabled(false);
