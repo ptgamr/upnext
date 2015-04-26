@@ -47,18 +47,20 @@
 
             $rootScope.$broadcast('sync.start');
 
-            pull().then(push);
+            pull().then(push).then(bumpLastSynced);
         }
 
         function pull() {
 
             if (pulling) {
                 console.log('SyncService::pull() is in progress');
+                reject();
                 return;
             }
 
             if (!user) {
                 console.log('SyncService::pull() no user');
+                reject();
                 return;
             }
 
@@ -119,94 +121,105 @@
 
         function push() {
 
-            if (pushing) {
-                console.log('SyncService::push() is in progress');
-                return;
-            }
+            return $q(function(resolve, reject) {
 
-            if (!user) {
-                console.log('SyncService::push() no user');
-                return;
-            }
+                if (pushing) {
+                    console.log('SyncService::push() is in progress');
+                    reject();
+                    return;
+                }
 
-            console.log('SyncService::push()');
+                if (!user) {
+                    console.log('SyncService::push() no user');
+                    reject();
+                    return;
+                }
 
-            pushing = true;
+                console.log('SyncService::push()');
 
-            $q.all([PlaylistStorage.getUnsyncedPlaylists, NowplayingStorage.getUnsyncedTracks])
-                .then(function(result) {
+                pushing = true;
 
-                    /**
-                     * Detecting changes
-                     */
-                    var unsyncedPlaylists = result[0];
-                    var unsyncedNowPlayingTracks = result[1];
-                    var promises = [];
+                $q.all([PlaylistStorage.getUnsyncedPlaylists, NowplayingStorage.getUnsyncedTracks])
+                    .then(function(result) {
 
-                    _.each(unsyncedPlaylists, function(playlist) {
-                        promises.push(
-                            $http({
-                                url: API_ENDPOINT + '/playlist',
-                                method: 'POST',
-                                data: playlist,
-                            })
-                        );
-                    });
+                        /**
+                         * Detecting changes
+                         */
+                        var unsyncedPlaylists = result[0];
+                        var unsyncedNowPlayingTracks = result[1];
+                        var promises = [];
 
-                    var added = _.filter(unsyncedNowPlayingTracks, function(track) {
-                        return track.deleted === 0;
-                    });
-
-                    var removed = _.filter(unsyncedNowPlayingTracks, function(track) {
-                        return track.deleted === 1;
-                    });
-
-                    if (unsyncedNowPlayingTracks.length) {
-                        promises.push(
-                            $http({
-                                url: API_ENDPOINT + '/nowplaying',
-                                method: 'PUT',
-                                data: {
-                                    added : added
-                                }
-                            })
-                        );
-                    }
-
-                    /**
-                     * Push the changes
-                     */
-                    $q.all(promises).then(function(responses) {
-
-                        _.each(responses, function(response, index) {
-
-                            if (response.data && index < responses.length - 1) {
-                                var playlist = unsyncedPlaylists[index];
-                                if (playlist) {
-                                    playlist.id = response.data.id;
-                                    playlist.updated = response.data.updated;
-                                    playlist.sync = 1;
-                                }
-
-                                PlaylistStorage.upsert(playlist);
-                            } else if (response.data && response.data.length) {
-                                _.each(response.data, function(internalId, index) {
-                                    var track = added[index];
-                                    track.internalId = internalId;
-                                    track.sync = 1;
-
-                                    NowplayingStorage.upsert(track);
-                                });
-                            }
-
+                        _.each(unsyncedPlaylists, function(playlist) {
+                            promises.push(
+                                $http({
+                                    url: API_ENDPOINT + '/playlist',
+                                    method: 'POST',
+                                    data: playlist,
+                                })
+                            );
                         });
 
-                        bumpLastSynced();
+                        var added = _.filter(unsyncedNowPlayingTracks, function(track) {
+                            return track.deleted === 0;
+                        });
 
-                        pushing = false;
+                        var removed = _.filter(unsyncedNowPlayingTracks, function(track) {
+                            return track.deleted === 1;
+                        });
 
+                        if (unsyncedNowPlayingTracks.length) {
+                            promises.push(
+                                $http({
+                                    url: API_ENDPOINT + '/nowplaying',
+                                    method: 'PUT',
+                                    data: {
+                                        added : added
+                                    }
+                                })
+                            );
+                        }
+
+                        if (!promises.length) {
+                            resolve();
+                            return;
+                        }
+
+                        /**
+                         * Push the changes
+                         */
+                        $q.all(promises).then(function(responses) {
+
+                            _.each(responses, function(response, index) {
+
+                                if (response.data && index < responses.length - 1) {
+                                    var playlist = unsyncedPlaylists[index];
+                                    if (playlist) {
+                                        playlist.id = response.data.id;
+                                        playlist.updated = response.data.updated;
+                                        playlist.sync = 1;
+                                    }
+
+                                    PlaylistStorage.upsert(playlist);
+                                } else if (response.data && response.data.length) {
+                                    _.each(response.data, function(internalId, index) {
+                                        var track = added[index];
+                                        track.internalId = internalId;
+                                        track.sync = 1;
+
+                                        NowplayingStorage.upsert(track);
+                                    });
+                                }
+
+                            });
+
+                            pushing = false;
+
+                            resolve();
+
+                        });
                     });
-                });
+            });
+
         }
 
         function bumpLastSynced() {
