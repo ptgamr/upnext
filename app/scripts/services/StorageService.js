@@ -36,6 +36,9 @@
                         });
                     });
                 });
+            },
+            getUnsyncedPlaylists: function() {
+                //TODO
             }
         };
 
@@ -87,6 +90,9 @@
                         });
                     });
                 });
+            },
+            getUnsyncedTracks: function() {
+                //TODO
             }
         };
 
