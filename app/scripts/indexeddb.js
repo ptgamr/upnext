@@ -30,8 +30,14 @@ window.SCIndexedDB = (function () {
 
         req.onupgradeneeded = function (evt) {
             console.log("openDb.onupgradeneeded");
+            
             var playlistStore = evt.currentTarget.result.createObjectStore('playlist', {keyPath: 'uuid'});
+            playlistStore.createIndex("sync", "sync", { unique: false });
+
             var nowplayingStore = evt.currentTarget.result.createObjectStore('nowplaying', {keyPath: 'uuid'});
+            nowplayingStore.createIndex("sync", "sync", { unique: false });
+            nowplayingStore.createIndex("deleted", "deleted", { unique: false });
+
             var starStore = evt.currentTarget.result.createObjectStore('starred', {keyPath: 'id'});
         };
     }

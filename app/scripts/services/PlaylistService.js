@@ -14,39 +14,12 @@
         this.sync = 0; //playlist in local only
     }
 
-    function PlaylistService($rootScope, $q, $http, SyncService, API_ENDPOINT, $indexedDB){
-
-        var PLAYLIST_STORAGE_KEY = 'playlist';
+    function PlaylistService($rootScope, $q, $http, SyncService, API_ENDPOINT, StorageService){
 
         var PLAYLIST_ENDPOINT = API_ENDPOINT + '/playlist';
 
         //Storage API for simplify IndexedDB interaction
-        var Storage = {
-            upsert: function (playlist) {
-                $indexedDB.openStore('playlist', function(store) {
-                    store.upsert(playlist);
-                });
-            },
-            insert: function (playlist) {
-                $indexedDB.openStore('playlist', function(store) {
-                    store.insert(playlist);
-                });
-            },
-            delete: function(playlist) {
-                $indexedDB.openStore('playlist', function(store) {
-                    store.delete(playlist);
-                });
-            },
-            getAllPlaylists: function() {
-                return $q(function(resolve, reject) {
-                    $indexedDB.openStore('playlist', function(store) {
-                        store.getAll().then(function(playlist) {  
-                            resolve(_.sortBy(playlist, 'order').reverse());
-                        });
-                    });
-                });
-            }
-        };
+        var Storage = StorageService.getStorageInstance('playlist');
 
         var playlistStore = {
             items: []
@@ -97,6 +70,7 @@
 
             return $q(function(resolve, reject) {
 
+                //TODO: remove this
                 saveToServer = typeof saveToServer === 'undefined' ? true : saveToServer;
 
                 tracks = tracks || [];
@@ -108,33 +82,9 @@
                 playlistStore.items.unshift(playlist);
                 Storage.insert(playlist);
 
-                if (user && saveToServer) {
+                SyncService.push();
 
-                    $http({
-                        url: PLAYLIST_ENDPOINT,
-                        method: 'POST',
-                        data: playlist,
-                    }).success(function(response) {
-
-                        playlist.id = response.id;
-                        playlist.updated = response.updated;
-
-                        playlist.sync = 1;
-
-                        Storage.upsert(playlist);
-                        SyncService.bumpLastSynced();
-
-                        resolve();
-
-                    }).error(function() {
-                        console.log('error POST a playlist');
-                        reject();
-                    });
-
-                } else {
-                    resolve();
-                }
-
+                resolve();
             });
         }
 
@@ -181,7 +131,7 @@
             if(!playlist)
                 throw new Error('Error when adding track: Playlist not found.');
 
-            _removeTrackFromPlaylist(trackIndex);
+            _removeTrackFromPlaylist(trackIndex, playlist);
         }
 
         function _addTrackToPlaylist(track, playlist) {
@@ -190,34 +140,12 @@
 
                 var copy = angular.copy(track);
                 copy.uuid = window.ServiceHelpers.ID();
+                copy.deleted = 0;
                 playlist.tracks.push(copy);
+                playlist.sync = 0; //mark as unsynced
                 Storage.upsert(playlist);
 
-                if (user) {
-
-                    $http({
-                        url: PLAYLIST_ENDPOINT + '/' + playlist.id,
-                        method: 'PUT',
-                        data: {
-                            added: track
-                        }
-                    }).success(function(response) {
-                        
-                        //TODO: check with Khoi
-                        //copy.internalId = response.internalId;
-
-                        SyncService.bumpLastSynced();
-                        resolve();
-
-                    }).error(function() {
-                        console.log('error POST a playlist');
-                        reject();
-                    });
-
-                } else {
-                    resolve();
-                }
-
+                SyncService.push();
             });
         }
 
@@ -226,21 +154,27 @@
             var copies = tracks.map(function(track) {
                 var copy = angular.copy(track);
                 copy.uuid = window.ServiceHelpers.ID();
+                copy.deleted = 0;
                 return copy;
             })
 
             playlist.tracks = playlist.tracks.concat(copies);
+            playlist.sync = 0;
 
             Storage.upsert(playlist);
+            SyncService.push();
         }
 
+        //TESTME
         function _removeTrackFromPlaylist(trackIndex, playlist) {
             if (typeof trackIndex === 'undefined' || isNaN(trackIndex))
                 throw new Error('Error when remove track: trackIndex must be specified as number');
-            playlist.tracks.splice(trackIndex, 1);
+
+            playlist.tracks[trackIndex].deleted = 1;
 
             Storage.upsert(playlist);
+
+            SyncService.push();
         }
     };
-
 }());
