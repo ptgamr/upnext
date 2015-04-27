@@ -21,9 +21,9 @@
                 user.email = info.email;
 
                 if (user.id && user.email) {
-                    // $rootScope.$broadcast('identity.confirm', {
-                    //     identity: info
-                    // });
+                    $rootScope.$broadcast('identity.confirm', {
+                        identity: info
+                    });
                 }
 
             });

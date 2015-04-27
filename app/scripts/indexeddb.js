@@ -33,6 +33,7 @@ window.SCIndexedDB = (function () {
             
             var playlistStore = evt.currentTarget.result.createObjectStore('playlist', {keyPath: 'uuid'});
             playlistStore.createIndex("sync", "sync", { unique: false });
+            playlistStore.createIndex("deleted", "deleted", { unique: false });
 
             var nowplayingStore = evt.currentTarget.result.createObjectStore('nowplaying', {keyPath: 'uuid'});
             nowplayingStore.createIndex("sync", "sync", { unique: false });

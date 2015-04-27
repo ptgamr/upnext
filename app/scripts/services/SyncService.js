@@ -139,17 +139,20 @@
 
                 pushing = true;
 
-                $q.all([PlaylistStorage.getUnsyncedPlaylists, NowplayingStorage.getUnsyncedTracks])
+                $q.all({
+                        unsyncedPlaylists: PlaylistStorage.getUnsyncedPlaylists(),
+                        unsyncedNowPlayingTracks: NowplayingStorage.getUnsyncedTracks()
+                    })
                     .then(function(result) {
 
                         /**
                          * Detecting changes
                          */
-                        var unsyncedPlaylists = result[0];
-                        var unsyncedNowPlayingTracks = result[1];
+                        var localPlaylists = result.unsyncedPlaylists;
+                        var localNowplayingTracks = result.unsyncedNowPlayingTracks;
                         var promises = [];
 
-                        _.each(unsyncedPlaylists, function(playlist) {
+                        _.each(localPlaylists, function(playlist) {
                             promises.push(
                                 $http({
                                     url: API_ENDPOINT + '/playlist',
@@ -159,15 +162,15 @@
                             );
                         });
 
-                        var added = _.filter(unsyncedNowPlayingTracks, function(track) {
+                        var added = _.filter(localNowplayingTracks, function(track) {
                             return track.deleted === 0;
                         });
 
-                        var removed = _.filter(unsyncedNowPlayingTracks, function(track) {
+                        var removed = _.filter(localNowplayingTracks, function(track) {
                             return track.deleted === 1;
                         });
 
-                        if (unsyncedNowPlayingTracks.length) {
+                        if (added.length) {
                             promises.push(
                                 $http({
                                     url: API_ENDPOINT + '/nowplaying',
@@ -177,45 +180,43 @@
                                     }
                                 })
                             );
+                        } else {
+                            promises.push($q(function(resolve, reject){ resolve('nowplaying'); }));
                         }
 
-                        if (!promises.length) {
-                            resolve();
-                            return;
-                        }
-
-                        /**
-                         * Push the changes
-                         */
                         $q.all(promises).then(function(responses) {
 
-                            _.each(responses, function(response, index) {
+                            var nowplayingResponse = responses.splice(responses.length - 1, 1)[0];
+                            var playlistResponse = responses;
 
-                                if (response.data && index < responses.length - 1) {
-                                    var playlist = unsyncedPlaylists[index];
-                                    if (playlist) {
-                                        playlist.id = response.data.id;
-                                        playlist.updated = response.data.updated;
-                                        playlist.sync = 1;
-                                    }
-
-                                    PlaylistStorage.upsert(playlist);
-                                } else if (response.data && response.data.length) {
-                                    _.each(response.data, function(internalId, index) {
-                                        var track = added[index];
-                                        track.internalId = internalId;
-                                        track.sync = 1;
-
-                                        NowplayingStorage.upsert(track);
-                                    });
+                            _.each(playlistResponse, function(response, index) {
+                                var playlist = localPlaylists[index];
+                                if (playlist) {
+                                    playlist.id = response.data.id;
+                                    playlist.updated = response.data.updated;
+                                    playlist.sync = 1;
                                 }
 
+                                PlaylistStorage.upsert(playlist);
                             });
+
+                            if (nowplayingResponse && nowplayingResponse.data && nowplayingResponse.data.length) {
+                                _.each(nowplayingResponse.data[0], function(internalId, index) {
+                                    var track = added[index];
+                                    track.internalId = internalId.internalId;
+                                    track.sync = 1;
+                                });
+
+                                NowplayingStorage.upsert(added);
+                            }
 
                             pushing = false;
 
                             resolve();
 
+                        }, function() {
+                            pushing = false;
+                            reject();
                         });
                     });
             });

@@ -38,7 +38,18 @@
                 });
             },
             getUnsyncedPlaylists: function() {
-                //TODO
+                return $q(function(resolve, reject) {
+                    $indexedDB.openStore('playlist', function(store) {
+
+                        var query = store.query();
+                        query.$index('sync');
+                        query.$eq(0);
+
+                        store.eachWhere(query).then(function(playlists) {
+                            resolve(playlists);
+                        });
+                    });
+                });
             }
         };
 
@@ -92,7 +103,16 @@
                 });
             },
             getUnsyncedTracks: function() {
-                //TODO
+                return $q(function(resolve, reject) {
+                    $indexedDB.openStore('nowplaying', function(store) {
+                        var query = store.query();
+                        query.$index('sync');
+                        query.$eq(0);
+                        store.eachWhere(query).then(function(tracks) {
+                            resolve(tracks);
+                        });
+                    });
+                });
             }
         };
 
