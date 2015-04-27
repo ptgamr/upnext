@@ -84,6 +84,24 @@
                             playlist.sync = 1;
                             PlaylistStorage.delete(playlist.uuid);
                         } else {
+
+                            if (!playlist.uuid) {
+                                playlist.uuid = window.ServiceHelpers.ID();
+                            }
+
+                            playlist.sync = 1;
+
+                            var sanitizedTracks = _.filter(playlist.tracks, function(track) {
+                                return !track.deleted;
+                            });
+                            
+                            _.each(sanitizedTracks, function(track) {
+                                track.sync = 1;
+                                track.deleted = 0;
+                            });
+
+                            playlist.tracks = sanitizedTracks;
+
                             PlaylistStorage.upsert(playlist);
                         }
 
@@ -219,30 +237,12 @@
                                     playlist.sync = 1;
                                 } else if (playlist && response.data.length){
                                     
-                                    //TODO: this is not reliable
-                                    //improve by backend return also the uuid
-                                    var unsyncedTracksInPlaylist = _.filter(playlist.tracks, function(track) {
-                                        return track.sync === 0;
-                                    });
-
-                                    _.each(response.data[0], function(internalId, index) {
-
-                                        if (unsyncedTracksInPlaylist[index]) {
-                                            unsyncedTracksInPlaylist[index].sync = 1;
-                                            unsyncedTracksInPlaylist[index].internalId = internalId.internalId;
+                                    _.each(response.data[0], function(serverTrack, index) {
+                                        var trackInPlaylist = _.findWhere(playlist.tracks, {uuid: serverTrack.uuid});
+                                        if (trackInPlaylist) {
+                                            trackInPlaylist.sync = 1;
+                                            trackInPlaylist.internalId = serverTrack.internalId;
                                         }
-
-                                    });
-
-                                    //merge back
-                                    _.each(playlist.tracks, function(track) {
-
-                                        var trackShouldBeUpdated = _.findWhere(unsyncedTracksInPlaylist, {uuid: track.uuid});
-
-                                        if (trackShouldBeUpdated) {
-                                            track = trackShouldBeUpdated;
-                                        }
-
                                     });
 
                                     playlist.sync = 1;
