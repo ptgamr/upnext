@@ -58,7 +58,6 @@
             Storage.getAllPlaylists()
                     .then(function(playlists) {
                         playlistStore.items = playlists || [];
-                        $rootScope.$broadcast('playlist.ready');
                     });
         }
 
@@ -82,7 +81,7 @@
                 playlistStore.items.unshift(playlist);
                 Storage.insert(playlist);
 
-                SyncService.push();
+                SyncService.push().then(SyncService.bumpLastSynced);
 
                 resolve();
             });
@@ -139,13 +138,15 @@
             return $q(function(resolve, reject) {
 
                 var copy = angular.copy(track);
+                copy.internalId = '';
                 copy.uuid = window.ServiceHelpers.ID();
                 copy.deleted = 0;
+                copy.sync = 0;
                 playlist.tracks.push(copy);
-                playlist.sync = 0; //mark as unsynced
+                playlist.sync = 0; //mark as changed
                 Storage.upsert(playlist);
 
-                SyncService.push();
+                SyncService.push().then(SyncService.bumpLastSynced);
             });
         }
 
@@ -153,16 +154,18 @@
 
             var copies = tracks.map(function(track) {
                 var copy = angular.copy(track);
+                copy.internalId = '';
                 copy.uuid = window.ServiceHelpers.ID();
                 copy.deleted = 0;
+                copy.sync = 0;
                 return copy;
             })
 
             playlist.tracks = playlist.tracks.concat(copies);
-            playlist.sync = 0;
+            playlist.sync = 0;  //mark as changed
 
             Storage.upsert(playlist);
-            SyncService.push();
+            SyncService.push().then(SyncService.bumpLastSynced);
         }
 
         //TESTME
@@ -174,7 +177,7 @@
 
             Storage.upsert(playlist);
 
-            SyncService.push();
+            SyncService.push().then(SyncService.bumpLastSynced);
         }
     };
 }());

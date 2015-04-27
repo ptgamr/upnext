@@ -72,15 +72,15 @@
                 track.sync = 0;
                 track.deleted = 0;
 
-                if (position) {
-                    track.order = position;
+                if (position && nowplaying.tracks.length >= 1 ) {
+                    track.order = nowplaying.tracks[position - 1].order;
                     nowplaying.tracks.splice(position, 0, track);
                     nowplaying.trackIds.splice(position, 0, track.uuid);
 
                     var tobeUpsert = [track];
 
-                    _.each(nowplaying.tracks, function(track) {
-                        if (track.order > position) {
+                    _.each(nowplaying.tracks, function(track, index) {
+                        if (index < position) {
                             track.order += 1;
                             tobeUpsert.push(track);
                         }

@@ -44,7 +44,7 @@
          */
         this.playNext = function(track) {
             if (track) {
-                NowPlaying.addTrack(this.nowplaying.tracks, currentIndex + 1);
+                NowPlaying.addTrack(track, this.state.currentIndex + 1);
             }
         };
 

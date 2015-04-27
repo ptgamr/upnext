@@ -153,13 +153,33 @@
                         var promises = [];
 
                         _.each(localPlaylists, function(playlist) {
-                            promises.push(
-                                $http({
-                                    url: API_ENDPOINT + '/playlist',
-                                    method: 'POST',
-                                    data: playlist,
-                                })
-                            );
+
+                            //brand new playlist
+                            if (!playlist.id) {
+                                promises.push(
+                                    $http({
+                                        url: API_ENDPOINT + '/playlist',
+                                        method: 'POST',
+                                        data: playlist,
+                                    })
+                                );
+                            } else { //playlist already stored, but tracks has been added or removed
+
+                                var tracksToAdd = _.filter(playlist.tracks, function(track) {
+                                    return track.sync === 0;
+                                });
+
+                                promises.push(
+                                    $http({
+                                        url: API_ENDPOINT + '/playlist/' + playlist.id,
+                                        method: 'PUT',
+                                        data: {
+                                            added: tracksToAdd
+                                        }
+                                    })
+                                );
+                            }
+
                         });
 
                         var added = _.filter(localNowplayingTracks, function(track) {
@@ -190,10 +210,41 @@
                             var playlistResponse = responses;
 
                             _.each(playlistResponse, function(response, index) {
+
                                 var playlist = localPlaylists[index];
-                                if (playlist) {
+                                
+                                if (playlist && response.data.id) {
                                     playlist.id = response.data.id;
                                     playlist.updated = response.data.updated;
+                                    playlist.sync = 1;
+                                } else if (playlist && response.data.length){
+                                    
+                                    //TODO: this is not reliable
+                                    //improve by backend return also the uuid
+                                    var unsyncedTracksInPlaylist = _.filter(playlist.tracks, function(track) {
+                                        return track.sync === 0;
+                                    });
+
+                                    _.each(response.data[0], function(internalId, index) {
+
+                                        if (unsyncedTracksInPlaylist[index]) {
+                                            unsyncedTracksInPlaylist[index].sync = 1;
+                                            unsyncedTracksInPlaylist[index].internalId = internalId.internalId;
+                                        }
+
+                                    });
+
+                                    //merge back
+                                    _.each(playlist.tracks, function(track) {
+
+                                        var trackShouldBeUpdated = _.findWhere(unsyncedTracksInPlaylist, {uuid: track.uuid});
+
+                                        if (trackShouldBeUpdated) {
+                                            track = trackShouldBeUpdated;
+                                        }
+
+                                    });
+
                                     playlist.sync = 1;
                                 }
 
@@ -226,6 +277,7 @@
         function bumpLastSynced() {
             lastSynced = Date.now();
             localStorage.setItem('lastSynced', lastSynced);
+            $rootScope.$broadcast('sync.completed');
         }
     };
 
