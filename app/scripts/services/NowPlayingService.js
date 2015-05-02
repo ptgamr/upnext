@@ -115,11 +115,12 @@
 
                 removeAllTracks(false).then(function() {
 
-                    var tracksToAdd = _.map(tracks, function(track) {
+                    var tracksToAdd = _.map(tracks, function(track, index) {
                         track = angular.copy(track);
                         track.uuid = window.ServiceHelpers.ID();
                         track.sync = 0;
                         track.deleted = 0;
+                        track.order = tracks.length - index;
                         return track;
                     });
 
