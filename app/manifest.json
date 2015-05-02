@@ -69,7 +69,8 @@
         "notifications",
         "*://*.youtube.com/*",
         "*://*.ytimg.com/*",
-        "http://52.11.108.36/*"
+        "http://52.11.108.36/*",
+        "http://localhost:3000/*"
     ],
     "oauth2": {
         "client_id": "393554771612-pgq8aevpbcd33qrdd3veaqg0d2jvqqfv.apps.googleusercontent.com",

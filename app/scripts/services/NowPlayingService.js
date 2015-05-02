@@ -99,7 +99,7 @@
 
                 backgroundPage.mainPlayer.saveTrackIds(nowplaying.trackIds);
 
-                SyncService.push();
+                SyncService.push().then(SyncService.bumpLastSynced);
 
                 resolve();
 
@@ -132,7 +132,7 @@
 
                     Storage.insert(tracksToAdd);
 
-                    SyncService.push();
+                    SyncService.push().then(SyncService.bumpLastSynced);
 
                     resolve();
                 });
@@ -158,12 +158,13 @@
 
                     //mark the track as deleted for the SyncService to know how to handle it
                     track.deleted = 1;
-                    Storage.upsert(track);
+                    track.sync = 0;
+                    Storage.upsert([track]);
                 }
 
                 backgroundPage.mainPlayer.saveTrackIds(nowplaying.trackIds);
 
-                SyncService.push();
+                SyncService.push().then(SyncService.bumpLastSynced);
 
                 resolve();
             });
@@ -178,20 +179,19 @@
                 
                 triggerSync = typeof triggerSync === 'undefined' ? true : triggerSync;
 
-                var internalIds = _.map(nowplaying.tracks, function(track) {
-                    return track.internalId;
+                _.each(nowplaying.tracks, function(track) {
+                    track.deleted = 1;
+                    track.sync = 0;
                 });
 
-                var uuids = nowplaying.trackIds;
-
-                Storage.delete(uuids);
+                Storage.upsert(nowplaying.tracks);
 
                 nowplaying.tracks = [];
                 nowplaying.trackIds = [];
                 backgroundPage.mainPlayer.saveTrackIds([]);
 
                 if (triggerSync) {
-                    SyncService.push();
+                    SyncService.push().then(SyncService.bumpLastSynced);
                 }
 
                 resolve();

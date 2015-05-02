@@ -78,11 +78,13 @@
 
                 //fetch the changes
                 $http.get(dataURL).success(function(serverData) {
+
                     _.each(serverData.playlists, function(playlist, index) {
 
                         if (playlist.deleted) {
-                            playlist.sync = 1;
+
                             PlaylistStorage.delete(playlist.uuid);
+
                         } else {
 
                             if (!playlist.uuid) {
@@ -90,17 +92,6 @@
                             }
 
                             playlist.sync = 1;
-
-                            var sanitizedTracks = _.filter(playlist.tracks, function(track) {
-                                return !track.deleted;
-                            });
-                            
-                            _.each(sanitizedTracks, function(track) {
-                                track.sync = 1;
-                                track.deleted = 0;
-                            });
-
-                            playlist.tracks = sanitizedTracks;
 
                             PlaylistStorage.upsert(playlist);
                         }
@@ -112,23 +103,14 @@
                      * if nothing changes -> server will not response with any list
                      */
                     if (serverData.nowplaying.tracks) {
-                        if (serverData.nowplaying.tracks.length === 0) {
-                            NowplayingStorage.clear();
-                        } else {
-                            _.each(serverData.nowplaying.tracks, function(track) {
-                                //TODO: check, if we don't handle delete correctly
-                                //it might be a waste
-                                if (track.deleted) {
-                                    NowplayingStorage.delete(track.uuid);
-                                } else {
-                                    track.sync = 1;
-                                    NowplayingStorage.upsert(track);
-                                }
-                            });
-                        }
+                        _.each(serverData.nowplaying.tracks, function(track) {
+                            track.sync = 1;
+                        });
+
+                        NowplayingStorage.upsert(serverData.nowplaying.tracks);
                     }
 
-                    resolve();
+                    resolve(serverData.time);
 
                     pulling = true;
                 });
@@ -137,7 +119,7 @@
 
         }
 
-        function push() {
+        function push(lastSynced) {
 
             return $q(function(resolve, reject) {
 
@@ -184,7 +166,7 @@
                             } else { //playlist already stored, but tracks has been added or removed
 
                                 var tracksToAdd = _.filter(playlist.tracks, function(track) {
-                                    return track.sync === 0;
+                                    return !track.internalId;
                                 });
 
                                 promises.push(
@@ -201,20 +183,21 @@
                         });
 
                         var added = _.filter(localNowplayingTracks, function(track) {
-                            return track.deleted === 0;
+                            return !track.internalId;
                         });
 
                         var removed = _.filter(localNowplayingTracks, function(track) {
-                            return track.deleted === 1;
+                            return track.internalId && track.deleted === 1;
                         });
 
-                        if (added.length) {
+                        if (added.length || removed.length) {
                             promises.push(
                                 $http({
                                     url: API_ENDPOINT + '/nowplaying',
                                     method: 'PUT',
                                     data: {
-                                        added : added
+                                        added : added,
+                                        removed: _.map(removed, function(removal) { return removal.internalId; })
                                     }
                                 })
                             );
@@ -227,6 +210,7 @@
                             var nowplayingResponse = responses.splice(responses.length - 1, 1)[0];
                             var playlistResponse = responses;
 
+                            //update unsynced tracks
                             _.each(playlistResponse, function(response, index) {
 
                                 var playlist = localPlaylists[index];
@@ -240,7 +224,6 @@
                                     _.each(response.data[0], function(serverTrack, index) {
                                         var trackInPlaylist = _.findWhere(playlist.tracks, {uuid: serverTrack.uuid});
                                         if (trackInPlaylist) {
-                                            trackInPlaylist.sync = 1;
                                             trackInPlaylist.internalId = serverTrack.internalId;
                                         }
                                     });
@@ -250,8 +233,14 @@
 
                                 PlaylistStorage.upsert(playlist);
                             });
-
+                        
+                            //update now playing
+                            //TODO: remove the deleted one
                             if (nowplayingResponse && nowplayingResponse.data && nowplayingResponse.data.length) {
+                                //data[0]: result of added
+                                //data[1]: result of removed
+                                //data[2]: for time
+
                                 _.each(nowplayingResponse.data[0], function(internalId, index) {
                                     var track = added[index];
                                     track.internalId = internalId.internalId;
@@ -259,11 +248,17 @@
                                 });
 
                                 NowplayingStorage.upsert(added);
+
+                                var removedIds = _.map(removed, function(removal) { return removal.uuid; });
+
+                                NowplayingStorage.delete(removedIds);
+
+                                lastSynced = nowplayingResponse.data[2].time;
                             }
 
                             pushing = false;
 
-                            resolve();
+                            resolve(lastSynced);
 
                         }, function() {
                             pushing = false;
@@ -274,9 +269,8 @@
 
         }
 
-        function bumpLastSynced() {
-            lastSynced = Date.now();
-            localStorage.setItem('lastSynced', lastSynced);
+        function bumpLastSynced(lastSynced) {
+            localStorage.setItem('lastSynced', lastSynced || '');
             $rootScope.$broadcast('sync.completed');
         }
     };

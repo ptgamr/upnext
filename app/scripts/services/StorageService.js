@@ -96,7 +96,10 @@
             getTracks: function() {
                 return $q(function(resolve, reject) {
                     $indexedDB.openStore('nowplaying', function(store) {
-                        store.getAll().then(function(tracks) {  
+                        var query = store.query();
+                        query.$index('deleted');
+                        query.$eq(0);
+                        store.eachWhere(query).then(function(tracks) {
                             resolve(_.sortBy(tracks, 'order').reverse());
                         });
                     });
