@@ -114,7 +114,7 @@
 
                     pulling = true;
                 });
-                
+
             });
 
         }
@@ -214,13 +214,14 @@
                             _.each(playlistResponse, function(response, index) {
 
                                 var playlist = localPlaylists[index];
-                                
+
                                 if (playlist && response.data.id) {
                                     playlist.id = response.data.id;
                                     playlist.updated = response.data.updated;
                                     playlist.sync = 1;
+                                    lastSynced = response.data.time;
                                 } else if (playlist && response.data.length){
-                                    
+
                                     _.each(response.data[0], function(serverTrack, index) {
                                         var trackInPlaylist = _.findWhere(playlist.tracks, {uuid: serverTrack.uuid});
                                         if (trackInPlaylist) {
@@ -228,12 +229,14 @@
                                         }
                                     });
 
+                                    lastSynced = response.data[2].time;
+
                                     playlist.sync = 1;
                                 }
 
                                 PlaylistStorage.upsert(playlist);
                             });
-                        
+
                             //update now playing
                             //TODO: remove the deleted one
                             if (nowplayingResponse && nowplayingResponse.data && nowplayingResponse.data.length) {
@@ -270,7 +273,10 @@
         }
 
         function bumpLastSynced(lastSynced) {
-            localStorage.setItem('lastSynced', lastSynced || '');
+
+            if (!lastSynced) return;
+
+            localStorage.setItem('lastSynced', lastSynced);
             $rootScope.$broadcast('sync.completed');
         }
     };
