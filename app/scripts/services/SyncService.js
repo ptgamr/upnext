@@ -163,10 +163,14 @@
                                         data: playlist,
                                     })
                                 );
-                            } else { //playlist already stored, but tracks has been added or removed
+                            } else if(!playlist.deleted) { //playlist already stored, but tracks has been added or removed
 
                                 var tracksToAdd = _.filter(playlist.tracks, function(track) {
-                                    return !track.internalId;
+                                    return !track.internalId && !track.deleted;
+                                });
+
+                                var tracksToRemove = _.filter(playlist.tracks, function(track) {
+                                    return track.internalId && track.deleted;
                                 });
 
                                 promises.push(
@@ -174,8 +178,16 @@
                                         url: API_ENDPOINT + '/playlist/' + playlist.id,
                                         method: 'PUT',
                                         data: {
-                                            added: tracksToAdd
+                                            added: tracksToAdd,
+                                            removed: _.map(tracksToRemove, function(removal) { return removal.internalId; })
                                         }
+                                    })
+                                );
+                            } else if(playlist.id && playlist.deleted){
+                                promises.push(
+                                    $http({
+                                        url: API_ENDPOINT + '/playlist/' + playlist.id,
+                                        method: 'DELETE'
                                     })
                                 );
                             }
@@ -219,9 +231,11 @@
                                     playlist.id = response.data.id;
                                     playlist.updated = response.data.updated;
                                     playlist.sync = 1;
+                                    PlaylistStorage.upsert(playlist);
                                     lastSynced = response.data.time;
                                 } else if (playlist && response.data.length){
 
+                                    //update the song that has been stored
                                     _.each(response.data[0], function(serverTrack, index) {
                                         var trackInPlaylist = _.findWhere(playlist.tracks, {uuid: serverTrack.uuid});
                                         if (trackInPlaylist) {
@@ -229,12 +243,20 @@
                                         }
                                     });
 
-                                    lastSynced = response.data[2].time;
+                                    //remove the song that marked as deleted
+                                    //TODO: check if the song is really removed???
+                                    playlist.tracks = _.filter(playlist.tracks, function(track) {
+                                        return !track.deleted;
+                                    });
 
                                     playlist.sync = 1;
+                                    PlaylistStorage.upsert(playlist);
+                                    lastSynced = response.data[2].time;
+                                } else if (playlist.deleted) {
+                                    PlaylistStorage.delete(playlist.uuid);
+                                    lastSynced = response.data.time;
                                 }
 
-                                PlaylistStorage.upsert(playlist);
                             });
 
                             //update now playing

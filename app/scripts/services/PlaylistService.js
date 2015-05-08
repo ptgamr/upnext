@@ -12,6 +12,7 @@
         this.name = name;
         this.uuid = window.ServiceHelpers.ID();
         this.sync = 0; //playlist in local only
+        this.deleted = 0;
     }
 
     function PlaylistService($rootScope, $q, $http, SyncService, API_ENDPOINT, StorageService){
@@ -35,7 +36,8 @@
             removePlaylist: removePlaylist,
             getPlaylist: getPlaylist,
             addTrackToPlaylist: addTrackToPlaylist,
-            addTracksToPlaylist: addTracksToPlaylist
+            addTracksToPlaylist: addTracksToPlaylist,
+            removeTrackFromPlaylist: removeTrackFromPlaylist 
         };
 
         function init() {
@@ -90,9 +92,13 @@
         function removePlaylist(index) {
             if (typeof index === 'undefined' || isNaN(index))
                     throw new Error('Error when remove playlist: index must be specified as number');
+            var playlist = getPlaylist(index);
+            playlist.deleted = 1;
+            playlist.sync = 0;
 
-            var deleted = playlistStore.items.splice(index, 1);
-            Storage.delete(deleted[0].uuid);
+            Storage.upsert(playlist);
+
+            SyncService.push().then(SyncService.bumpLastSynced);
         }
 
         function getPlaylist(index) {
@@ -168,12 +174,12 @@
             SyncService.push().then(SyncService.bumpLastSynced);
         }
 
-        //TESTME
         function _removeTrackFromPlaylist(trackIndex, playlist) {
             if (typeof trackIndex === 'undefined' || isNaN(trackIndex))
                 throw new Error('Error when remove track: trackIndex must be specified as number');
 
             playlist.tracks[trackIndex].deleted = 1;
+            playlist.sync = 0;
 
             Storage.upsert(playlist);
 

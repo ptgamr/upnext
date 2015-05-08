@@ -11,6 +11,10 @@
 
         vm.playlist = PlaylistService.getPlaylist(vm.playlistIndex);
 
+        vm.playlistTracks = _.filter(vm.playlist.tracks, function(track) {
+            return !track.deleted;
+        });
+
 		if (!vm.playlist) throw new Error('PlaylistViewController: playlist not found at index = ' + vm.playlistIndex);        
 
 		vm.backToPlaylist = function() {

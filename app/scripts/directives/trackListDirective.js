@@ -17,7 +17,8 @@
                 tracks: '=',
                 trackClick: '&',
                 onTrackClick: '@',
-                listContext: '@'
+                listContext: '@',
+                listIndex: '@'
             },
             link: function($scope, element, attrs) {
 
@@ -103,7 +104,11 @@
                     if ($scope.listContext === 'nowplaying') {
                         CorePlayer.remove(index);
                     } else if ($scope.listContext === 'playlist') {
-                        //TODO:
+                        if(!$scope.listIndex) {
+                            throw new Error('list index undefined');
+                        }
+                        $scope.tracks.splice(index, 1);
+                        PlaylistService.removeTrackFromPlaylist(index, $scope.listIndex);
                     }
 
                     GATracker.trackDiscovery('remove track', $scope.listContext);

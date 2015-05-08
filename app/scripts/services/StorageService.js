@@ -23,15 +23,24 @@
                     store.insert(playlist);
                 });
             },
-            delete: function(playlist) {
+            delete: function(playlistIds) {
                 $indexedDB.openStore('playlist', function(store) {
-                    store.delete(playlist);
+                    if (Array.isArray(playlistIds)) {
+                        _.each(playlistIds, function(playlistId) {
+                            store.delete(playlistId);
+                        });
+                    } else {
+                        store.delete(playlistIds);
+                    }
                 });
             },
             getAllPlaylists: function() {
                 return $q(function(resolve, reject) {
                     $indexedDB.openStore('playlist', function(store) {
-                        store.getAll().then(function(playlist) {  
+                        var query = store.query();
+                        query.$index('deleted');
+                        query.$eq(0);
+                        store.eachWhere(query).then(function(playlist) {  
                             resolve(_.sortBy(playlist, 'order').reverse());
                         });
                     });

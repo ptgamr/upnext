@@ -1,3 +1,10 @@
+/**
+ * TODO:
+ *
+ * - upnext track order are not stored correct in DB. Relative track's order is not updated
+ * 
+ */
+
 (function(){
     'use strict';
 
