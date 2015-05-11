@@ -128,9 +128,47 @@
             }
         };
 
-        function StarStorage() {
+        function StarredStorage() {
 
         }
+
+        StarredStorage.prototype = {
+            constructor: StarredStorage,
+            insert: function (track) {
+                $indexedDB.openStore('starred', function(store) {
+                    store.insert(track);
+                });
+            },
+            delete: function(trackId) {
+                $indexedDB.openStore('starred', function(store) {
+                    store.delete(trackId);
+                });
+            },
+            getTracks: function() {
+                return $q(function(resolve, reject) {
+                    $indexedDB.openStore('starred', function(store) {
+                        var query = store.query();
+                        query.$index('deleted');
+                        query.$eq(0);
+                        store.eachWhere(query).then(function(tracks) {
+                            resolve(_.sortBy(tracks, 'order').reverse());
+                        });
+                    });
+                });
+            },
+            getUnsyncedTracks: function() {
+                return $q(function(resolve, reject) {
+                    $indexedDB.openStore('starred', function(store) {
+                        var query = store.query();
+                        query.$index('sync');
+                        query.$eq(0);
+                        store.eachWhere(query).then(function(tracks) {
+                            resolve(tracks);
+                        });
+                    });
+                });
+            }
+        };
 
         return {
             getStorageInstance: getStorageInstance
@@ -142,8 +180,8 @@
                     return new PlaylistStorage();
                 case 'nowplaying':
                     return new NowplayingStorage();
-                case 'star':
-                    return new StarStorage();
+                case 'starred':
+                    return new StarredStorage();
             }
             return null;
         }

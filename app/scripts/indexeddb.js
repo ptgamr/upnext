@@ -40,6 +40,8 @@ window.SCIndexedDB = (function () {
             nowplayingStore.createIndex("deleted", "deleted", { unique: false });
 
             var starStore = evt.currentTarget.result.createObjectStore('starred', {keyPath: 'id'});
+            starStore.createIndex("sync", "sync", { unique: false });
+            starStore.createIndex("deleted", "deleted", { unique: false });
         };
     }
 
