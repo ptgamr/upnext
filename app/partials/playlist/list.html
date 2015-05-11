@@ -4,11 +4,26 @@
         <input ng-model="playlistCtrl.newPlaylistName" type="text" placeholder="Enter playlist name" ng-keypress="playlistCtrl.addNew($event)">
     </md-input-container>
     <md-list class="playlist">
+        <md-item ng-click="playlistCtrl.selectPlaylist(-1)">
+            <md-item-content>
+                <div class="md-tile-left">
+                    <md-icon md-font-icon="icon ion-ios-star"></md-icon>
+                </div>
+                <div class="md-tile-content">
+                    <h3>Starred</h3>
+                    <h4>{{playlistCtrl.starredListLength}} tracks</h4>
+                </div>
+                <div class="md-tile-hover" layout="row" layout-margin layout-align="center center" >
+                    <md-button title="Play All" aria-label="Play All" ng-click="playlistCtrl.playAll($event, -1)">
+                        <md-icon md-font-icon="icon ion-play"></md-icon>
+                    </md-button>
+                </div>
+            </md-item-content>
+        </md-item>
         <md-item ng-repeat="playlist in playlistCtrl.playlists.items track by $index" ng-click="playlistCtrl.selectPlaylist($index)">
             <md-item-content>
                 <div class="md-tile-left">
-                    <md-icon ng-if="$index === 0" md-font-icon="icon ion-ios-star"></md-icon>
-                    <md-icon ng-if="$index !== 0" md-font-icon="icon ion-ios-musical-notes"></md-icon>
+                    <md-icon md-font-icon="icon ion-ios-musical-notes"></md-icon>
                 </div>
                 <div class="md-tile-content">
                     <h3>{{playlist.name}}</h3>
@@ -18,7 +33,7 @@
                     <md-button title="Play All" aria-label="Play All" ng-click="playlistCtrl.playAll($event, $index)">
                         <md-icon md-font-icon="icon ion-play"></md-icon>
                     </md-button>
-                    <md-button aria-label="Remove Playlist" ng-click="playlistCtrl.remove($event, $index)" ng-if="$index !== 0">
+                    <md-button aria-label="Remove Playlist" ng-click="playlistCtrl.remove($event, $index)">
                         <md-icon md-font-icon="icon ion-android-delete"></md-icon>
                     </md-button>
                 </div>

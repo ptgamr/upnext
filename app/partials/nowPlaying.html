@@ -1,6 +1,6 @@
 <md-content class="tab-content md-padding" playing-track-aware="index">
-	<loading ng-if="!vm.player.nowplaying.tracks"></loading>
-    <track-list  tracks="vm.player.nowplaying.tracks" on-track-click="playpause" list-context="nowplaying"></track-list>
+	<loading ng-if="!vm.tracks.length"></loading>
+    <track-list  tracks="vm.tracks" on-track-click="playpause" list-context="nowplaying"></track-list>
 </md-content>
 <md-toolbar class="bottom-toolbar">
     <div class="md-toolbar-tools">

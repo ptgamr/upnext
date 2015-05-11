@@ -9,7 +9,7 @@
         return reactDirective('TrackList')
     };
 
-    function trackListDirective($playlistMenu, CorePlayer, PlaylistService, $mdToast, GATracker) {
+    function trackListDirective($playlistMenu, CorePlayer, PlaylistService, StarService, $mdToast, GATracker) {
         return {
             restrict: 'E',
             templateUrl: 'scripts/views/trackList.html',
@@ -124,9 +124,9 @@
                     }
 
                     if (track.starred) {
-                        PlaylistService.starTrack(track);
+                        StarService.starTrack(track);
                     } else {
-                        PlaylistService.unstarTrack(track);
+                        StarService.unstarTrack(track);
                     }
                 };
             }

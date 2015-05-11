@@ -120,7 +120,8 @@
                 //un-flagged the error flag when retry
                 if (track.error) {
                     track.error = false
-                    NowPlaying.updateStorage();
+                    //TODO
+                    //NowPlaying.updateStorage();
                 };
 
                 NowPlaying.saveState(this.state);
@@ -237,13 +238,15 @@
             this.nowplaying.tracks[this.state.currentIndex].manualTrack = manualScrobble.track;
             this.nowplaying.tracks[this.state.currentIndex].manualArtist = manualScrobble.artist;
 
-            NowPlaying.updateStorage();
+            //TODO
+            //NowPlaying.updateStorage();
         };
 
         this.markCurrentTrackError = function() {
             this.state.currentTrack.error = true;
             this.nowplaying.tracks[this.state.currentIndex].error = true;
-            NowPlaying.updateStorage();
+            //TODO
+            //NowPlaying.updateStorage();
 
             NowPlaying.saveState(this.state);
             GATracker.trackPlayer('track error');

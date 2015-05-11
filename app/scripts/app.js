@@ -39,8 +39,8 @@
 
 	var soundCloudify = angular.module('soundCloudify', ['ngMaterial', 'ngRoute', 'ui.router', 'react', 'indexedDB']);
 
-    soundCloudify.value('API_ENDPOINT', 'http://52.11.108.36');
-    // soundCloudify.value('API_ENDPOINT', 'http://localhost:3000');
+    // soundCloudify.value('API_ENDPOINT', 'http://52.11.108.36');
+    soundCloudify.value('API_ENDPOINT', 'http://localhost:3000');
 
 	soundCloudify.value('CLIENT_ID', '849e84ac5f7843ce1cbc0e004ae4fb69');
 

@@ -134,14 +134,46 @@
 
         StarredStorage.prototype = {
             constructor: StarredStorage,
-            insert: function (track) {
+            insert: function (tracks) {
                 $indexedDB.openStore('starred', function(store) {
-                    store.insert(track);
+                    if (Array.isArray(tracks)) {
+                        _.each(tracks, function(track) {
+                            store.insert(track);
+                        });
+                    } else {
+                        store.insert(tracks);
+                    }
                 });
             },
-            delete: function(trackId) {
+            upsert: function (tracks) {
                 $indexedDB.openStore('starred', function(store) {
-                    store.delete(trackId);
+                    if (Array.isArray(tracks)) {
+                        _.each(tracks, function(track) {
+                            store.upsert(track);
+                        });
+                    } else {
+                        store.upsert(tracks);
+                    }
+                });
+            },
+            delete: function(trackIds) {
+                $indexedDB.openStore('starred', function(store) {
+                    if (Array.isArray(trackIds)) {
+                        _.each(trackIds, function(trackId) {
+                            store.delete(trackId);
+                        });
+                    } else {
+                        store.delete(trackIds);
+                    }
+                });
+            },
+            getById: function(trackId) {
+                return $q(function(resolve, reject) {
+                    $indexedDB.openStore('starred', function(store) {
+                        store.find(trackId).then(function(track) {
+                            resolve(track);
+                        });
+                    });
                 });
             },
             getTracks: function() {

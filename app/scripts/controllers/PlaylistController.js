@@ -3,10 +3,11 @@
     angular.module('soundCloudify')
             .controller('PlaylistController', PlaylistController)
 
-    function PlaylistController($mdToast, $state, PlaylistService, CorePlayer, GATracker) {
+    function PlaylistController($mdToast, $state, PlaylistService, StarService, CorePlayer, GATracker) {
         var vm = this;
 
         vm.playlists = PlaylistService.getList();
+        vm.starredListLength = StarService.getLength();
 
         vm.newPlaylistName = '';
 

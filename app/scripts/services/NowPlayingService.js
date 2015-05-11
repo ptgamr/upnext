@@ -16,7 +16,6 @@
 
     function NowPlayingService($http, $q, CLIENT_ID, $rootScope, API_ENDPOINT, SyncService, StorageService){
 
-        var user;
         var backgroundPage = chrome.extension.getBackgroundPage();
 
         //local cache, used by CorePlayer, and is watched by AngularJS for changes
@@ -28,12 +27,6 @@
 
         //Storage API for simplify IndexedDB interaction
         var Storage = StorageService.getStorageInstance('nowplaying');
-
-        $rootScope.$on('identity.confirm', function(event, data) {
-            if (data.identity.id && data.identity.email) {
-                user = data.identity;
-            }
-        });
 
         $rootScope.$on('sync.completed', function() {
             getFromStorage();

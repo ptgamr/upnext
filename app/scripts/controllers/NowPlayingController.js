@@ -9,7 +9,7 @@
 
         vm.player = CorePlayer;
 
-        $rootScope.$on('playlist.ready', function() {
+        $rootScope.$on('starredList.ready', function() {
             vm.tracks = TrackAdapter.decorateStar(CorePlayer.nowplaying.tracks);
         });
 
