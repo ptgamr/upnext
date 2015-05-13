@@ -10,7 +10,8 @@ window.SCIndexedDB = (function () {
         openDb: openDb,
         getObjectStore: getObjectStore,
         clearObjectStore: clearObjectStore,
-        getBlob: getBlob
+        getBlob: getBlob,
+        update: update
     }
 
     function openDb() {
@@ -76,6 +77,20 @@ window.SCIndexedDB = (function () {
                 successCallback(value);
             }
         }
+    }
+
+    function update(data) {
+        var store = getObjectStore('readwrite');
+
+        var updateRequest = store.put(data);
+
+        updateRequest.onerror = function(event) {
+            console.log('update error');
+        };
+
+        updateRequest.onsuccess = function(event) {
+            console.log('update success');
+        };
     }
 
 }());

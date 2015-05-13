@@ -223,31 +223,25 @@
             if (!LastFMAuthentication.isAuth()) {
                 LastFMAuthentication.auth(function() {
                     self.state.scrobble = true;
+                    NowPlaying.saveState(self.state);
+                    GATracker.trackPlayer('toggle scrobble', this.state.scrobble ? 'on' : 'off');
                 });
             } else {
                 self.state.scrobble = !self.state.scrobble;
+                NowPlaying.saveState(self.state);
+                GATracker.trackPlayer('toggle scrobble', this.state.scrobble ? 'on' : 'off');
             }
-
-            NowPlaying.saveState(self.state);
-            GATracker.trackPlayer('toggle scrobble', this.state.scrobble ? 'on' : 'off');
         };
 
         this.sendManualScrobble = function(manualScrobble) {
-            Messaging.sendManualScrobbleMessage(manualScrobble);
-
-            this.nowplaying.tracks[this.state.currentIndex].manualTrack = manualScrobble.track;
-            this.nowplaying.tracks[this.state.currentIndex].manualArtist = manualScrobble.artist;
-
-            //TODO
-            //NowPlaying.updateStorage();
+            this.state.currentTrack.manualTrack = manualScrobble.track;
+            this.state.currentTrack.manualArtist = manualScrobble.artist;
+            NowPlaying.saveState(this.state);
+            Messaging.sendManualScrobbleMessage();
         };
 
         this.markCurrentTrackError = function() {
             this.state.currentTrack.error = true;
-            this.nowplaying.tracks[this.state.currentIndex].error = true;
-            //TODO
-            //NowPlaying.updateStorage();
-
             NowPlaying.saveState(this.state);
             GATracker.trackPlayer('track error');
         };
@@ -276,12 +270,12 @@
         });
 
         Messaging.registerLastFmInvalidHandler(function() {
-            self.state.currentTrack.lastFmValidate = false;
+            self.state.currenTrack.lastFmValidate = false;
         });
 
         Messaging.registerLastFmScrobbledHandler(function() {
-            self.state.currentTrack.scrobbled = true;
-            self.state.currentTrack.lastFmValidate = true;
+            self.state.scrobbled = true;
+            self.state.currenTrack.lastFmValidate = true;
         })
     });
 })();

@@ -53,7 +53,8 @@ var DEFAULT_STATE = {
     volume: 0.5,
     repeat: 0,
     shuffle: false,
-    scrobble: false
+    scrobbleEnabled: false,
+    scrobbled: false
 };
 
 
@@ -246,14 +247,12 @@ Player.prototype = {
         if (nextTrackId) {
             SCIndexedDB.getBlob(nextTrackId, function(track) {
                 self.play(track);
+                self.showNotification();
 
                 self.state.currentIndex = nextIndex;
                 self.state.currentTrack = track;
 
-                chrome.storage.local.set({
-                    'nowPlayingState': self.state,
-                    'nowPlayingStateUpdatedBy': getStorageUpdateKey()
-                });
+                self.saveState();
             });
         }
     },
@@ -272,14 +271,12 @@ Player.prototype = {
         if (nextTrackId) {
             SCIndexedDB.getBlob(nextTrackId, function(track) {
                 self.play(track);
+                self.showNotification();
 
                 self.state.currentIndex = nextIndex;
                 self.state.currentTrack = track;
 
-                chrome.storage.local.set({
-                    'nowPlayingState': self.state,
-                    'nowPlayingStateUpdatedBy': getStorageUpdateKey()
-                });
+                self.saveState();
             });
         }
     },
@@ -297,9 +294,11 @@ Player.prototype = {
         }
 
         this.state.playing = true;
+        this.state.scrobbled = false;
 
         this.startTimestamp = Math.floor(Date.now() / 1000);
 
+        this.updateLastFmNowPlaying();
 
         chrome.browserAction.setIcon({path: 'images/icon-38.png'});
     },
@@ -374,21 +373,20 @@ Player.prototype = {
         localStorage.setItem('nowplaying', JSON.stringify(trackIds));
     },
 
-    scrobble: function(manualScrobble) {
+    /**
+     * Send scrobbling request to Last.fm
+     */
+    scrobble: function(isManual) {
 
         this.scrobbling = true;
 
         var self = this, track, artist;
 
-        if (manualScrobble && manualScrobble.track && manualScrobble.artist) {
-            self.state.currentTrack.manualTrack = manualScrobble.track;
-            self.state.currentTrack.manualArtist = manualScrobble.artist;
-        }
-
         track = self.state.currentTrack.lastFmTrack || self.state.currentTrack.manualTrack;
         artist = self.state.currentTrack.lastFmArtirst || self.state.currentTrack.manualArtist;
 
         if (!track || !artist) {
+            this.scrobbling = false;
             throw new Error('LastFM scrobbling has failed because of missing information!');
         }
 
@@ -400,29 +398,12 @@ Player.prototype = {
 
             if (!response.error) {
                 self.scrobbling = false;
-                self.state.currentTrack.scrobbled = true;
-                self.state.currentTrack.lastFmValidate = true;
-                //TODO: replace with savePlayerState() method
-                chrome.storage.local.set({
-                    'nowPlayingState': self.state,
-                    'nowPlayingUpdatedBy': getStorageUpdateKey()
-                });
+                self.state.scrobbled = true;
 
-                //update the track in the list
-                var currentTrack = self.state.currentTrack;
-                currentTrack.lastFmValidate = true;
-
-                if (manualScrobble) {
-                    currentTrack.manualTrack = manualScrobble.track;
-                    currentTrack.manualArtist = manualScrobble.artist;
+                if (isManual) {
+                    SCIndexedDB.update(self.state.currentTrack);
                 }
-
-                //TODO: save to indexeddb
-                // chrome.storage.local.set({
-                //     'nowPlaying': self.tracks,
-                //     'nowPlayingUpdatedBy': getStorageUpdateKey()
-                // });
-
+                
                 if (!currentPort) return;
                 currentPort.postMessage({message: 'lastfm.scrobbled'});
 
@@ -441,11 +422,71 @@ Player.prototype = {
         });
     },
 
+    /**
+     * Check if we should we send the scrobbling request
+     */
     shouldScrobble: function(currentTime) {
         return currentTime > (this.configuration.scrobbleDuration || 30) &&
                 !this.scrobbling &&
-                !this.state.currentTrack.scrobbled &&
+                !this.state.scrobbled &&
                 (this.state.currentTrack.lastFmTrack || this.state.currentTrack.manualTrack);
+    },
+
+    /**
+     * Update LastFM Now Playing. This often  occurs when a track start playing
+     */
+    updateLastFmNowPlaying: function() {
+
+        var self = this;
+
+        if (self.state.scrobble) {
+
+            if(self.state.currentTrack.lastFmTrack || self.state.currentTrack.manualTrack) {
+
+                window.LastFM.updateNowPlaying({
+                    track: self.state.currentTrack.lastFmTrack || self.state.currentTrack.manualTrack,
+                    artist: self.state.currentTrack.lastFmArtirst || self.state.currentTrack.manualArtist
+                });
+
+            } else {
+                window.LastFM.checkTrackInfo(self.state.currentTrack, function(lastFmTrack) {
+                    console.log('checkTrackInfo: success');
+                    if (lastFmTrack.track) {
+                        self.state.currentTrack.lastFmTrack = lastFmTrack.track.name;
+                        self.state.currentTrack.lastFmArtirst = lastFmTrack.track.artist.name;
+
+                        //update the track in the list in order not to retrieve it again
+                        SCIndexedDB.update(self.state.currentTrack);
+
+                        window.LastFM.updateNowPlaying({
+                            track: lastFmTrack.track.name,
+                            artist: lastFmTrack.track.artist.name
+                        });
+                    } else if (lastFmTrack.error) {
+                        if (!currentPort) return;
+                        currentPort.postMessage({message: 'lastfm.trackInvalid'});    
+                    }
+                }, function() {
+                    if (!currentPort) return;
+                    currentPort.postMessage({message: 'lastfm.trackInvalid'});
+                });
+            }
+
+        }
+
+    },
+
+    showNotification: function() {
+        if (this.configuration.showNotification) {
+            var notificationOptions = {
+                type: "basic",
+                title: "Playing Track",
+                message: this.state.currentTrack.title,
+                iconUrl: this.state.currentTrack.artworkUrl
+            };
+
+            Utils.createOrUpdateNotification('track-change', notificationOptions, function() {});
+        }
     }
 };
 
@@ -621,7 +662,7 @@ chrome.runtime.onConnect.addListener(function(port) {
             case 'lastfm.authentication':
                 window.LastFM.onAuthSuccess();
             case 'lastfm.manualScrobble':
-                mainPlayer.scrobble({track: data.track, artist: data.artist});
+                mainPlayer.scrobble(true);
 
         }
     });
