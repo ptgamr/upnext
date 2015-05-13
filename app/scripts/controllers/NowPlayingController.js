@@ -3,13 +3,13 @@
     angular.module('soundCloudify')
             .controller('NowPlayingController', NowPlayingController)
 
-    function NowPlayingController($rootScope, Category, $mdDialog, PlaylistService, CorePlayer, TrackAdapter, $timeout) {
+    function NowPlayingController($scope, Category, $mdDialog, PlaylistService, CorePlayer, TrackAdapter, $timeout) {
 
         var vm = this;
 
         vm.player = CorePlayer;
 
-        $rootScope.$on('starredList.ready', function() {
+        $scope.$on('starredList.ready', function() {
             vm.tracks = TrackAdapter.decorateStar(CorePlayer.nowplaying.tracks);
         });
 
