@@ -54,7 +54,8 @@ var DEFAULT_STATE = {
     repeat: 0,
     shuffle: false,
     scrobbleEnabled: false,
-    scrobbled: false
+    scrobbled: false,
+    lastFmInvalid: false
 };
 
 
@@ -252,7 +253,7 @@ Player.prototype = {
                 self.state.currentIndex = nextIndex;
                 self.state.currentTrack = track;
 
-                self.saveState();
+                self.saveState(self.state);
             });
         }
     },
@@ -276,7 +277,7 @@ Player.prototype = {
                 self.state.currentIndex = nextIndex;
                 self.state.currentTrack = track;
 
-                self.saveState();
+                self.saveState(self.state);
             });
         }
     },
@@ -295,6 +296,7 @@ Player.prototype = {
 
         this.state.playing = true;
         this.state.scrobbled = false;
+        this.state.lastFmInvalid = false;
 
         this.startTimestamp = Math.floor(Date.now() / 1000);
 
@@ -363,9 +365,12 @@ Player.prototype = {
     },
 
     saveState: function(state) {
+
+        if (!state) return;
+
         this.state = state;
 
-        localStorage.setItem('playerstate', JSON.stringify(state));
+        localStorage.setItem('playerstate', JSON.stringify(this.state));
     },
 
     saveTrackIds: function(trackIds) {
@@ -399,6 +404,9 @@ Player.prototype = {
             if (!response.error) {
                 self.scrobbling = false;
                 self.state.scrobbled = true;
+                self.state.lastFmInvalid = false;
+
+                self.saveState();
 
                 if (isManual) {
                     SCIndexedDB.update(self.state.currentTrack);
@@ -439,7 +447,7 @@ Player.prototype = {
 
         var self = this;
 
-        if (self.state.scrobble) {
+        if (self.state.scrobbleEnabled) {
 
             if(self.state.currentTrack.lastFmTrack || self.state.currentTrack.manualTrack) {
 
@@ -463,10 +471,12 @@ Player.prototype = {
                             artist: lastFmTrack.track.artist.name
                         });
                     } else if (lastFmTrack.error) {
+                        self.state.lastFmInvalid = true;
                         if (!currentPort) return;
                         currentPort.postMessage({message: 'lastfm.trackInvalid'});    
                     }
                 }, function() {
+                    self.state.lastFmInvalid = true;
                     if (!currentPort) return;
                     currentPort.postMessage({message: 'lastfm.trackInvalid'});
                 });

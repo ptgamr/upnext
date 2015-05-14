@@ -222,14 +222,14 @@
 
             if (!LastFMAuthentication.isAuth()) {
                 LastFMAuthentication.auth(function() {
-                    self.state.scrobble = true;
+                    self.state.scrobbleEnabled = true;
                     NowPlaying.saveState(self.state);
-                    GATracker.trackPlayer('toggle scrobble', this.state.scrobble ? 'on' : 'off');
+                    GATracker.trackPlayer('toggle scrobble', this.state.scrobbleEnabled ? 'on' : 'off');
                 });
             } else {
-                self.state.scrobble = !self.state.scrobble;
+                self.state.scrobbleEnabled = !self.state.scrobbleEnabled;
                 NowPlaying.saveState(self.state);
-                GATracker.trackPlayer('toggle scrobble', this.state.scrobble ? 'on' : 'off');
+                GATracker.trackPlayer('toggle scrobble', this.state.scrobbleEnabled ? 'on' : 'off');
             }
         };
 
@@ -270,7 +270,7 @@
         });
 
         Messaging.registerLastFmInvalidHandler(function() {
-            self.state.currenTrack.lastFmValidate = false;
+            self.state.lastFmInvalid = true;
         });
 
         Messaging.registerLastFmScrobbledHandler(function() {
