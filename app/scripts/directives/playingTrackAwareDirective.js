@@ -2,9 +2,9 @@
     'use strict';
 
     angular.module('soundCloudify')
-            .directive('playingTrackAware', playinTrackAwareDirective);
+            .directive('playingTrackAware', playingTrackAwareDirective);
 
-    function playinTrackAwareDirective($timeout, CorePlayer) {
+    function playingTrackAwareDirective($timeout, CorePlayer) {
 
         return {
             restrict: 'A',
@@ -53,6 +53,10 @@
                     } else {
                         angular.element($element[0].querySelector('#track-item-' + track.id)).addClass(cssClass);
                     }
+                }
+
+                function decorateStar() {
+                    
                 }
             }
         };

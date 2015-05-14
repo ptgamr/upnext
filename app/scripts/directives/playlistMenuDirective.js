@@ -11,11 +11,7 @@
             templateUrl: 'scripts/views/playlist-menu.html',
             controller: function($scope, PlaylistService) {
                 
-                PlaylistService
-                    .getList()
-                    .then(function(data) {
-                        $scope.playlists = data;
-                    });
+                $scope.playlists = PlaylistService.getList();
 
                 $scope.newPlaylistName = '';
 
@@ -26,6 +22,7 @@
                     }
 
                     if (!$scope.newPlaylistName) return;
+                    
                     PlaylistService.newPlaylist($scope.newPlaylistName);
 
                     $scope.newPlaylistName = '';

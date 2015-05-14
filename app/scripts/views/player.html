@@ -48,15 +48,15 @@
             <md-button ng-class="{'md-primary': player.state.shuffle}" aria-label="Toggle Shuffle" class="player-control control-shuffle" ng-click="player.toggleShuffle()" title="shuffle">
                 <i class="icon ion-shuffle"></i>
             </md-button>
-            <md-button ng-class="{'md-primary': player.state.scrobble, 'md-warn': player.state.scrobble && player.state.currentTrack.lastFmValidate === false}" 
+            <md-button ng-class="{'md-primary': player.state.scrobbleEnabled, 'md-warn': player.state.scrobbleEnabled && player.state.lastFmInvalid === true}" 
                         class="player-control control-last-fm"
                         aria-label="Last.fm scrobbling"
                         title="{{getScrobbleTitle()}}"
                         ng-click="player.toggleScrobble()"
                         right-click="openManualScrobble($event)">
                 <i class="icon-lastfm"></i>
-                <span class="icon ion-help" ng-if="player.state.scrobble && player.state.currentTrack.lastFmValidate === false"></span>
-                <span class="icon ion-checkmark-circled" ng-if="player.state.currentTrack.scrobbled"></span>
+                <span class="icon ion-help" ng-if="player.state.scrobbleEnabled && player.state.lastFmInvalid === true"></span>
+                <span class="icon ion-checkmark-circled" ng-if="player.state.scrobbled"></span>
             </md-button>
         </section>
     </div>

@@ -37,12 +37,15 @@
 		return '_' + Math.random().toString(36).substr(2, 9);
     }
 
-	var soundCloudify = angular.module('soundCloudify', ['ngMaterial', 'ngRoute', 'ui.router', 'react']);
+	var soundCloudify = angular.module('soundCloudify', ['ngMaterial', 'ngRoute', 'ui.router', 'react', 'indexedDB']);
+
+    soundCloudify.value('API_ENDPOINT', 'http://52.11.108.36');
+    //soundCloudify.value('API_ENDPOINT', 'http://localhost:3000');
 
 	soundCloudify.value('CLIENT_ID', '849e84ac5f7843ce1cbc0e004ae4fb69');
 
-	soundCloudify.config(['$stateProvider', '$urlRouterProvider', '$mdThemingProvider', '$compileProvider',
-		function($stateProvider, $urlRouterProvider, $mdThemingProvider, $compileProvider) {
+	soundCloudify.config(function($stateProvider, $urlRouterProvider, $mdThemingProvider, 
+                                    $compileProvider, $httpProvider, $indexedDBProvider) {
 
 			$stateProvider
 				.state('nowPlaying', {
@@ -126,15 +129,30 @@
 
 			$compileProvider.imgSrcSanitizationWhitelist(/^\s*((https?|ftp|file|blob|chrome-extension):|data:image\/)/);
 
+			$httpProvider.interceptors.push('HttpRequestInterceptor');
+
+            $indexedDBProvider
+                .connection('soundcloudify')
+                .upgradeDatabase(1, function(event, db, tx){
+                    console.log('upgradeDatabase');
+                    // var playlistStore = db.createObjectStore('playlist', {keyPath: 'uuid'});
+                    // var nowplayingStore = db.createObjectStore('nowplaying', {keyPath: 'uuid'});
+                    // var starStore = db.createObjectStore('starred', {keyPath: 'id'});
+                });
+
 			//TODO: reenable it in production
 			$compileProvider.debugInfoEnabled(false);
 		}
-	]);
+	);
 
-	soundCloudify.run(function($rootScope, GATracker, $location) {
+	soundCloudify.run(function($rootScope, GATracker, $location, UserService, SyncService) {
 		$rootScope.$on('$stateChangeSuccess', function(event) {
 			GATracker.trackPageView($location.path());
 		});
+
+		UserService.init();
+
+		SyncService.init();
 	});
 
 	angular.element(document).ready(function() {

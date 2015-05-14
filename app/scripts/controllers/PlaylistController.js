@@ -3,14 +3,15 @@
     angular.module('soundCloudify')
             .controller('PlaylistController', PlaylistController)
 
-    function PlaylistController($mdToast, $state, PlaylistService, CorePlayer, GATracker) {
+    function PlaylistController($mdToast, $state, $scope, PlaylistService, StarService, CorePlayer, GATracker) {
         var vm = this;
 
-        PlaylistService
-            .getList()
-            .then(function(data) {
-                vm.playlists = data;
-            });
+        vm.playlists = PlaylistService.getList();
+        vm.starredListLength = StarService.getLength();
+
+        $scope.$on('starredList.ready', function() {
+            vm.starredListLength = StarService.getLength();
+        });
 
         vm.newPlaylistName = '';
 
@@ -21,11 +22,10 @@
             }
 
             if (!vm.newPlaylistName) return;
-            PlaylistService.newPlaylist(vm.newPlaylistName);
-
-            vm.newPlaylistName = '';
-
-            GATracker.trackPlaylist('add new');
+            PlaylistService.newPlaylist(vm.newPlaylistName).then(function() {
+                vm.newPlaylistName = '';
+                GATracker.trackPlaylist('add new');
+            });
         };
 
         vm.remove = function($event, index) {

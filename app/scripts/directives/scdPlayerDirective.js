@@ -17,7 +17,7 @@
 
                     GATracker.trackCustomEvent('lastfm', 'open manual scrobble');
 
-                    if (!CorePlayer.state.scrobble || CorePlayer.state.currentTrack.scrobbled || CorePlayer.state.currentTrack.lastFmValidate !== false) {
+                    if (!CorePlayer.state.scrobbleEnabled || CorePlayer.state.scrobbled || CorePlayer.state.lastFmInvalid !== true) {
                         return;
                     }
 

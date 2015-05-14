@@ -8,6 +8,7 @@
         "128": "images/icon-128.png"
     },
     "default_locale": "en",
+    "key": "MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEArPC7kOpsZMcFSyJWd06MRq53NN0VESi3JBIGnE8LcETw3cbQcUMFZN2YZfsofU3ZDIICZyTN/P9fAL48dgMzWQwEOM8HbUogfz4ZfGD9fF/J/AW9CJGK3CpGo7wZfqEUD9zU63iS++dda7cHJkcjsc80ugseCcbuCW4Zrq8u5VDT3CtIJHWqFF18ZAmkGV9YYbvWcXy7e5NrX2TFOW4md9kl4njuHwKWYLeDf/+Dte+fw5tfwi1t+t/XhpZ4n691ezP2oIy7Fs03CsBPMO1ULAAWlkgkr2M/UgrFPXawYzZvPgY4zRODPglyOZs29tXsMSZhIpPM7YNVFp9ZagoWxQIDAQAB",
     "background": {
         "page": "background.html"
     },
@@ -22,6 +23,26 @@
     "options_page": "options.html",
     "omnibox": {
         "keyword": "SoundCloudify"
+    },
+    "commands": {
+      "next": {
+        "suggested_key": {
+          "default": "Alt+N"
+        },
+        "description": "Play the next track"
+      },
+      "previous": {
+        "suggested_key": {
+          "default": "Alt+Shift+N"
+        },
+        "description": "Play the previous track"
+      },
+      "playpause": {
+        "suggested_key": {
+          "default": "Alt+P"
+        },
+        "description": "Play/Pause the playing track"
+      }
     },
     "content_scripts": [
         {
@@ -40,12 +61,23 @@
     ],
     "content_security_policy": "script-src 'self' 'unsafe-eval' https://www.google-analytics.com https://api-v2.soundcloud.com; object-src 'self'",
     "permissions": [
+        "identity",
+        "identity.email",
         "webRequest",
         "webRequestBlocking",
         "storage",
         "notifications",
-        "*://*.youtube.com/*"
+        "*://*.youtube.com/*",
+        "*://*.ytimg.com/*",
+        "http://52.11.108.36/*",
+        "http://localhost:3000/*"
     ],
+    "oauth2": {
+        "client_id": "393554771612-pgq8aevpbcd33qrdd3veaqg0d2jvqqfv.apps.googleusercontent.com",
+        "scopes": [
+          "https://www.googleapis.com/auth/drive"
+        ]
+    },
     "web_accessible_resources": [
         "images/*"
     ]

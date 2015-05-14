@@ -44,7 +44,28 @@ var CLIENT_ID = '849e84ac5f7843ce1cbc0e004ae4fb69';
 var ORIGIN_YOUTUBE = 'yt';
 var ORIGIN_SOUNDCLOUD = 'sc';
 
+var DEFAULT_STATE = {
+    currentTrack: false,
+    currentIndex: 0,
+    playing: false,
+    currentTime: 0,
+    duration: 0,
+    volume: 0.5,
+    repeat: 0,
+    shuffle: false,
+    scrobbleEnabled: false,
+    scrobbled: false,
+    lastFmInvalid: false
+};
+
+
 var currentPort;
+
+var Storage = {
+    getById: function() {
+
+    }
+};
 
 /**
  * =====================================
@@ -71,7 +92,7 @@ var SoundCloudPlayer = function(opts) {
 };
 
 SoundCloudPlayer.prototype = {
-    
+
     constructor: SoundCloudPlayer,
 
     play: function(track) {
@@ -127,7 +148,7 @@ var YoutubePlayer = function(opts) {
 };
 
 YoutubePlayer.prototype = {
-    
+
     constructor: YoutubePlayer,
 
     setPlayer: function(player) {
@@ -184,171 +205,79 @@ Player.prototype = {
 
     init: function() {
 
+        SCIndexedDB.openDb();
+
         var self = this;
 
-        self.tracks = [];
-        self.state = {};
         self.notificationId = '';
         self.activePlayer = null;
         self.startTimestamp = null;
 
-        chrome.storage.local.get('nowPlaying', function(data) {
-            self.tracks = data['nowPlaying'] || [];
-        });
+        self.trackIds = JSON.parse(localStorage.getItem('nowplaying')) || [];
+        self.state = JSON.parse(localStorage.getItem('playerstate')) || DEFAULT_STATE;
 
-        chrome.storage.local.get('nowPlayingState', function(data) {
-            self.state = data['nowPlayingState'] || {};
-        });
+        //on load, reset the state
+        self.state.playing = false;
+        self.state.currentTime = 0;
+        self.state.duration = 0;
 
         chrome.storage.sync.get('scConfig', function(data) {
             self.configuration = data['scConfig'] || {showNotification: true};
         });
-
-        chrome.storage.onChanged.addListener(function (changes, areaName) {
-
-            if (changes['nowPlayingUpdatedBy'] && changes['nowPlayingUpdatedBy'].newValue.indexOf('foreground') > -1 && changes['nowPlaying']) {
-                self.tracks = changes['nowPlaying'].newValue;
-
-                if(!self.tracks.length) {
-                    self.clear.call(self);
-                }
-            }
-
-            if (changes['nowPlayingState']) {
-
-                var oldValue = changes['nowPlayingState'].oldValue,
-                    lastTrackId = oldValue && oldValue.currentTrack ?  oldValue.currentTrack.id : null;
-
-                self.state = changes['nowPlayingState'].newValue;
-
-                if (self.state.currentTrack && lastTrackId !== self.state.currentTrack.id) {
-
-                    if (self.configuration.showNotification) {
-                        var notificationOptions = {
-                            type: "basic",
-                            title: "Playing Track",
-                            message: self.state.currentTrack.title,
-                            iconUrl: self.state.currentTrack.artworkUrl
-                        };
-
-                        Utils.createOrUpdateNotification('track-change', notificationOptions, function() {});
-                    }
-
-                    if (self.state.scrobble) {
-
-                        if(self.state.currentTrack.lastFmTrack || self.state.currentTrack.manualTrack) {
-
-                            window.LastFM.updateNowPlaying({
-                                track: self.state.currentTrack.lastFmTrack || self.state.currentTrack.manualTrack,
-                                artist: self.state.currentTrack.lastFmArtirst || self.state.currentTrack.manualArtist
-                            });
-
-                        } else {
-                            window.LastFM.checkTrackInfo(self.state.currentTrack, function(lastFmTrack) {
-                                console.log('checkTrackInfo: success');
-                                if (lastFmTrack.track) {
-                                    self.state.currentTrack.lastFmTrack = lastFmTrack.track.name;
-                                    self.state.currentTrack.lastFmArtirst = lastFmTrack.track.artist.name;
-                                    chrome.storage.local.set({
-                                        'nowPlayingState': self.state,
-                                        'nowPlayingStateUpdatedBy': getStorageUpdateKey()
-                                    });
-
-                                    //TODO: inform frontend?
-                                    window.LastFM.updateNowPlaying({
-                                        track: lastFmTrack.track.name,
-                                        artist: lastFmTrack.track.artist.name
-                                    });
-                                } else if (lastFmTrack.error) {
-                                    self.state.currentTrack.lastFmValidate = false;
-                                    chrome.storage.local.set({
-                                        'nowPlayingState': self.state,
-                                        'nowPlayingStateUpdatedBy': getStorageUpdateKey()
-                                    });
-
-                                    if (!currentPort) return;
-                                    currentPort.postMessage({message: 'lastfm.trackInvalid'});    
-                                }
-                            }, function() {
-                                self.state.currentTrack.lastFmValidate = false;
-                                chrome.storage.local.set({
-                                    'nowPlayingState': self.state,
-                                    'nowPlayingStateUpdatedBy': getStorageUpdateKey()
-                                });
-
-                                if (!currentPort) return;
-                                currentPort.postMessage({message: 'lastfm.trackInvalid'});
-
-                                console.log('checkTrackInfo: error');
-                            });
-                        }
-
-                    }
-                }
-            }
-
-            if (changes['scConfig']) {
-                self.configuration = changes['scConfig'].newValue;
-            }
-        });
-
     },
 
     next: function() {
 
-        var nextIndex;
+        var self = this, nextIndex;
 
         if (this.state.shuffle) {
-            
-            nextIndex = Utils.random(0, this.tracks.length - 1);
+
+            nextIndex = Utils.random(0, this.trackIds.length - 1);
 
         } else {
-            
+
             nextIndex = this.state.currentIndex + 1;
 
-            if (nextIndex >= this.tracks.length) {
+            if (nextIndex >= this.trackIds.length) {
                 nextIndex = 0;
             }
         }
 
-        var nextTrack = this.tracks[nextIndex];
+        var nextTrackId = this.trackIds[nextIndex];
 
-        if (nextTrack) {
+        if (nextTrackId) {
+            SCIndexedDB.getBlob(nextTrackId, function(track) {
+                self.play(track);
+                self.showNotification();
 
-            this.play(nextTrack);
+                self.state.currentIndex = nextIndex;
+                self.state.currentTrack = track;
 
-            this.state.currentIndex = nextIndex;
-            this.state.currentTrack = nextTrack;
-            this.state.playing = true;
-
-            chrome.storage.local.set({
-                'nowPlayingState': this.state,
-                'nowPlayingStateUpdatedBy': getStorageUpdateKey()
+                self.saveState(self.state);
             });
         }
     },
 
     prev: function() {
+        var self = this;
         var currentIndex = this.state.currentIndex;
         var nextIndex = currentIndex - 1;
 
         if (nextIndex < 0) {
-            nextIndex = this.tracks.length -1;
+            nextIndex = this.trackIds.length -1;
         }
 
-        var nextTrack = this.tracks[nextIndex];
+        var nextTrackId = this.trackIds[nextIndex];
 
-        if (nextTrack) {
+        if (nextTrackId) {
+            SCIndexedDB.getBlob(nextTrackId, function(track) {
+                self.play(track);
+                self.showNotification();
 
-            this.play(nextTrack);
+                self.state.currentIndex = nextIndex;
+                self.state.currentTrack = track;
 
-            this.state.currentIndex = nextIndex;
-            this.state.currentTrack = nextTrack;
-            this.state.playing = true;
-            
-            chrome.storage.local.set({
-                'nowPlayingState': this.state,
-                'nowPlayingStateUpdatedBy': getStorageUpdateKey()
+                self.saveState(self.state);
             });
         }
     },
@@ -365,8 +294,13 @@ Player.prototype = {
             this.activePlayer = soundcloudPlayer;
         }
 
+        this.state.playing = true;
+        this.state.scrobbled = false;
+        this.state.lastFmInvalid = false;
+
         this.startTimestamp = Math.floor(Date.now() / 1000);
 
+        this.updateLastFmNowPlaying();
 
         chrome.browserAction.setIcon({path: 'images/icon-38.png'});
     },
@@ -375,6 +309,7 @@ Player.prototype = {
         if(this.activePlayer) {
             this.activePlayer.pause();
         }
+        this.state.playing = false;
         chrome.browserAction.setIcon({path: 'images/icon-38-pause.png'});
     },
 
@@ -386,6 +321,7 @@ Player.prototype = {
         }
 
         this.activePlayer.resume();
+        this.state.playing = true;
         chrome.browserAction.setIcon({path: 'images/icon-38.png'});
     },
 
@@ -424,21 +360,38 @@ Player.prototype = {
         this.youtubePlayer.setVolume(volume);
     },
 
-    scrobble: function(manualScrobble) {
+    isPlaying: function() {
+        return this.state.playing;
+    },
+
+    saveState: function(state) {
+
+        if (!state) return;
+
+        this.state = state;
+
+        localStorage.setItem('playerstate', JSON.stringify(this.state));
+    },
+
+    saveTrackIds: function(trackIds) {
+        this.trackIds = trackIds;
+        localStorage.setItem('nowplaying', JSON.stringify(trackIds));
+    },
+
+    /**
+     * Send scrobbling request to Last.fm
+     */
+    scrobble: function(isManual) {
 
         this.scrobbling = true;
 
         var self = this, track, artist;
 
-        if (manualScrobble && manualScrobble.track && manualScrobble.artist) {
-            self.state.currentTrack.manualTrack = manualScrobble.track;
-            self.state.currentTrack.manualArtist = manualScrobble.artist;
-        }
-
         track = self.state.currentTrack.lastFmTrack || self.state.currentTrack.manualTrack;
         artist = self.state.currentTrack.lastFmArtirst || self.state.currentTrack.manualArtist;
 
         if (!track || !artist) {
+            this.scrobbling = false;
             throw new Error('LastFM scrobbling has failed because of missing information!');
         }
 
@@ -450,28 +403,15 @@ Player.prototype = {
 
             if (!response.error) {
                 self.scrobbling = false;
-                self.state.currentTrack.scrobbled = true;
-                self.state.currentTrack.lastFmValidate = true;
-                //TODO: replace with savePlayerState() method
-                chrome.storage.local.set({
-                    'nowPlayingState': self.state,
-                    'nowPlayingUpdatedBy': getStorageUpdateKey()
-                });
+                self.state.scrobbled = true;
+                self.state.lastFmInvalid = false;
 
-                //update the track in the list
-                var currentTrack = self.tracks[self.state.currentIndex];
-                currentTrack.lastFmValidate = true;
+                self.saveState();
 
-                if (manualScrobble) {
-                    currentTrack.manualTrack = manualScrobble.track;
-                    currentTrack.manualArtist = manualScrobble.artist;
+                if (isManual) {
+                    SCIndexedDB.update(self.state.currentTrack);
                 }
-
-                chrome.storage.local.set({
-                    'nowPlaying': self.tracks,
-                    'nowPlayingUpdatedBy': getStorageUpdateKey()
-                });
-
+                
                 if (!currentPort) return;
                 currentPort.postMessage({message: 'lastfm.scrobbled'});
 
@@ -490,11 +430,73 @@ Player.prototype = {
         });
     },
 
+    /**
+     * Check if we should we send the scrobbling request
+     */
     shouldScrobble: function(currentTime) {
         return currentTime > (this.configuration.scrobbleDuration || 30) &&
                 !this.scrobbling &&
-                !this.state.currentTrack.scrobbled &&
+                !this.state.scrobbled &&
                 (this.state.currentTrack.lastFmTrack || this.state.currentTrack.manualTrack);
+    },
+
+    /**
+     * Update LastFM Now Playing. This often  occurs when a track start playing
+     */
+    updateLastFmNowPlaying: function() {
+
+        var self = this;
+
+        if (self.state.scrobbleEnabled) {
+
+            if(self.state.currentTrack.lastFmTrack || self.state.currentTrack.manualTrack) {
+
+                window.LastFM.updateNowPlaying({
+                    track: self.state.currentTrack.lastFmTrack || self.state.currentTrack.manualTrack,
+                    artist: self.state.currentTrack.lastFmArtirst || self.state.currentTrack.manualArtist
+                });
+
+            } else {
+                window.LastFM.checkTrackInfo(self.state.currentTrack, function(lastFmTrack) {
+                    console.log('checkTrackInfo: success');
+                    if (lastFmTrack.track) {
+                        self.state.currentTrack.lastFmTrack = lastFmTrack.track.name;
+                        self.state.currentTrack.lastFmArtirst = lastFmTrack.track.artist.name;
+
+                        //update the track in the list in order not to retrieve it again
+                        SCIndexedDB.update(self.state.currentTrack);
+
+                        window.LastFM.updateNowPlaying({
+                            track: lastFmTrack.track.name,
+                            artist: lastFmTrack.track.artist.name
+                        });
+                    } else if (lastFmTrack.error) {
+                        self.state.lastFmInvalid = true;
+                        if (!currentPort) return;
+                        currentPort.postMessage({message: 'lastfm.trackInvalid'});    
+                    }
+                }, function() {
+                    self.state.lastFmInvalid = true;
+                    if (!currentPort) return;
+                    currentPort.postMessage({message: 'lastfm.trackInvalid'});
+                });
+            }
+
+        }
+
+    },
+
+    showNotification: function() {
+        if (this.configuration.showNotification) {
+            var notificationOptions = {
+                type: "basic",
+                title: "Playing Track",
+                message: this.state.currentTrack.title,
+                iconUrl: this.state.currentTrack.artworkUrl
+            };
+
+            Utils.createOrUpdateNotification('track-change', notificationOptions, function() {});
+        }
     }
 };
 
@@ -528,7 +530,7 @@ function onTimeUpdate(currentTime, duration) {
 
 function onEnded() {
     if (mainPlayer.state.repeat === 0) {
-        if (mainPlayer.state.currentIndex === mainPlayer.tracks.length - 1) {
+        if (mainPlayer.state.currentIndex === mainPlayer.trackIds.length - 1) {
             mainPlayer.stop();
             mainPlayer.seek(0);
             currentPort.postMessage({message: 'scd.ended'});
@@ -670,7 +672,7 @@ chrome.runtime.onConnect.addListener(function(port) {
             case 'lastfm.authentication':
                 window.LastFM.onAuthSuccess();
             case 'lastfm.manualScrobble':
-                mainPlayer.scrobble({track: data.track, artist: data.artist});
+                mainPlayer.scrobble(true);
 
         }
     });
@@ -678,6 +680,29 @@ chrome.runtime.onConnect.addListener(function(port) {
     currentPort.onDisconnect.addListener(function() {
         currentPort = null;
     })
+});
+
+//===========================
+//KEYBOARD COMMAND
+//===========================
+chrome.commands.onCommand.addListener(function(command) {
+
+    switch(command) {
+        case 'next':
+            mainPlayer.next();
+            break;
+        case 'previous':
+            mainPlayer.prev();
+            break;
+        case 'playpause':
+            if (mainPlayer.isPlaying()) {
+                mainPlayer.pause();
+            } else {
+                mainPlayer.resume();
+            }
+            break;
+    };
+
 });
 
 //===========================
@@ -691,5 +716,3 @@ m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 ga('create', 'UA-61308350-1', 'auto');
 ga('set', 'checkProtocolTask', function(){});
 ga('send', 'pageview');
-
-

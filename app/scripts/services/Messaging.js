@@ -130,11 +130,8 @@
             port.postMessage({message: 'lastfm.authentication'});
         }
 
-        function sendManualScrobbleMessage(manualScrobble) {
-            port.postMessage({message: 'lastfm.manualScrobble', data: {
-                track: manualScrobble.track,
-                artist: manualScrobble.artist
-            }});
+        function sendManualScrobbleMessage() {
+            port.postMessage({message: 'lastfm.manualScrobble'});
         }
     }    
 

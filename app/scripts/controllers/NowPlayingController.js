@@ -3,20 +3,17 @@
     angular.module('soundCloudify')
             .controller('NowPlayingController', NowPlayingController)
 
-    function NowPlayingController(Category, $mdDialog, PlaylistService, CorePlayer, TrackAdapter, $timeout) {
+    function NowPlayingController($scope, Category, $mdDialog, PlaylistService, CorePlayer, TrackAdapter, $timeout) {
+
         var vm = this;
 
         vm.player = CorePlayer;
 
-        //give PlaylistService 1000ms to load
-        //We need it to get the starred information for the track
-        //FIXME: better to make this process async. but ok for now
-        var delay = !PlaylistService.isReady() ? 1000 : 300;
+        $scope.$on('starredList.ready', function() {
+            vm.tracks = TrackAdapter.decorateStar(CorePlayer.nowplaying.tracks);
+        });
 
-        //need a little delay here to make smother transition when changing tab
-        $timeout(function() {
-            vm.tracks = TrackAdapter.decorateStar(CorePlayer.tracks);
-        }, delay);
+        vm.tracks = TrackAdapter.decorateStar(CorePlayer.nowplaying.tracks);
 
         vm.saveStream = function($event) {
             
@@ -58,12 +55,11 @@
                         if (!scope.newPlaylistName) {
                             return;
                         }
-                        var newPlaylist = PlaylistService.newPlaylist(scope.newPlaylistName);
-                        scope.newPlaylistName = '';
-
-                        PlaylistService.addTracksToPlaylist(player.tracks, newPlaylist);
-
-                        $mdDialog.hide();
+                        var newPlaylist = PlaylistService.newPlaylist(scope.newPlaylistName, true, vm.tracks)
+                                                .then(function() {
+                                                    scope.newPlaylistName = '';
+                                                    $mdDialog.hide();
+                                                });
                     };
 
                     scope.cancel = function() {

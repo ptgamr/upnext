@@ -4,7 +4,7 @@
     angular.module('soundCloudify')
         .service("TrackAdapter", TrackAdapter);
 
-    function TrackAdapter (PlaylistService) {
+    function TrackAdapter (StarService) {
         
         var DEFAULT_THUMBNAIL = 'images/artwork-default.jpg';
 
@@ -61,7 +61,7 @@
             }
 
             normalizedTrack.uuid = window.ServiceHelpers.ID();
-            normalizedTrack.starred = PlaylistService.isTrackStarred(normalizedTrack);
+            normalizedTrack.starred = StarService.isTrackStarred(normalizedTrack);
             return normalizedTrack;
         }
 
@@ -78,7 +78,7 @@
         function decorateStar(tracks) {
             return _.filter(_.map(tracks, function(track) {
                 if (track) {
-                    track.starred = PlaylistService.isTrackStarred(track);
+                    track.starred = StarService.isTrackStarred(track);
                     return track;
                 }
             }), function(track) {

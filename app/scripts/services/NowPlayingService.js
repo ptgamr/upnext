@@ -1,84 +1,217 @@
+/**
+ * TODO:
+ *
+ * - upnext track order are not stored correct in DB. Relative track's order is not updated
+ * 
+ */
+
 (function(){
     'use strict';
 
     angular.module('soundCloudify')
         .service("NowPlaying", NowPlayingService);
 
-    function NowPlayingService($http, CLIENT_ID, $rootScope){
-        
-        var NOW_PLAYING_LIST_KEY = 'nowPlaying';
-        var NOW_PLAYING_STATE_KEY = 'nowPlayingState';
+    var ORIGIN_LOCAL = 'l';
+    var ORIGIN_SERVER = 's';
 
-        var onNowPlayingChange = null, onNowPlayingStateChange = null;
+    function NowPlayingService($http, $q, CLIENT_ID, $rootScope, API_ENDPOINT, SyncService, StorageService){
 
-        chrome.storage.onChanged.addListener(function (changes, areaName) {
-            if (changes['nowPlayingUpdatedBy'] &&
-                    changes['nowPlayingUpdatedBy'].newValue.indexOf('background') > -1) {
+        var backgroundPage = chrome.extension.getBackgroundPage();
 
-                if (changes['nowPlaying'] && changes['nowPlaying'].newValue) {
-                    if (onNowPlayingChange) {
-                        onNowPlayingChange.call(null, changes['nowPlaying'].newValue);
-                    }
-                }
-            }
+        //local cache, used by CorePlayer, and is watched by AngularJS for changes
+        var nowplaying = {
+            tracks: [],
+            trackIds: []
+        };
+        var state = backgroundPage.mainPlayer.state;
 
-            if (changes['nowPlayingStateUpdatedBy'] &&
-                    changes['nowPlayingStateUpdatedBy'].newValue.indexOf('background') > -1) {
+        //Storage API for simplify IndexedDB interaction
+        var Storage = StorageService.getStorageInstance('nowplaying');
 
-                if (changes['nowPlayingState'] && changes['nowPlayingState'].newValue) {
-                    if (onNowPlayingStateChange) {
-                        onNowPlayingStateChange.call(null, changes['nowPlayingState'].newValue);
-                    }
-                }
-            }
+        $rootScope.$on('sync.completed', function() {
+            getFromStorage();
         });
+
+        getFromStorage();
 
         return {
             getList: getList,
-            saveList: saveList,
+            addTrack: addTrack,
+            addTracks: addTracks,
+            removeTrack: removeTrack,
+            removeAllTracks: removeAllTracks,
             getState: getState,
-            saveState: saveState,
-            registerNowPlayingChangeHandler: registerNowPlayingChangeHandler,
-            registerNowPlayingStateChangeHandler: registerNowPlayingStateChangeHandler
+            saveState: saveState
         };
 
-        function registerNowPlayingChangeHandler(callback) {
-            onNowPlayingChange = callback;
-        }
+        function getFromStorage() {
 
-        function registerNowPlayingStateChangeHandler(callback) {
-            onNowPlayingStateChange = callback;
-        }
+            Storage.getTracks()
+                    .then(function(tracks) {
+                        nowplaying.tracks = tracks || [];
+                        nowplaying.trackIds = _.map(tracks, function(track) { return track.uuid; });
+                        backgroundPage.mainPlayer.saveTrackIds(nowplaying.trackIds);
+                    })
+        };
 
         function getList(callback){
-            return chrome.storage.local.get(NOW_PLAYING_LIST_KEY, function(data) {
-                callback(data[NOW_PLAYING_LIST_KEY] || []);
+            return nowplaying;
+        }
+
+        /**
+         * Add a single track to nowplaying list
+         */
+        function addTrack(track, position) {
+
+            return $q(function(resolve, reject) {
+
+                //we need to do a copy here to ensure each track we add
+                //to the playlist will have a unique id
+                track = angular.copy(track);
+                track.uuid = window.ServiceHelpers.ID();
+                track.sync = 0;
+                track.deleted = 0;
+
+                if (position && nowplaying.tracks.length >= 1 ) {
+                    track.order = nowplaying.tracks[position - 1].order;
+                    nowplaying.tracks.splice(position, 0, track);
+                    nowplaying.trackIds.splice(position, 0, track.uuid);
+
+                    var tobeUpsert = [track];
+
+                    _.each(nowplaying.tracks, function(track, index) {
+                        if (index < position) {
+                            track.order += 1;
+                            tobeUpsert.push(track);
+                        }
+                    });
+
+                    if (tobeUpsert.length) {
+                        Storage.upsert(tobeUpsert);
+                    }
+
+                } else {
+                    track.order = nowplaying.tracks.length ? nowplaying.tracks[0].order + 1 : 0;
+                    nowplaying.tracks.unshift(track);
+                    nowplaying.trackIds.unshift(track.uuid);
+                    Storage.insert(track);
+                }
+
+                backgroundPage.mainPlayer.saveTrackIds(nowplaying.trackIds);
+
+                SyncService.push().then(SyncService.bumpLastSynced);
+
+                resolve();
+
             });
         }
 
-        function saveList(list) {
-            chrome.storage.local.set({
-                'nowPlaying': list,
-                'nowPlayingUpdatedBy': getStorageUpdateKey()
+        /**
+         * Add multiple tracks to nowplaying
+         */
+        function addTracks(tracks) {
+
+            return $q(function(resolve, reject) {
+
+                removeAllTracks(false).then(function() {
+
+                    var tracksToAdd = _.map(tracks, function(track, index) {
+                        track = angular.copy(track);
+                        track.uuid = window.ServiceHelpers.ID();
+                        track.sync = 0;
+                        track.deleted = 0;
+                        track.order = tracks.length - index;
+                        return track;
+                    });
+
+                    nowplaying.tracks = tracksToAdd;
+                    nowplaying.trackIds = _.map(nowplaying.tracks, function(track) {
+                        return track.uuid;
+                    });
+
+                    backgroundPage.mainPlayer.saveTrackIds(nowplaying.trackIds);
+
+                    Storage.insert(tracksToAdd);
+
+                    SyncService.push().then(SyncService.bumpLastSynced);
+
+                    resolve();
+                });
+
             });
-            $rootScope.$broadcast('nowPlaying:updated');
+
         }
 
-        function saveState(state) {
-            chrome.storage.local.set({
-                'nowPlayingState': state,
-                'nowPlayingUpdatedBy': getStorageUpdateKey()
+        /**
+         * Remove track from now playing
+         */
+        function removeTrack(position) {
+
+            return $q(function(resolve, reject) {
+                
+                var track = nowplaying.tracks[position];
+                
+                if (!track) reject();
+
+                if (track) {
+                    nowplaying.tracks.splice(position, 1);
+                    nowplaying.trackIds.splice(position, 1);
+
+                    //mark the track as deleted for the SyncService to know how to handle it
+                    track.deleted = 1;
+                    track.sync = 0;
+                    Storage.upsert([track]);
+                }
+
+                backgroundPage.mainPlayer.saveTrackIds(nowplaying.trackIds);
+
+                SyncService.push().then(SyncService.bumpLastSynced);
+
+                resolve();
             });
         }
 
+        /**
+         * Remove all tracks from nowplaying
+         */
+        function removeAllTracks(triggerSync) {
+
+            return $q(function(resolve, reject) {
+                
+                triggerSync = typeof triggerSync === 'undefined' ? true : triggerSync;
+
+                _.each(nowplaying.tracks, function(track) {
+                    track.deleted = 1;
+                    track.sync = 0;
+                });
+
+                Storage.upsert(nowplaying.tracks);
+
+                nowplaying.tracks = [];
+                nowplaying.trackIds = [];
+                backgroundPage.mainPlayer.saveTrackIds([]);
+
+                if (triggerSync) {
+                    SyncService.push().then(SyncService.bumpLastSynced);
+                }
+
+                resolve();
+            });
+        }
+
+        /**
+         * Save state
+         */
+        function saveState(newState) {
+            state = newState;
+            backgroundPage.mainPlayer.saveState(newState);
+        }
+
+        /**
+         * Get the state getting from the background
+         */
         function getState(callback) {
-            return chrome.storage.local.get(NOW_PLAYING_STATE_KEY, function(data) {
-                callback(data[NOW_PLAYING_STATE_KEY] || {});
-            })
-        }
-
-        function getStorageUpdateKey() {
-            return  'foreground-' + Date.now();
+            return state;
         }
     };
 

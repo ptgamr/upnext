@@ -10,5 +10,5 @@
             <h3 class="chosen-category">{{playlistViewCtrl.playlist.name}}</h3>
         </div>
     </div>
-    <track-list tracks="playlistViewCtrl.playlist.tracks" on-track-click="playnow" list-context="playlist"></track-list>
+    <track-list tracks="playlistViewCtrl.playlistTracks" on-track-click="playnow" list-context="playlist" list-index="{{playlistViewCtrl.playlistIndex}}"></track-list>
 </md-content>

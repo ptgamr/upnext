@@ -7,16 +7,28 @@
     function ConfigurationDirective() {
         return {
             restrict: 'E',
-            template: '<span><md-button title="about" ng-click="vm.showInformation($event)"><md-icon md-font-icon="icon ion-ios-information"></md-icon></md-button><md-button title="settings" ng-click="vm.openConfigurationDialog($event)"><md-icon md-font-icon="icon ion-gear-b"></md-icon></md-button></span>',
+            template: '<span>' +
+                        '<md-icon md-font-icon="icon ion-loop" ng-show="vm.syncing"></md-icon>' +
+                        '<md-button title="about" ng-click="vm.showInformation($event)"><md-icon md-font-icon="icon ion-ios-information"></md-icon></md-button>' +
+                        '<md-button title="settings" ng-click="vm.openConfigurationDialog($event)"><md-icon md-font-icon="icon ion-gear-b"></md-icon></md-button>' +
+                      '</span>',
             scope: {},
             controller: ConfigurationController,
             controllerAs: 'vm'
         };
     }
 
-    function ConfigurationController($mdDialog) {
-        
+    function ConfigurationController($mdDialog, $rootScope) {
+
         var vm = this;
+
+        $rootScope.$on('sync.start', function() {
+            vm.syncing = true;
+        });
+
+        $rootScope.$on('sync.completed', function() {
+            vm.syncing = false;
+        });
 
         vm.openConfigurationDialog = function($event) {
             showDialog($event);
@@ -44,7 +56,7 @@
                 });
 
                 scope.close = function() {
-                    $mdDialog.hide();   
+                    $mdDialog.hide();
                 };
 
                 scope.save = function() {
@@ -75,7 +87,7 @@
 
             function DialogController(scope, $mdDialog, player) {
                 scope.close = function() {
-                    $mdDialog.hide();   
+                    $mdDialog.hide();
                 };
             }
         };
