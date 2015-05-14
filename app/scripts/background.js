@@ -247,13 +247,13 @@ Player.prototype = {
 
         if (nextTrackId) {
             SCIndexedDB.getBlob(nextTrackId, function(track) {
-                self.play(track);
-                self.showNotification();
-
                 self.state.currentIndex = nextIndex;
                 self.state.currentTrack = track;
 
                 self.saveState(self.state);
+
+                self.play(track);
+                self.showNotification();
             });
         }
     },
@@ -271,13 +271,13 @@ Player.prototype = {
 
         if (nextTrackId) {
             SCIndexedDB.getBlob(nextTrackId, function(track) {
-                self.play(track);
-                self.showNotification();
-
                 self.state.currentIndex = nextIndex;
                 self.state.currentTrack = track;
 
                 self.saveState(self.state);
+
+                self.play(track);
+                self.showNotification();
             });
         }
     },
