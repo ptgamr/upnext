@@ -69,7 +69,7 @@
         "notifications",
         "*://*.youtube.com/*",
         "*://*.ytimg.com/*",
-        "http://52.11.108.36/*",
+        "http://api.getsoundcloudify.com/*",
         "http://localhost:3000/*"
     ],
     "oauth2": {
