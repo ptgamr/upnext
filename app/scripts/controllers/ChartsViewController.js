@@ -16,7 +16,11 @@
             limit: 10,
             getFirstPage: true,
             pagingFunction: function(paginationModel) {
-                return Category.getTracks(vm.category, paginationModel);
+                if (vm.category === 'reddit') {
+                    return Category.getRedditHot(paginationModel);
+                } else {
+                    return Category.getTracks(vm.category, paginationModel);
+                }
             },
             pagingSuccess: function(data) {
                 vm.tracks = vm.tracks.concat(data);

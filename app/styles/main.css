@@ -500,6 +500,9 @@ track-list > div {
 .recent-search {}
 .recent-search a:hover { color: #fff; border-bottom: 1px solid #fff; cursor: pointer;}
 
+md-list.charts md-item md-icon {width: 40px;}
+
+
 .icon {}
   .icon.icon-playing, .icon.icon-playing-blue {
     background: url('../images/equalizer.white.gif') center no-repeat;

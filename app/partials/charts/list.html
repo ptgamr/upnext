@@ -1,5 +1,13 @@
 <md-content class="list-hover tab-content md-padding">
-    <md-list>
+    <md-list class="charts">
+        <md-item>
+            <md-item-content layout="row" layout-align="start start" ng-click="chartsCtrl.selectReddit()">
+                <div class="md-tile-content">
+                    <h3>Reddit Hot</h3>
+                </div>
+                <md-icon md-font-icon="icon ion-social-reddit-outline"></md-icon>
+            </md-item-content>
+        </md-item>
         <md-item ng-repeat="cat in chartsCtrl.categories">
             <md-item-content layout="row" layout-align="start start" ng-click="chartsCtrl.selectCategory(cat)">
                 <div class="md-tile-content">
