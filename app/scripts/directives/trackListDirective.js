@@ -94,7 +94,7 @@
 
                 $scope.handleRemoveTrack = function(track) {
                     var index = _.findIndex($scope.tracks, function(iterator) {
-                        return iterator.id === track.id;
+                        return iterator.uuid === track.uuid;
                     });
 
                     // //since $scope.tracks is always a decorated array, means we have no reference to it
@@ -102,9 +102,10 @@
                     // $scope.tracks.splice(index, 1);
 
                     if ($scope.listContext === 'nowplaying') {
-                        NowPlaying.removeTrack(index).then(function() {
-                            $scope.tracks.splice(index, 1);
-                        });
+
+                        $scope.tracks.splice(index, 1);
+                        CorePlayer.remove(index);
+
                     } else if ($scope.listContext === 'playlist') {
                         if(!$scope.listIndex) {
                             throw new Error('list index undefined');

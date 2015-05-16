@@ -71,15 +71,15 @@
          * Remove track at specific index
          */
         this.remove = function(index) {
-            NowPlaying.removeTrack(index);
+            NowPlaying.removeTrack(index).then(function() {
+                if (self.state.currentIndex === index) {
+                    self.play(index);
+                } else if (index < self.state.currentIndex){
+                    self.state.currentIndex --;
+                }
 
-            if (this.state.currentIndex === index) {
-                this.play(index);
-            } else if (index < this.state.currentIndex){
-                this.state.currentIndex --;
-            }
-
-            NowPlaying.saveState(this.state);
+                NowPlaying.saveState(self.state);
+            });
         };
 
         this.clear = function() {
