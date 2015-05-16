@@ -3,17 +3,25 @@
     angular.module('soundCloudify')
             .controller('NowPlayingController', NowPlayingController)
 
-    function NowPlayingController($scope, Category, $mdDialog, PlaylistService, CorePlayer, TrackAdapter, $timeout) {
+    function NowPlayingController($scope, Category, $mdDialog, PlaylistService, NowPlaying, CorePlayer, TrackAdapter, $timeout) {
 
         var vm = this;
 
         vm.player = CorePlayer;
+        vm.loading = true;
+        vm.tracks = [];
 
         $scope.$on('starredList.ready', function() {
-            vm.tracks = TrackAdapter.decorateStar(CorePlayer.nowplaying.tracks);
+            if (vm.tracks) {
+                vm.tracks = TrackAdapter.decorateStar(vm.tracks);
+            }
         });
 
-        vm.tracks = TrackAdapter.decorateStar(CorePlayer.nowplaying.tracks);
+        NowPlaying.getTracks()
+            .then(function(tracks) {
+                vm.tracks = TrackAdapter.decorateStar(tracks);
+                vm.loading = false;
+            });
 
         vm.saveStream = function($event) {
             

@@ -216,6 +216,8 @@
                             return !track.internalId;
                         });
 
+                        added = _.sortBy(added, function(track) {return track.order});
+
                         var removed = _.filter(localNowplayingTracks, function(track) {
                             return track.internalId && track.deleted === 1;
                         });
@@ -241,6 +243,7 @@
                         var starred = _.filter(localStarredTracks, function(track) {
                             return !track.internalId;
                         });
+                        starred = _.sortBy(starred, function(track) {return track.order});
 
                         var unstarred = _.filter(localStarredTracks, function(track) {
                             return track.internalId && track.deleted === 1;

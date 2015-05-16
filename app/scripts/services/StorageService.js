@@ -69,21 +69,28 @@
         NowplayingStorage.prototype = {
             constructor: NowplayingStorage,
             upsert: function (tracks) {
-                $indexedDB.openStore('nowplaying', function(store) {
-                    _.each(tracks, function(track) {
-                        store.upsert(track);
+                return $q(function(resolve, reject) {
+                    $indexedDB.openStore('nowplaying', function(store) {
+                        _.each(tracks, function(track) {
+                            store.upsert(track);
+                        });
+                        resolve();
                     });
                 });
             },
             insert: function (tracks) {
-                $indexedDB.openStore('nowplaying', function(store) {
-                    if (Array.isArray(tracks)) {
-                        _.each(tracks, function(track) {
-                            store.insert(track);
-                        });
-                    } else {
-                        store.insert(tracks);
-                    }
+                return $q(function(resolve, reject) {
+                    $indexedDB.openStore('nowplaying', function(store) {
+                        if (Array.isArray(tracks)) {
+                            _.each(tracks, function(track) {
+                                store.insert(track);
+                            });
+                            resolve();
+                        } else {
+                            store.insert(tracks);
+                            resolve();
+                        }
+                    });
                 });
             },
             delete: function(trackIds) {
@@ -112,6 +119,46 @@
                             resolve(_.sortBy(tracks, 'order').reverse());
                         });
                     });
+                });
+            },
+            getById: function(trackId) {
+                return $q(function(resolve, reject) {
+                    $indexedDB.openStore('nowplaying', function(store) {
+                        store.find(trackId).then(function(track) {
+                            resolve(track);
+                        });
+                    });
+                });
+            },
+            increaseOrder: function(trackIds) {
+                var self = this;
+                return $q(function(resolve, reject) {
+                    $indexedDB.openStore('nowplaying', function(store) {
+                        _.each(trackIds, function(trackId) {
+                            store.find(trackId).then(function(track) {
+                                track.order += 1;
+                                store.upsert(track);
+                            });
+                        });
+                        resolve();
+                    });
+                });
+            },
+            markAllTracksAsDeleted: function() {
+                var self = this;
+                return $q(function(resolve, reject) {
+                    self.getTracks()
+                        .then(function(tracks) {
+                            _.each(tracks, function(track) {
+                                track.deleted = 1;
+                                track.sync = 0;
+                            });
+
+                            self.upsert(tracks).then(function() {
+                                console.log('mark delete');
+                                resolve();
+                            });
+                        })
                 });
             },
             getUnsyncedTracks: function() {

@@ -9,7 +9,7 @@
         return reactDirective('TrackList')
     };
 
-    function trackListDirective($playlistMenu, CorePlayer, PlaylistService, StarService, $mdToast, GATracker) {
+    function trackListDirective($playlistMenu, CorePlayer, PlaylistService, NowPlaying, StarService, $mdToast, GATracker) {
         return {
             restrict: 'E',
             templateUrl: 'scripts/views/trackList.html',
@@ -102,7 +102,9 @@
                     // $scope.tracks.splice(index, 1);
 
                     if ($scope.listContext === 'nowplaying') {
-                        CorePlayer.remove(index);
+                        NowPlaying.removeTrack(index).then(function() {
+                            $scope.tracks.splice(index, 1);
+                        });
                     } else if ($scope.listContext === 'playlist') {
                         if(!$scope.listIndex) {
                             throw new Error('list index undefined');

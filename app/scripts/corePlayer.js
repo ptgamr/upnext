@@ -23,7 +23,7 @@
         //this is used for commincating with background (one way)
         var backgroundPage = chrome.extension.getBackgroundPage();
         
-        this.nowplaying = NowPlaying.getList();
+        this.nowplaying = NowPlaying.getTrackIds();
         this.state = NowPlaying.getState();
 
         this.add = function(track, andPlay) {
@@ -104,28 +104,25 @@
 
             index = index || 0;
 
-            var track = this.nowplaying.tracks[index];
+            var uuid = this.nowplaying.trackIds[index];
 
-            if (!track) {
+            if (!uuid) {
                 throw 'No track found for playing, index=' + index;
             }
 
-            if (track) {
-                this.state.playing = true;
-                this.state.currentTime = 0;
-                this.state.duration = 0;
-                this.state.currentTrack = track;
-                this.state.currentIndex = index;
+            if (uuid) {
 
-                //un-flagged the error flag when retry
-                if (track.error) {
-                    track.error = false
-                    //TODO
-                    //NowPlaying.updateStorage();
-                };
+                NowPlaying.getTrack(uuid)
+                    .then(function(track) {
+                        self.state.playing = true;
+                        self.state.currentTime = 0;
+                        self.state.duration = 0;
+                        self.state.currentTrack = track;
+                        self.state.currentIndex = index;
 
-                NowPlaying.saveState(this.state);
-                backgroundPage.mainPlayer.play(track);
+                        NowPlaying.saveState(self.state);
+                        backgroundPage.mainPlayer.play(track);
+                    });
             }
         };
 
@@ -149,7 +146,7 @@
 
         this.playPause = function(index) {
             if (typeof index !== 'undefined') {
-                if (index === this.state.currentIndex) {
+                if (index === this.state.currentIndex && backgroundPage.mainPlayer.activePlayer) {
                     this.state.playing ? this.pause() : this.resume();
                 } else {
                     this.play(index);
