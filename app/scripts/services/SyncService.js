@@ -79,21 +79,39 @@
                 //fetch the changes
                 $http.get(dataURL).success(function(serverData) {
 
-                    _.each(serverData.playlists, function(playlist, index) {
+                    _.each(serverData.playlists, function(serverPlaylist, index) {
 
-                        if (playlist.deleted) {
+                        if (serverPlaylist.deleted) {
 
-                            PlaylistStorage.delete(playlist.uuid);
+                            PlaylistStorage.delete(serverPlaylist.uuid);
 
                         } else {
 
-                            if (!playlist.uuid) {
-                                playlist.uuid = window.ServiceHelpers.ID();
+
+                            //merge the server changes with the local ones
+                            //if there is any local, this is a large chance that user logout, then use the app, then login again
+                            if (!serverPlaylist.uuid) {
+                                serverPlaylist.uuid = window.ServiceHelpers.ID();
                             }
 
-                            playlist.sync = 1;
+                            PlaylistStorage.getById(serverPlaylist.uuid)
+                                .then(function(localPlaylist) {
+                                    //tracks have not been stored to server
+                                    var localTracks = _.filter(localPlaylist.tracks, function(track) {
+                                        return !track.internalId;
+                                    });
 
-                            PlaylistStorage.upsert(playlist);
+                                    if (localTracks.length) {
+                                        localPlaylist = serverPlaylist;
+                                        localPlaylist.sync = 0;
+                                        localPlaylist.tracks = localPlaylist.tracks.concat(localTracks);
+                                        PlaylistStorage.upsert(localPlaylist);
+                                    } else {
+                                        PlaylistStorage.upsert(serverPlaylist);    
+                                    }
+                                }, function() {
+                                    PlaylistStorage.insert(serverPlaylist);
+                                });
                         }
 
                     });

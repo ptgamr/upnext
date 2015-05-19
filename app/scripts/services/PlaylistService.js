@@ -15,7 +15,7 @@
         this.deleted = 0;
     }
 
-    function PlaylistService($rootScope, $q, $http, SyncService, API_ENDPOINT, StorageService){
+    function PlaylistService($rootScope, $log, $q, $http, API_ENDPOINT, StorageService){
 
         var PLAYLIST_ENDPOINT = API_ENDPOINT + '/playlist';
 
@@ -36,7 +36,6 @@
             removePlaylist: removePlaylist,
             getPlaylist: getPlaylist,
             addTrackToPlaylist: addTrackToPlaylist,
-            addTracksToPlaylist: addTracksToPlaylist,
             removeTrackFromPlaylist: removeTrackFromPlaylist 
         };
 
@@ -83,7 +82,22 @@
                 playlistStore.items.unshift(playlist);
                 Storage.insert(playlist);
 
-                SyncService.push().then(SyncService.bumpLastSynced);
+                if (user) {
+                    $http({
+                        url: API_ENDPOINT + '/playlist',
+                        method: 'POST',
+                        data: playlist,
+                    }).success(function(response) {
+                        if (response.id) {
+                            playlist.id = response.id;
+                            playlist.order = response.order;
+                            playlist.sync = 1;
+                            Storage.upsert(playlist);
+                        }
+                    }).error(function() {
+                        $log.error('error saving playlist');
+                    });
+                }
 
                 resolve();
             });
@@ -93,12 +107,26 @@
             if (typeof index === 'undefined' || isNaN(index))
                     throw new Error('Error when remove playlist: index must be specified as number');
             var playlist = getPlaylist(index);
+
+            if (!playlist) return;
+
             playlist.deleted = 1;
             playlist.sync = 0;
-
             Storage.upsert(playlist);
 
-            SyncService.push().then(SyncService.bumpLastSynced);
+            playlistStore.items.splice(index, 1);
+
+            if (user && playlist.id) {
+                $http({
+                    url: API_ENDPOINT + '/playlist/' + playlist.id,
+                    method: 'DELETE'
+                }).success(function() {
+                    Storage.delete(playlist.uuid);
+                    $log.info('delete playlist succcessfully');
+                }).error(function() {
+                    $log.error('delete playlist ecounter an error');
+                });
+            }
         }
 
         function getPlaylist(index) {
@@ -115,75 +143,58 @@
             if(!playlist)
                 throw new Error('Error when adding track: Playlist not found.');
 
-            _addTrackToPlaylist(track, playlist);
-        }
+            var copy = angular.copy(track);
+            copy.internalId = '';
+            copy.uuid = window.ServiceHelpers.ID();
+            playlist.tracks.push(copy);
+            Storage.upsert(playlist);
 
-        function addTracksToPlaylist(tracks, playlist) {
-
-            if(!tracks)
-                throw new Error('Error when adding tracks: Track is undefined');
-
-            if(!playlist)
-                throw new Error('Error when adding track: Playlist not found.');
-
-            _addTracksToPlaylist(tracks, playlist);
+            if (user && playlist.id) {
+                $http({
+                    url: API_ENDPOINT + '/playlist/' + playlist.id,
+                    method: 'PUT',
+                    data: {
+                        added: [copy]
+                    }
+                }).success(function(data) {
+                    $log.info('add track success');
+                    if (data[0] && data[0][0]) {
+                        //have to update internalId - just in case user delete the song immediately
+                        copy.internalId = data[0][0]['internalId'];
+                        Storage.upsert(playlist);
+                    }
+                }).error(function() {
+                    $log.error('add track failed');
+                });
+            }
         }
 
         function removeTrackFromPlaylist(trackIndex, playlistIndex) {
+
+            if (typeof trackIndex === 'undefined' || isNaN(trackIndex))
+                throw new Error('Error when remove track: trackIndex must be specified as number');
 
             var playlist = playlistStore.items[playlistIndex];
 
             if(!playlist)
                 throw new Error('Error when adding track: Playlist not found.');
 
-            _removeTrackFromPlaylist(trackIndex, playlist);
-        }
-
-        function _addTrackToPlaylist(track, playlist) {
-
-            return $q(function(resolve, reject) {
-
-                var copy = angular.copy(track);
-                copy.internalId = '';
-                copy.uuid = window.ServiceHelpers.ID();
-                copy.deleted = 0;
-                copy.sync = 0;
-                playlist.tracks.push(copy);
-                playlist.sync = 0; //mark as changed
-                Storage.upsert(playlist);
-
-                SyncService.push().then(SyncService.bumpLastSynced);
-            });
-        }
-
-        function _addTracksToPlaylist(tracks, playlist) {
-
-            var copies = tracks.map(function(track) {
-                var copy = angular.copy(track);
-                copy.internalId = '';
-                copy.uuid = window.ServiceHelpers.ID();
-                copy.deleted = 0;
-                copy.sync = 0;
-                return copy;
-            })
-
-            playlist.tracks = playlist.tracks.concat(copies);
-            playlist.sync = 0;  //mark as changed
-
-            Storage.upsert(playlist);
-            SyncService.push().then(SyncService.bumpLastSynced);
-        }
-
-        function _removeTrackFromPlaylist(trackIndex, playlist) {
-            if (typeof trackIndex === 'undefined' || isNaN(trackIndex))
-                throw new Error('Error when remove track: trackIndex must be specified as number');
-
-            playlist.tracks[trackIndex].deleted = 1;
-            playlist.sync = 0;
-
+            var removal = playlist.tracks.splice(trackIndex, 1)[0];
             Storage.upsert(playlist);
 
-            SyncService.push().then(SyncService.bumpLastSynced);
+            if (user && playlist.id && removal.internalId) {
+                $http({
+                    url: API_ENDPOINT + '/playlist/' + playlist.id,
+                    method: 'PUT',
+                    data: {
+                        removed: [removal.internalId]
+                    }
+                }).success(function(data) {
+                    $log.info('remove track success');
+                }).error(function() {
+                    $log.error('remove track failed');
+                });
+            }
         }
     };
 }());

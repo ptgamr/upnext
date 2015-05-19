@@ -13,6 +13,17 @@
 
         PlaylistStorage.prototype = {
             constructor: PlaylistStorage,
+            getById: function(uuid) {
+                return $q(function(resolve, reject) {
+                    $indexedDB.openStore('playlist', function(store) {
+                        store.find(uuid).then(function(playlist) {
+                            resolve(playlist);
+                        }, function() {
+                            reject();
+                        });
+                    });
+                });
+            },
             upsert: function (playlist) {
                 $indexedDB.openStore('playlist', function(store) {
                     store.upsert(playlist);
