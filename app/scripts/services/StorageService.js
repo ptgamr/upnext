@@ -144,23 +144,6 @@
                     });
                 });
             },
-            markAllTracksAsDeleted: function() {
-                var self = this;
-                return $q(function(resolve, reject) {
-                    self.getTracks()
-                        .then(function(tracks) {
-                            _.each(tracks, function(track) {
-                                track.deleted = 1;
-                                track.sync = 0;
-                            });
-
-                            self.upsert(tracks).then(function() {
-                                console.log('mark delete');
-                                resolve();
-                            });
-                        })
-                });
-            },
             getUnsyncedTracks: function() {
                 return $q(function(resolve, reject) {
                     $indexedDB.openStore('nowplaying', function(store) {

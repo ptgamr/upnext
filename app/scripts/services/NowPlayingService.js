@@ -14,7 +14,7 @@
     var ORIGIN_LOCAL = 'l';
     var ORIGIN_SERVER = 's';
 
-    function NowPlayingService($http, $q, CLIENT_ID, $rootScope, API_ENDPOINT, SyncService, StorageService){
+    function NowPlayingService($http, $q, CLIENT_ID, $rootScope, API_ENDPOINT, StorageService){
 
         var backgroundPage = chrome.extension.getBackgroundPage();
 
@@ -110,13 +110,11 @@
                                 }
 
                                 backgroundPage.mainPlayer.saveTrackIds(nowplaying.trackIds);
-                                SyncService.push().then(SyncService.bumpLastSynced);
                                 resolve();
                             } else {
                                 nowplaying.trackIds.unshift(track.uuid);
 
                                 backgroundPage.mainPlayer.saveTrackIds(nowplaying.trackIds);
-                                SyncService.push().then(SyncService.bumpLastSynced);
                                 resolve();
                             }
                         });
@@ -126,7 +124,6 @@
                     Storage.insert(track);
 
                     backgroundPage.mainPlayer.saveTrackIds(nowplaying.trackIds);
-                    SyncService.push().then(SyncService.bumpLastSynced);
                     resolve();
                 }
 
@@ -141,7 +138,7 @@
 
             return $q(function(resolve, reject) {
 
-                removeAllTracks(false).then(function() {
+                removeAllTracks().then(function() {
 
                     var tracksToAdd = _.map(tracks, function(track, index) {
                         track = angular.copy(track);
@@ -160,8 +157,6 @@
 
                     Storage.insert(tracksToAdd);
 
-                    SyncService.push().then(SyncService.bumpLastSynced);
-
                     resolve();
                 });
 
@@ -173,55 +168,21 @@
          * Remove track from now playing
          */
         function removeTrack(position) {
-
-            return $q(function(resolve, reject) {
-                
-                var uuid = nowplaying.trackIds[position];
-
-                Storage.getById(uuid)
-                    .then(function(track) {
-                        if (!track) reject();
-
-                        if (track) {
-                            nowplaying.trackIds.splice(position, 1);
-
-                            //mark the track as deleted for the SyncService to know how to handle it
-                            track.deleted = 1;
-                            track.sync = 0;
-                            Storage.upsert([track]);
-                        }
-
-                        backgroundPage.mainPlayer.saveTrackIds(nowplaying.trackIds);
-
-                        SyncService.push().then(SyncService.bumpLastSynced);
-
-                        resolve();
-                    });
-                
-            });
+            var uuid = nowplaying.trackIds[position];
+            Storage.delete(uuid);
+            nowplaying.trackIds.splice(position, 1);
+            backgroundPage.mainPlayer.saveTrackIds(nowplaying.trackIds);
         }
 
         /**
          * Remove all tracks from nowplaying
          */
-        function removeAllTracks(triggerSync) {
-
+        function removeAllTracks() {
             return $q(function(resolve, reject) {
-                
-                triggerSync = typeof triggerSync === 'undefined' ? true : triggerSync;
-
-                Storage.markAllTracksAsDeleted()
-                    .then(function() {
-                        nowplaying.trackIds = [];
-
-                        backgroundPage.mainPlayer.saveTrackIds([]);
-
-                        if (triggerSync) {
-                            SyncService.push().then(SyncService.bumpLastSynced);
-                        }
-
-                        resolve();
-                    });
+                Storage.delete(nowplaying.trackIds);
+                nowplaying.trackIds = [];
+                backgroundPage.mainPlayer.saveTrackIds([]);
+                resolve();
             });
         }
 

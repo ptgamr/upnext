@@ -15,7 +15,6 @@
         var lastSynced = localStorage.getItem('lastSynced');
 
         var PlaylistStorage = StorageService.getStorageInstance('playlist');
-        var NowplayingStorage = StorageService.getStorageInstance('nowplaying');
         var StarredStorage = StorageService.getStorageInstance('starred');
 
         var pulling = false;
@@ -99,18 +98,6 @@
 
                     });
 
-                    /**
-                     * if all tracks are deleted -> server will response an empty list
-                     * if nothing changes -> server will not response with any list
-                     */
-                    if (serverData.nowplaying.tracks) {
-                        _.each(serverData.nowplaying.tracks, function(track) {
-                            track.sync = 1;
-                        });
-
-                        NowplayingStorage.upsert(serverData.nowplaying.tracks);
-                    }
-
                     if (serverData.starred.tracks) {
                         _.each(serverData.starred.tracks, function(track) {
                             track.sync = 1;
@@ -150,7 +137,6 @@
 
                 $q.all({
                         unsyncedPlaylists: PlaylistStorage.getUnsyncedPlaylists(),
-                        unsyncedNowPlayingTracks: NowplayingStorage.getUnsyncedTracks(),
                         unsyncedStarredTracks: StarredStorage.getUnsyncedTracks()
                     })
                     .then(function(result) {
@@ -159,7 +145,6 @@
                          * Detecting changes
                          */
                         var localPlaylists = result.unsyncedPlaylists;
-                        var localNowplayingTracks = result.unsyncedNowPlayingTracks;
                         var localStarredTracks = result.unsyncedStarredTracks;
 
                         var promises = [];
@@ -208,34 +193,6 @@
                             }
 
                         });
-    
-                        //=========================================
-                        //NowPlaying
-                        //=========================================
-                        var added = _.filter(localNowplayingTracks, function(track) {
-                            return !track.internalId;
-                        });
-
-                        added = _.sortBy(added, function(track) {return track.order});
-
-                        var removed = _.filter(localNowplayingTracks, function(track) {
-                            return track.internalId && track.deleted === 1;
-                        });
-
-                        if (added.length || removed.length) {
-                            promises.push(
-                                $http({
-                                    url: API_ENDPOINT + '/nowplaying',
-                                    method: 'PUT',
-                                    data: {
-                                        added : added,
-                                        removed: _.map(removed, function(removal) { return removal.internalId; })
-                                    }
-                                })
-                            );
-                        } else {
-                            promises.push($q(function(resolve, reject){ resolve('nowplaying'); }));
-                        }
 
                         //=========================================
                         //Starred
@@ -267,7 +224,6 @@
                         $q.all(promises).then(function(responses) {
 
                             var starredResponse = responses.splice(responses.length - 1, 1)[0];
-                            var nowplayingResponse = responses.splice(responses.length - 1, 1)[0];
                             var playlistResponse = responses;
 
                             //update unsynced tracks
@@ -306,28 +262,6 @@
                                 }
 
                             });
-
-                            //update now playing
-                            //TODO: remove the deleted one
-                            if (nowplayingResponse && nowplayingResponse.data && nowplayingResponse.data.length) {
-                                //data[0]: result of added
-                                //data[1]: result of removed
-                                //data[2]: for time
-
-                                _.each(nowplayingResponse.data[0], function(internalId, index) {
-                                    var track = added[index];
-                                    track.internalId = internalId.internalId;
-                                    track.sync = 1;
-                                });
-
-                                NowplayingStorage.upsert(added);
-
-                                var removedIds = _.map(removed, function(removal) { return removal.uuid; });
-
-                                NowplayingStorage.delete(removedIds);
-
-                                lastSynced = nowplayingResponse.data[2].time;
-                            }
 
                             //update star list
                             //TODO: remove the deleted one
