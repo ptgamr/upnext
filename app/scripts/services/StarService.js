@@ -4,7 +4,7 @@
     angular.module('soundCloudify')
         .service("StarService", StarService);
 
-    function StarService($rootScope, StorageService) {
+    function StarService($rootScope, $http, API_ENDPOINT, $log, StorageService) {
 
         var trackIds = [];
 
@@ -12,23 +12,28 @@
 
         var user;
 
-        $rootScope.$on('identity.confirm', function(event, data) {
-            if (data.identity.id && data.identity.email) {
-                user = data.identity;
-            }
-        });
-
-        $rootScope.$on('sync.completed', function() {
-            getFromStorage();
-        });
-
         return {
+            init: init,
             getTracks: getTracks,
             getLength: getLength,
             starTrack: starTrack,
             unstarTrack: unstarTrack,
             isTrackStarred: isTrackStarred
         };
+
+        function init() {
+            $rootScope.$on('identity.confirm', function(event, data) {
+                if (data.identity.id && data.identity.email) {
+                    user = data.identity;
+                }
+            });
+
+            $rootScope.$on('sync.completed', function() {
+                getFromStorage();
+            });
+
+            getFromStorage();
+        }
 
         function getFromStorage() {
             Storage.getTracks()
@@ -66,11 +71,13 @@
                         removed: []
                     }
                 }).success(function(data) {
-                    $log.error('star track success');
                     if (data[0] && data[0][0]) {
+                        $log.error('star track success');
                         track.internalId = data[0][0]['internalId'];
                         track.sync = 1;
                         Storage.upsert(track);
+                    } else {
+                        $log.error('star track: something wrong');
                     }
 
                 }).error(function() {

@@ -71,7 +71,8 @@
         "*://*.ytimg.com/*",
         "*://*.sndcdn.com/*",
         "http://api.getsoundcloudify.com/*",
-        "http://localhost:3000/*"
+        "http://localhost:3000/*",
+        "http://192.168.197.44:3000/*"
     ],
     "oauth2": {
         "client_id": "393554771612-pgq8aevpbcd33qrdd3veaqg0d2jvqqfv.apps.googleusercontent.com",

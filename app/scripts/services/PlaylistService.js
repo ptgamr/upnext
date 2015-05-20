@@ -28,9 +28,8 @@
 
         var user;
 
-        init();
-
         return {
+            init: init,
             getList: getList,
             newPlaylist: newPlaylist,
             removePlaylist: removePlaylist,
