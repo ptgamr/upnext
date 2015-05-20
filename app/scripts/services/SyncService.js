@@ -100,6 +100,10 @@
                                 serverPlaylist.uuid = window.ServiceHelpers.ID();
                             }
 
+                            _.each(serverPlaylist.tracks, function(track) {
+                                track.sync = 1;
+                            });
+
                             PlaylistStorage.getById(serverPlaylist.uuid)
                                 .then(function(localPlaylist) {
                                     //tracks have not been stored to server
@@ -289,8 +293,8 @@
 
                                 var playlist = localPlaylists[index];
 
-                                if (playlist && response.data.id) {
-                                    playlist.id = response.data.id;
+                                if (response.data.playlist) {
+                                    playlist = response.data.playlist;
                                     playlist.sync = 1;
                                     PlaylistStorage.upsert(playlist);
                                     lastSynced = response.data.time;
