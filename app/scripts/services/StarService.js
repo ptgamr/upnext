@@ -58,7 +58,7 @@
             trackIds.push(track.id);
             track.internalId = '';
             track.sync = 0;
-            track.delete = 0;
+            track.deleted = 0;
 
             Storage.insert(track);
 
@@ -72,8 +72,9 @@
                     }
                 }).success(function(data) {
                     if (data[0] && data[0][0]) {
-                        $log.error('star track success');
+                        $log.info('star track success');
                         track.internalId = data[0][0]['internalId'];
+                        track.order = data[0][0]['order'];
                         track.sync = 1;
                         Storage.upsert(track);
                     } else {

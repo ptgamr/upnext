@@ -103,7 +103,7 @@
                             PlaylistStorage.getById(serverPlaylist.uuid)
                                 .then(function(localPlaylist) {
                                     //tracks have not been stored to server
-                                    var localTracks =SyncService.push().then(SyncService.bumpLastSynced); _.filter(localPlaylist.tracks, function(track) {
+                                    var localTracks = _.filter(localPlaylist.tracks, function(track) {
                                         return !track.internalId;
                                     });
 
