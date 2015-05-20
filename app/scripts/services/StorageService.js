@@ -51,7 +51,7 @@
                         var query = store.query();
                         query.$index('deleted');
                         query.$eq(0);
-                        store.eachWhere(query).then(function(playlist) {  
+                        store.eachWhere(query).then(function(playlist) {
                             resolve(_.sortBy(playlist, 'order').reverse());
                         });
                     });
@@ -60,12 +60,7 @@
             getUnsyncedPlaylists: function() {
                 return $q(function(resolve, reject) {
                     $indexedDB.openStore('playlist', function(store) {
-
-                        var query = store.query();
-                        query.$index('sync');
-                        query.$eq(0);
-
-                        store.eachWhere(query).then(function(playlists) {
+                        store.getAll().then(function(playlists) {
                             resolve(playlists);
                         });
                     });

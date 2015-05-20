@@ -36,7 +36,7 @@
             removePlaylist: removePlaylist,
             getPlaylist: getPlaylist,
             addTrackToPlaylist: addTrackToPlaylist,
-            removeTrackFromPlaylist: removeTrackFromPlaylist 
+            removeTrackFromPlaylist: removeTrackFromPlaylist
         };
 
         function init() {
@@ -66,19 +66,16 @@
             return playlistStore;
         }
 
-        function newPlaylist(name, saveToServer, tracks) {
+        function newPlaylist(name, tracks) {
 
             return $q(function(resolve, reject) {
-
-                //TODO: remove this
-                saveToServer = typeof saveToServer === 'undefined' ? true : saveToServer;
 
                 tracks = tracks || [];
 
                 var playlist = new Playlist(name, tracks);
 
                 //always insert after the 'Starred' list
-                playlist.order = playlistStore.items.length ? playlistStore.items[0].order + 1 : 0; 
+                playlist.order = playlistStore.items.length;
                 playlistStore.items.unshift(playlist);
                 Storage.insert(playlist);
 
@@ -179,7 +176,8 @@
             if(!playlist)
                 throw new Error('Error when adding track: Playlist not found.');
 
-            var removal = playlist.tracks.splice(trackIndex, 1)[0];
+
+            playlist.tracks[trackIndex].deleted = 1;
             Storage.upsert(playlist);
 
             if (user && playlist.id && removal.internalId) {
@@ -191,6 +189,8 @@
                     }
                 }).success(function(data) {
                     $log.info('remove track success');
+                    playlist.tracks.splice(trackIndex, 1)[0];
+                    Storage.upsert(playlist);
                 }).error(function() {
                     $log.error('remove track failed');
                 });

@@ -88,8 +88,14 @@
                         } else {
 
 
-                            //merge the server changes with the local ones
-                            //if there is any local, this is a large chance that user logout, then use the app, then login again
+                            /**
+                             * merge the server changes with the local ones
+                             * if there is any local, this is a large chance that user logout, then use the app, then login again
+                             * for eg:
+                             * server: [1,2,3,4,5]
+                             * local: [1,2,3,4*,5,6,7*,8*,9*] (* the local one)
+                             * result: [1,2,3,4,5,6*,7*,8*,9*] (* the local which order has been modified)
+                            */
                             if (!serverPlaylist.uuid) {
                                 serverPlaylist.uuid = window.ServiceHelpers.ID();
                             }
@@ -97,17 +103,24 @@
                             PlaylistStorage.getById(serverPlaylist.uuid)
                                 .then(function(localPlaylist) {
                                     //tracks have not been stored to server
-                                    var localTracks = _.filter(localPlaylist.tracks, function(track) {
+                                    var localTracks =SyncService.push().then(SyncService.bumpLastSynced); _.filter(localPlaylist.tracks, function(track) {
                                         return !track.internalId;
                                     });
 
+
                                     if (localTracks.length) {
+                                        //modiy order
+                                        var maxOrder = serverPlaylist.tracks.length ? serverPlaylist.tracks[serverPlaylist.tracks.length - 1].order : 0;
+                                        _.each(localTracks, function(track, index) {
+                                            track.order = maxOrder + index + 1;
+                                        });
                                         localPlaylist = serverPlaylist;
+                                        //mark the playlist as unsync
                                         localPlaylist.sync = 0;
                                         localPlaylist.tracks = localPlaylist.tracks.concat(localTracks);
                                         PlaylistStorage.upsert(localPlaylist);
                                     } else {
-                                        PlaylistStorage.upsert(serverPlaylist);    
+                                        PlaylistStorage.upsert(serverPlaylist);
                                     }
                                 }, function() {
                                     PlaylistStorage.insert(serverPlaylist);
@@ -116,12 +129,32 @@
 
                     });
 
-                    if (serverData.starred.tracks) {
+                    /**
+                     * got a list of of changes to "Star" list, either
+                     * - a new track has been starred
+                     * - a track has been unstarred (mark by deleted field)
+                     * what we do:
+                     * - update the added one to local db
+                     * - remove the deleted one from local db
+                     */
+                    if (serverData.starred.tracks && serverData.starred.tracks.length) {
+
+                        var toBeUpsert = [],
+                            toBeDeleted = [];
                         _.each(serverData.starred.tracks, function(track) {
-                            track.sync = 1;
+                            if (!track.deleted) {
+                                track.sync = 1;
+                                toBeUpsert.push(track);
+                            } else {
+                                toBeDeleted.push(track);
+                            }
                         });
 
-                        StarredStorage.upsert(serverData.starred.tracks);
+                        StarredStorage.upsert(toBeUpsert);
+
+                        if (toBeDeleted.length) {
+                            StarredStorage.delete(_.map(toBeDeleted, function(removal) { return removal.id; }));
+                        }
                     }
 
                     resolve(serverData.time);
@@ -181,34 +214,41 @@
                                         data: playlist,
                                     })
                                 );
-                            } else if(!playlist.deleted) { //playlist already stored, but tracks has been added or removed
+                            } else {
 
-                                var tracksToAdd = _.filter(playlist.tracks, function(track) {
-                                    return !track.internalId && !track.deleted;
-                                });
+                                if(!playlist.deleted) { //playlist already stored, but tracks has been added or removed
 
-                                var tracksToRemove = _.filter(playlist.tracks, function(track) {
-                                    return track.internalId && track.deleted;
-                                });
+                                    var tracksToAdd = _.filter(playlist.tracks, function(track) {
+                                        return !track.internalId && !track.deleted;
+                                    });
 
-                                promises.push(
-                                    $http({
-                                        url: API_ENDPOINT + '/playlist/' + playlist.id,
-                                        method: 'PUT',
-                                        data: {
-                                            added: tracksToAdd,
-                                            removed: _.map(tracksToRemove, function(removal) { return removal.internalId; })
-                                        }
-                                    })
-                                );
-                            } else if(playlist.id && playlist.deleted){
-                                promises.push(
-                                    $http({
-                                        url: API_ENDPOINT + '/playlist/' + playlist.id,
-                                        method: 'DELETE'
-                                    })
-                                );
+                                    var tracksToRemove = _.filter(playlist.tracks, function(track) {
+                                        return track.internalId && track.deleted;
+                                    });
+
+                                    if (tracksToAdd.length || tracksToRemove.length) {
+                                        promises.push(
+                                            $http({
+                                                url: API_ENDPOINT + '/playlist/' + playlist.id,
+                                                method: 'PUT',
+                                                data: {
+                                                    added: tracksToAdd,
+                                                    removed: _.map(tracksToRemove, function(removal) { return removal.internalId; })
+                                                }
+                                            })
+                                        );
+                                    }
+
+                                } else {
+                                    promises.push(
+                                        $http({
+                                            url: API_ENDPOINT + '/playlist/' + playlist.id,
+                                            method: 'DELETE'
+                                        })
+                                    );
+                                }
                             }
+
 
                         });
 
@@ -251,7 +291,6 @@
 
                                 if (playlist && response.data.id) {
                                     playlist.id = response.data.id;
-                                    playlist.updated = response.data.updated;
                                     playlist.sync = 1;
                                     PlaylistStorage.upsert(playlist);
                                     lastSynced = response.data.time;
@@ -284,22 +323,20 @@
                             //update star list
                             //TODO: remove the deleted one
                             if (starredResponse && starredResponse.data && starredResponse.data.length) {
-                                //data[0]: result of added
-                                //data[1]: result of removed
-                                //data[2]: for time
 
+                                //data[0]: result of added
                                 _.each(starredResponse.data[0], function(internalId, index) {
                                     var track = starred[index];
                                     track.internalId = internalId.internalId;
                                     track.sync = 1;
                                 });
-
                                 StarredStorage.upsert(starred);
 
-                                var unstarredIds = _.map(unstarred, function(removal) { return removal.uuid; });
-
+                                //data[1]: result of removed
+                                var unstarredIds = _.map(unstarred, function(removal) { return removal.id; });
                                 StarredStorage.delete(unstarredIds);
 
+                                //data[2]: for time
                                 lastSynced = starredResponse.data[2].time;
                             }
 

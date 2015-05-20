@@ -24,9 +24,9 @@
             });
 
         vm.saveStream = function($event) {
-            
+
             showDialog($event);
-            
+
             function showDialog($event) {
                 var parentEl = angular.element(document.body);
 
@@ -63,7 +63,7 @@
                         if (!scope.newPlaylistName) {
                             return;
                         }
-                        var newPlaylist = PlaylistService.newPlaylist(scope.newPlaylistName, true, vm.tracks)
+                        var newPlaylist = PlaylistService.newPlaylist(scope.newPlaylistName, vm.tracks)
                                                 .then(function() {
                                                     scope.newPlaylistName = '';
                                                     $mdDialog.hide();
@@ -71,10 +71,10 @@
                     };
 
                     scope.cancel = function() {
-                        $mdDialog.hide();   
+                        $mdDialog.hide();
                     };
                 }
-            }              
+            }
 
         };
 

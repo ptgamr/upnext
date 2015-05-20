@@ -4,11 +4,19 @@
     angular.module('soundCloudify')
         .service("StarService", StarService);
 
-    function StarService($rootScope, StorageService, SyncService) {
+    function StarService($rootScope, StorageService) {
 
         var trackIds = [];
 
         var Storage = StorageService.getStorageInstance('starred');
+
+        var user;
+
+        $rootScope.$on('identity.confirm', function(event, data) {
+            if (data.identity.id && data.identity.email) {
+                user = data.identity;
+            }
+        });
 
         $rootScope.$on('sync.completed', function() {
             getFromStorage();
@@ -48,7 +56,27 @@
             track.delete = 0;
 
             Storage.insert(track);
-            SyncService.push().then(SyncService.bumpLastSynced);
+
+            if (user) {
+                $http({
+                    url: API_ENDPOINT + '/star',
+                    method: 'PUT',
+                    data: {
+                        added : [track],
+                        removed: []
+                    }
+                }).success(function(data) {
+                    $log.error('star track success');
+                    if (data[0] && data[0][0]) {
+                        track.internalId = data[0][0]['internalId'];
+                        track.sync = 1;
+                        Storage.upsert(track);
+                    }
+
+                }).error(function() {
+                    $log.error('star track error');
+                });
+            }
         }
 
         function unstarTrack(track) {
@@ -60,11 +88,26 @@
                 trackIds.splice(index, 1);
 
                 Storage.getById(trackId).then(function(starredTrack) {
-                    if (starredTrack.sync) {
+                    if (starredTrack.internalId) {
                         starredTrack.sync = 0;
                         starredTrack.deleted = 1;
                         Storage.upsert(starredTrack);
-                        SyncService.push().then(SyncService.bumpLastSynced);
+
+                        if (user) {
+                            $http({
+                                url: API_ENDPOINT + '/star',
+                                method: 'PUT',
+                                data: {
+                                    removed: [starredTrack.internalId]
+                                }
+                            }).success(function(data) {
+                                $log.error('star track success');
+                                Storage.delete(starredTrack.id);
+                            }).error(function() {
+                                $log.error('star track error');
+                            });
+                        }
+
                     } else {
                         Storage.delete(trackId);
                     }
