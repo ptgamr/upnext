@@ -71,15 +71,15 @@
          * Remove track at specific index
          */
         this.remove = function(index) {
-            NowPlaying.removeTrack(index).then(function() {
-                if (self.state.currentIndex === index) {
-                    self.play(index);
-                } else if (index < self.state.currentIndex){
-                    self.state.currentIndex --;
-                }
+            NowPlaying.removeTrack(index)
+            
+            if (self.state.currentIndex === index) {
+                self.play(index);
+            } else if (index < self.state.currentIndex){
+                self.state.currentIndex --;
+            }
 
-                NowPlaying.saveState(self.state);
-            });
+            NowPlaying.saveState(self.state);
         };
 
         this.clear = function() {
@@ -107,6 +107,17 @@
             var uuid = this.nowplaying.trackIds[index];
 
             if (!uuid) {
+                angular.extend(self.state, {
+                    currentTrack: null,
+                    currentIndex: 0,
+                    playing: false,
+                    currentTime: 0,
+                    duration: 0
+                });
+
+                backgroundPage.mainPlayer.clear();
+                NowPlaying.saveState(self.state);
+
                 throw 'No track found for playing, index=' + index;
             }
 

@@ -502,6 +502,14 @@ track-list > div {
 
 md-list.charts md-item md-icon {width: 40px;}
 
+.nowplaying-empty {
+  margin-top: 135px;
+  font-size: 20px;
+  line-height: 30px;
+  text-align: center;
+  color: #5E5E5E;
+  text-shadow: 1px 1px 1px #000;
+}
 
 .icon {}
   .icon.icon-playing, .icon.icon-playing-blue {
