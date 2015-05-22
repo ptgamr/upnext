@@ -84,9 +84,8 @@
                         method: 'POST',
                         data: playlist,
                     }).success(function(response) {
-                        if (response.id) {
-                            playlist.id = response.id;
-                            playlist.order = response.order;
+                        if (response.playlist) {
+                            playlist = response.playlist
                             playlist.sync = 1;
                             Storage.upsert(playlist);
                         }

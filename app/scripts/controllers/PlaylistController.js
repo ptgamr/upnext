@@ -73,30 +73,7 @@
                 $mdDialog.show({
                     parent: parentEl,
                     targetEvent: $event,
-                    template:
-                        '<md-dialog aria-label="List dialog">' +
-                        '  <md-content>'+
-                        '    <md-input-container>'+
-                        '      <label>Playlist URL</label>'+
-                        '      <input ng-model="playlistUrl" type="text" placeholder="Enter YouTube playlist URL">' +
-                        '    </md-input-container>'+
-                        '    <md-input-container>'+
-                        '      <label>Playlist Name</label>'+
-                        '      <input ng-model="newPlaylistName" type="text" placeholder="Enter playlist name">' +
-                        '    </md-input-container>'+
-                        '  </md-content>' +
-                        '  <div class="md-actions">' +
-                        '    <md-button ng-click="cancel()">' +
-                        '      Cancel' +
-                        '    </md-button>' +
-                        '    <md-button ng-disabled="!loadedTracks || !newPlaylistName" class="md-primary" ng-click="createPlaylist()">' +
-                        '      Import Playlist' +
-                        '    </md-button>' +
-                        '  </div>' +
-                        '</md-dialog>',
-                    locals: {
-                        //player: vm.player
-                    },
+                    templateUrl: 'scripts/views/import.html',
                     controller: PlaylistImportDialogController
                 });
 
@@ -106,6 +83,7 @@
                     scope.invalidUrl = false;
                     scope.playlistNotFound = false;
                     scope.loadedTracks = null;
+                    scope.loading = false;
 
                     scope.$watch('playlistUrl', function(newVal, oldVal) {
 
@@ -120,6 +98,8 @@
                                 return;
                             }
 
+                            scope.loading = true;
+
                             PlaylistImporter.fetchPlaylist(playlistId)
                                 .then(function(playlist) {
 
@@ -129,14 +109,21 @@
                                         PlaylistImporter.fetchPlaylistItems(playlistId)
                                             .then(function(youtubeVideos) {
                                                 scope.loadedTracks = youtubeVideos;
+                                                scope.loading = false;
                                             });
                                     } else {
                                         scope.playlistNotFound = true;
+                                        scope.loading = false;
                                     }
 
                                 }, function() {
                                     scope.playlistNotFound = true;
+                                    scope.loading = false;
                                 });
+                        } else if (newVal) {
+                            scope.invalidUrl = true;
+                        } else {
+                            scope.invalidUrl = false;
                         }
                     });
 

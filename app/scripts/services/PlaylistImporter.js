@@ -49,7 +49,8 @@
                 }).success(function(result) {
 
                     if (!result || !result.items || !result.items.length) {
-                        resolve();
+                        reject();
+                        return;
                     };
 
                     var playlistName = result.items[0].snippet.title,
@@ -68,7 +69,8 @@
 
         }
 
-        function fetchPlaylistItems(playlistId) {
+        function fetchPlaylistItems(playlistId, nextPageToken, allItems) {
+            
             return $q(function(resolve, reject) {
                 var parts = ['id', 'snippet'];
                 var fields = [
@@ -83,7 +85,8 @@
                     maxResults: 50,
                     part: parts.join(','),
                     fields: fields.join(','),
-                    playlistId: playlistId
+                    playlistId: playlistId,
+                    pageToken: nextPageToken || ''
                 };
 
                 $http({
@@ -112,11 +115,23 @@
                         }
                     });
 
-                    resolve(TrackAdapter.adaptMultiple(playlistItems, 'yt'));
+                    resolve({
+                        items: TrackAdapter.adaptMultiple(playlistItems, 'yt'),
+                        nextPageToken: result.nextPageToken
+                    });
 
                 }).error(function() {
                     reject();
                 });
+            }).then(function(data) {
+                
+                allItems = (allItems || []).concat(data.items);
+
+                if (data.nextPageToken) {
+                    return fetchPlaylistItems(playlistId, data.nextPageToken, allItems);
+                }
+
+                return allItems;
             });
         }
     };

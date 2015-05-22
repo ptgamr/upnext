@@ -19,6 +19,10 @@ html {
   opacity: 0.65;
 }
 
+.text-error {
+  color: #f44336 !important;
+}
+
 md-icon { font-size: 24px; line-height: 24px;}
 
 .md-tile-content .statistic {font-size: 12px;}
@@ -530,6 +534,10 @@ md-list.charts md-item md-icon {width: 40px;}
   text-align: center;
   color: #5E5E5E;
   text-shadow: 1px 1px 1px #000;
+}
+
+.import-modal {
+  min-width: 300px;
 }
 
 .icon {}
