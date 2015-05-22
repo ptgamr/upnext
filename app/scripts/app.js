@@ -44,6 +44,7 @@
 	// soundCloudify.value('API_ENDPOINT', 'http://192.168.197.44:3000');
 
 	soundCloudify.value('CLIENT_ID', '849e84ac5f7843ce1cbc0e004ae4fb69');
+    soundCloudify.value('YOUTUBE_KEY', 'AIzaSyDGbUJxAkFnaJqlTD4NwDmzWxXAk55gFh4');
 
 	soundCloudify.config(function($stateProvider, $urlRouterProvider, $mdThemingProvider,
                                     $compileProvider, $httpProvider, $indexedDBProvider) {

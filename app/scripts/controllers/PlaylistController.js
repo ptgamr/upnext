@@ -3,7 +3,7 @@
     angular.module('soundCloudify')
             .controller('PlaylistController', PlaylistController)
 
-    function PlaylistController($mdToast, $state, $scope, PlaylistService, StarService, CorePlayer, GATracker) {
+    function PlaylistController($mdToast, $mdDialog, $state, $scope, PlaylistService, PlaylistImporter, StarService, CorePlayer, GATracker) {
         var vm = this;
 
         vm.playlists = PlaylistService.getList();
@@ -59,5 +59,100 @@
         vm.selectPlaylist = function(index) {
             $state.go('playlist.view', {playlistIndex: index});
         };
+
+        vm.openImportModal = function($event) {
+            showDialog($event);
+
+            function showDialog($event) {
+                var parentEl = angular.element(document.body);
+
+                $mdDialog.show({
+                    parent: parentEl,
+                    targetEvent: $event,
+                    template:
+                        '<md-dialog aria-label="List dialog">' +
+                        '  <md-content>'+
+                        '    <md-input-container>'+
+                        '      <label>Playlist URL</label>'+
+                        '      <input ng-model="playlistUrl" type="text" placeholder="Enter YouTube playlist URL">' +
+                        '    </md-input-container>'+
+                        '    <md-input-container>'+
+                        '      <label>Playlist Name</label>'+
+                        '      <input ng-model="newPlaylistName" type="text" placeholder="Enter playlist name">' +
+                        '    </md-input-container>'+
+                        '  </md-content>' +
+                        '  <div class="md-actions">' +
+                        '    <md-button ng-click="cancel()">' +
+                        '      Cancel' +
+                        '    </md-button>' +
+                        '    <md-button ng-disabled="true" class="md-primary" ng-click="createPlaylist()">' +
+                        '      Import Playlist' +
+                        '    </md-button>' +
+                        '  </div>' +
+                        '</md-dialog>',
+                    locals: {
+                        //player: vm.player
+                    },
+                    controller: PlaylistImportDialogController
+                });
+
+                function PlaylistImportDialogController(scope, $mdDialog) {
+                    scope.newPlaylistName = '';
+                    scope.playlistUrl = '';
+                    scope.invalidUrl = false;
+                    scope.playlistNotFound = false;
+                    scope.loadedTracks = null;
+
+                    scope.$watch('playlistUrl', function(newVal, oldVal) {
+
+                        if (newVal && PlaylistImporter.extractPlaylistId(newVal)) {
+                            scope.invalidUrl = false;
+                            scope.playlistNotFound = false;
+
+                            var playlistId = PlaylistImporter.extractPlaylistId(newVal);
+
+                            if (!playlistId) {
+                                scope.invalidUrl = true;
+                                return;
+                            }
+
+                            PlaylistImporter.fetchPlaylist(playlistId)
+                                .then(function(playlist) {
+
+                                    if(playlist) {
+                                        scope.newPlaylistName = playlist.name;
+
+                                        PlaylistImporter.fetchPlaylistItems(playlistId)
+                                            .then(function(youtubeVideos) {
+                                                scope.loadedTracks = youtubeVideos;
+                                            });
+                                    } else {
+                                        scope.playlistNotFound = true;
+                                    }
+
+                                }, function() {
+                                    scope.playlistNotFound = true;
+                                });
+                        }
+                    });
+
+                    scope.createPlaylist = function() {
+
+                        if (!scope.newPlaylistName) {
+                            return;
+                        }
+
+                        PlaylistService.newPlaylist(scope.newPlaylistName, vm.loadedTracks || [])
+                            .then(function() {
+                                $mdDialog.hide();
+                            });
+                    };
+
+                    scope.cancel = function() {
+                        $mdDialog.hide();
+                    };
+                }
+            }
+        }
     }
 }());

@@ -1,7 +1,9 @@
 <div ui-view></div>
 <md-toolbar class="bottom-toolbar">
     <div class="md-toolbar-tools">
-        <span flex></span>
+        <span flex>
+            <md-button ng-click="playlistCtrl.openImportModal($event)" class="md-primary">Import</md-button>
+        </span>
         <span flex></span>
         <span>
         	<configuration></configuration>

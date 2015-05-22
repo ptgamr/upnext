@@ -7,7 +7,7 @@
     var DEFAULT_LIMIT = 20;
 
 
-    function SearchService($http, CLIENT_ID, TrackAdapter, $q){
+    function SearchService($http, CLIENT_ID, YOUTUBE_KEY, TrackAdapter, $q){
         
         return {
             search: search,
@@ -41,7 +41,7 @@
             var defer = $q.defer();
 
             var params = {
-                key: 'AIzaSyDGbUJxAkFnaJqlTD4NwDmzWxXAk55gFh4',
+                key: YOUTUBE_KEY,
                 type: 'video',
                 maxResults: pagingObject.limit,
                 pageToken: pagingObject.nextPageToken,
@@ -76,7 +76,7 @@
                 ];
 
                 var secondRequestParams = {
-                    key: 'AIzaSyDGbUJxAkFnaJqlTD4NwDmzWxXAk55gFh4',
+                    key: YOUTUBE_KEY,
                     type: 'video',
                     maxResults: pagingObject.limit,
                     part: parts.join(','),
