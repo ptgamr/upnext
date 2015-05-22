@@ -56,6 +56,10 @@
             GATracker.trackPlaylist('play all', index);
         };
 
+        vm.playAllListView = function() {
+            $scope.$broadcast('playlist.playAll');
+        };
+
         vm.selectPlaylist = function(index) {
             $state.go('playlist.view', {playlistIndex: index});
         };
@@ -85,7 +89,7 @@
                         '    <md-button ng-click="cancel()">' +
                         '      Cancel' +
                         '    </md-button>' +
-                        '    <md-button ng-disabled="true" class="md-primary" ng-click="createPlaylist()">' +
+                        '    <md-button ng-disabled="!loadedTracks || !newPlaylistName" class="md-primary" ng-click="createPlaylist()">' +
                         '      Import Playlist' +
                         '    </md-button>' +
                         '  </div>' +
@@ -142,7 +146,7 @@
                             return;
                         }
 
-                        PlaylistService.newPlaylist(scope.newPlaylistName, vm.loadedTracks || [])
+                        PlaylistService.newPlaylist(scope.newPlaylistName, scope.loadedTracks || [])
                             .then(function() {
                                 $mdDialog.hide();
                             });

@@ -67,8 +67,14 @@ md-divider.md-default-theme {
 
 md-dialog {color: #bbb;}
 md-dialog .md-actions {padding: 0 16px 16px 16px; height: 40px;}
-md-dialog .md-actions .md-button{color: #bbb;}
-md-dialog md-input-container.md-default-theme .md-input {text-shadow: none;}
+md-dialog .md-actions .md-button {
+  color: #bbb;
+}
+md-dialog md-input-container.md-default-theme .md-input,
+md-dialog md-input-container.md-default-theme label,
+md-dialog md-input-container.md-default-theme .md-placeholder {
+  text-shadow: none;
+}
 
 #configuration .float-container { margin: 15px; }
 #configuration .float-container .float-left{ float: left; }
@@ -89,7 +95,22 @@ md-autocomplete ul li:hover, md-autocomplete ul li.selected {
 
 .tab-heading { margin-bottom: 10px; }
 .back-link md-icon { width: 16px; height: 16px; font-size: 16px; line-height: 16px; margin-right: 7px; vertical-align: top;}
-.chosen-category { text-align: right; margin: 0px; padding: 5px 0; color: #8bc34a; border-bottom: 1px solid #8bc34a;}
+
+.chosen-category {
+  text-align: right;
+}
+.chosen-category h3{ 
+  display: inline-block;
+  margin: 0px;
+  padding: 5px 0;
+  color: #8bc34a;
+  border-bottom: 1px solid #8bc34a;
+  max-width: 250px;
+  min-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
 
 body#soundcloudify {

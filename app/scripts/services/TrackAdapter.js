@@ -38,12 +38,12 @@
             if (track.origin === ORIGIN_YOUTUBE || origin === ORIGIN_YOUTUBE) {
                 normalizedTrack.id = track.id;
                 normalizedTrack.title = track.snippet.title;
-                normalizedTrack.artworkUrl = track.snippet.thumbnails.default.url || DEFAULT_THUMBNAIL;
+                normalizedTrack.artworkUrl = (track.snippet.thumbnails && track.snippet.thumbnails.default) ? track.snippet.thumbnails.default.url || DEFAULT_THUMBNAIL : DEFAULT_THUMBNAIL;
                 normalizedTrack.streamUrl = null;
                 normalizedTrack.user = 'youtube';
-                normalizedTrack.likeCount = track.statistics.likeCount;
+                normalizedTrack.likeCount = track.statistics ? track.statistics.likeCount : 0;
                 normalizedTrack.dislikeCount = null;
-                normalizedTrack.viewCount = track.statistics.viewCount;
+                normalizedTrack.viewCount = track.statistics ? track.statistics.viewCount : 0;
                 normalizedTrack.origin = ORIGIN_YOUTUBE;
                 normalizedTrack.originalUrl = 'https://www.youtube.com/watch?v=' + track.id + '&source=soundcloudify';
 

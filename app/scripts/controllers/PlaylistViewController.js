@@ -3,7 +3,7 @@
     angular.module('soundCloudify')
             .controller('PlaylistViewController', PlaylistViewController)
 
-    function PlaylistViewController($state, $stateParams, PlaylistService, StarService) {
+    function PlaylistViewController($state, $scope, $stateParams, PlaylistService, StarService, CorePlayer, GATracker) {
         var vm = this;
 
         vm.playlistIndex = $stateParams.playlistIndex;
@@ -31,6 +31,17 @@
 		vm.backToPlaylist = function() {
             $state.go('playlist.list');
         };
+
+        $scope.$on('playlist.playAll', function() {
+
+            if (!vm.playlistTracks.length) {
+                return;
+            }
+
+            CorePlayer.playAll(vm.playlistTracks);
+
+            GATracker.trackPlaylist('play all in detail view', playlistIndex);
+        });
     }
 
 }());

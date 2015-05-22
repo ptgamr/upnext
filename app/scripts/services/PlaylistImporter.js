@@ -1,10 +1,10 @@
-(function(){
+(function(angular){
     'use strict';
 
     angular.module('soundCloudify')
-        .service("PlaylistImporter", PlaylistImporter);
+        .service('PlaylistImporter', PlaylistImporter);
 
-    function PlaylistImporter($rootScope, $log, $q, $http, YOUTUBE_KEY){
+    function PlaylistImporter($rootScope, $log, $q, $http, YOUTUBE_KEY, TrackAdapter){
 
         return {
             fetchPlaylist: fetchPlaylist,
@@ -96,13 +96,20 @@
                         resolve([]);
                     }
 
-                    var playlistItems = _.map(result.items, function(item) {
-                        return {
-                            id: item.resourceId.videoId,
-                            snippet: {
-                                thumbnails: item.thumbnails,
-                            }
-                        };
+                    var playlistItems = [];
+
+                    _.each(result.items, function(item) {
+
+                        //some videos are removed. They don't get the title in the snippet
+                        if (item.snippet && item.snippet.title && item.snippet.resourceId.videoId) {
+                            playlistItems.push({
+                                id: item.snippet.resourceId.videoId,
+                                snippet: {
+                                    title: item.snippet.title,
+                                    thumbnails: item.snippet.thumbnails,
+                                }
+                            });
+                        }
                     });
 
                     resolve(TrackAdapter.adaptMultiple(playlistItems, 'yt'));
@@ -113,4 +120,4 @@
             });
         }
     };
-}());
+}(angular));
