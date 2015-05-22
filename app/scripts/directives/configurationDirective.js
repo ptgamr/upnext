@@ -8,7 +8,6 @@
         return {
             restrict: 'E',
             template: '<span>' +
-                        '<md-icon md-font-icon="icon ion-loop" ng-show="vm.syncing"></md-icon>' +
                         '<md-button title="about" ng-click="vm.showInformation($event)"><md-icon md-font-icon="icon ion-ios-information"></md-icon></md-button>' +
                         '<md-button title="settings" ng-click="vm.openConfigurationDialog($event)"><md-icon md-font-icon="icon ion-gear-b"></md-icon></md-button>' +
                       '</span>',

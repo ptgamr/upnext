@@ -46,6 +46,7 @@
         function sync() {
 
             $rootScope.$broadcast('sync.start');
+            $rootScope.syncing = true;
 
             pull().then(push).then(bumpLastSynced);
         }
@@ -363,6 +364,7 @@
 
             localStorage.setItem('lastSynced', lastSynced);
             $rootScope.$broadcast('sync.completed');
+            $rootScope.syncing = false;
         }
     };
 
