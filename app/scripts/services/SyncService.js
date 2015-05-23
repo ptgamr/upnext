@@ -9,7 +9,7 @@
     var PLAYLIST_STORAGE_KEY = 'playlist';
     var NOW_PLAYING_LIST_KEY = 'nowPlaying';
 
-    function SyncService($rootScope, $q, $http, $timeout, API_ENDPOINT, StorageService){
+    function SyncService($rootScope, $log, $q, $http, $timeout, API_ENDPOINT, StorageService){
 
         var user;
         var lastSynced = localStorage.getItem('lastSynced');
@@ -33,7 +33,7 @@
             $rootScope.$on('identity.confirm', function(event, data) {
                 if (data.identity.id) {
                     user = data.identity;
-                    console.log('let sync!');
+                    $log.debug('let sync!');
 
                     //start sync after 1s
                     $timeout(function() {
@@ -54,18 +54,18 @@
         function pull() {
 
             if (pulling) {
-                console.log('SyncService::pull() is in progress');
+                $log.debug('SyncService::pull() is in progress');
                 reject();
                 return;
             }
 
             if (!user) {
-                console.log('SyncService::pull() no user');
+                $log.debug('SyncService::pull() no user');
                 reject();
                 return;
             }
 
-            console.log('SyncService::pull()');
+            $log.debug('SyncService::pull()');
 
             pulling = true;
 
@@ -178,18 +178,18 @@
             return $q(function(resolve, reject) {
 
                 if (pushing) {
-                    console.log('SyncService::push() is in progress');
+                    $log.debug('SyncService::push() is in progress');
                     reject();
                     return;
                 }
 
                 if (!user) {
-                    console.log('SyncService::push() no user');
+                    $log.debug('SyncService::push() no user');
                     reject();
                     return;
                 }
 
-                console.log('SyncService::push()');
+                $log.debug('SyncService::push()');
 
                 pushing = true;
 

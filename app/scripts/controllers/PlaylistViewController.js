@@ -11,11 +11,13 @@
         if (!vm.playlistIndex) throw new Error('PlaylistViewController: playlistIndex is undefined');
 
         if (vm.playlistIndex >= 0) {
+            vm.listcontext = 'playlist';
             vm.playlist = PlaylistService.getPlaylist(vm.playlistIndex);
             vm.playlistTracks = _.filter(vm.playlist.tracks, function(track) {
                 return !track.deleted;
             });
         } else {
+            vm.listcontext = 'starredlist';
             vm.playlist = {
                 name: 'Starred',
                 tracks: []

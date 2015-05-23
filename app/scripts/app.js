@@ -47,7 +47,7 @@
     soundCloudify.value('YOUTUBE_KEY', 'AIzaSyDGbUJxAkFnaJqlTD4NwDmzWxXAk55gFh4');
 
 	soundCloudify.config(function($stateProvider, $urlRouterProvider, $mdThemingProvider,
-                                    $compileProvider, $httpProvider, $indexedDBProvider) {
+                                    $compileProvider, $httpProvider, $indexedDBProvider, $logProvider) {
 
 			$stateProvider
 				.state('nowPlaying', {
@@ -136,29 +136,32 @@
             $indexedDBProvider
                 .connection('soundcloudify')
                 .upgradeDatabase(1, function(event, db, tx){
-                    console.log('upgradeDatabase');
+                    // console.log('upgradeDatabase');
                     // var playlistStore = db.createObjectStore('playlist', {keyPath: 'uuid'});
                     // var nowplayingStore = db.createObjectStore('nowplaying', {keyPath: 'uuid'});
                     // var starStore = db.createObjectStore('starred', {keyPath: 'id'});
                 });
 
-			//TODO: reenable it in production
+            //production stuffs
 			$compileProvider.debugInfoEnabled(false);
+            $logProvider.debugEnabled(false);
 		}
 	);
 
-	soundCloudify.run(function($rootScope, GATracker, $location, PlaylistService, StarService, UserService, SyncService) {
+	soundCloudify.run(function($rootScope, GATracker, $location, MigrationService, PlaylistService, StarService, UserService, SyncService) {
 		$rootScope.$on('$stateChangeSuccess', function(event) {
 			GATracker.trackPageView($location.path());
 		});
 
-		PlaylistService.init();
+        PlaylistService.init();
 
-		StarService.init();
+        StarService.init();
 
-		UserService.init();
+        UserService.init();
 
-		SyncService.init();
+        SyncService.init();
+
+        MigrationService.migrate();
 	});
 
 	angular.element(document).ready(function() {
