@@ -42,7 +42,8 @@
             removeTrack: removeTrack,
             removeAllTracks: removeAllTracks,
             getState: getState,
-            saveState: saveState
+            saveState: saveState,
+            markTrackError: markTrackError
         };
 
         function loadNowPlayingList() {
@@ -199,6 +200,14 @@
          */
         function getState(callback) {
             return state;
+        }
+
+        /**
+         * mark the track as error
+         */
+        function markTrackError(track) {
+            track.error = true;
+            Storage.upsert(track);
         }
     };
 

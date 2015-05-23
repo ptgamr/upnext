@@ -249,8 +249,8 @@
         };
 
         this.markCurrentTrackError = function() {
-            this.state.currentTrack.error = true;
-            NowPlaying.saveState(this.state);
+            NowPlaying.markTrackError(this.state.currentTrack);
+            this.next();
             GATracker.trackPlayer('track error');
         };
 

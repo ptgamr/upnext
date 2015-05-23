@@ -101,6 +101,8 @@
                                 serverPlaylist.uuid = window.ServiceHelpers.ID();
                             }
 
+                            serverPlaylist.sync = 1;
+
                             _.each(serverPlaylist.tracks, function(track) {
                                 track.sync = 1;
                             });

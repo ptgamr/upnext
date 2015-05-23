@@ -73,7 +73,6 @@
 
                 var playlist = new Playlist(name, tracks);
 
-                //always insert after the 'Starred' list
                 playlist.order = playlistStore.items.length;
                 playlistStore.items.unshift(playlist);
                 Storage.insert(playlist);
@@ -85,9 +84,14 @@
                         data: playlist,
                     }).success(function(response) {
                         if (response.playlist) {
-                            playlist = response.playlist
-                            playlist.sync = 1;
-                            Storage.upsert(playlist);
+                            var localPlaylistIndex = _.findIndex(playlistStore.items, function(playlist) {
+                                return playlist.uuid = response.playlist.uuid;
+                            });
+
+                            playlistStore.items[localPlaylistIndex] = response.playlist;
+                            playlistStore.items[localPlaylistIndex].sync = 1;
+
+                            Storage.upsert(playlistStore.items[localPlaylistIndex]);
                         }
                     }).error(function() {
                         $log.error('error saving playlist');
@@ -174,8 +178,8 @@
             if(!playlist)
                 throw new Error('Error when adding track: Playlist not found.');
 
-
-            playlist.tracks[trackIndex].deleted = 1;
+            var removal = playlist.tracks[trackIndex];
+            removal.deleted = 1;
             Storage.upsert(playlist);
 
             if (user && playlist.id && removal.internalId) {
@@ -183,6 +187,7 @@
                     url: API_ENDPOINT + '/playlist/' + playlist.id,
                     method: 'PUT',
                     data: {
+                        added: [],
                         removed: [removal.internalId]
                     }
                 }).success(function(data) {

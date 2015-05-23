@@ -106,6 +106,7 @@
                                 url: API_ENDPOINT + '/star',
                                 method: 'PUT',
                                 data: {
+                                    added: [],
                                     removed: [starredTrack.internalId]
                                 }
                             }).success(function(data) {

@@ -54,10 +54,6 @@
                         angular.element($element[0].querySelector('#track-item-' + track.id)).addClass(cssClass);
                     }
                 }
-
-                function decorateStar() {
-                    
-                }
             }
         };
     };

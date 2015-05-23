@@ -75,13 +75,14 @@
         NowplayingStorage.prototype = {
             constructor: NowplayingStorage,
             upsert: function (tracks) {
-                return $q(function(resolve, reject) {
-                    $indexedDB.openStore('nowplaying', function(store) {
+                $indexedDB.openStore('nowplaying', function(store) {
+                    if (Array.isArray(tracks)) {
                         _.each(tracks, function(track) {
                             store.upsert(track);
                         });
-                        resolve();
-                    });
+                    } else {
+                        store.upsert(tracks);
+                    }
                 });
             },
             insert: function (tracks) {
