@@ -1,6 +1,6 @@
 {
     "name": "SoundCloudify",
-    "version": "1.1.1",
+    "version": "1.1.4",
     "manifest_version": 2,
     "description": "__MSG_appDescription__",
     "icons": {
@@ -25,24 +25,24 @@
         "keyword": "SoundCloudify"
     },
     "commands": {
-      "next": {
-        "suggested_key": {
-          "default": "Alt+N"
+        "next": {
+            "suggested_key": {
+                "default": "Alt+N"
+            },
+            "description": "Play the next track"
         },
-        "description": "Play the next track"
-      },
-      "previous": {
-        "suggested_key": {
-          "default": "Alt+Shift+N"
+        "previous": {
+            "suggested_key": {
+                "default": "Alt+Shift+N"
+            },
+            "description": "Play the previous track"
         },
-        "description": "Play the previous track"
-      },
-      "playpause": {
-        "suggested_key": {
-          "default": "Alt+P"
-        },
-        "description": "Play/Pause the playing track"
-      }
+        "playpause": {
+            "suggested_key": {
+                "default": "Alt+P"
+            },
+            "description": "Play/Pause the playing track"
+        }
     },
     "content_scripts": [
         {
@@ -70,14 +70,12 @@
         "*://*.youtube.com/*",
         "*://*.ytimg.com/*",
         "*://*.sndcdn.com/*",
-        "http://api.getsoundcloudify.com/*",
-        "http://localhost:3000/*",
-        "http://192.168.197.44:3000/*"
+        "http://api.getsoundcloudify.com/*"
     ],
     "oauth2": {
         "client_id": "393554771612-pgq8aevpbcd33qrdd3veaqg0d2jvqqfv.apps.googleusercontent.com",
         "scopes": [
-          "https://www.googleapis.com/auth/drive"
+            "https://www.googleapis.com/auth/drive"
         ]
     },
     "web_accessible_resources": [
