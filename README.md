@@ -29,7 +29,7 @@ And ... it's free, opensource, yaaaay!!!
   * Alt + P: play or pause
 - Bugs fixes & performance boost, eat less RAM
 
-[SoundCloudify import playlist from YouTube](http://i.imgur.com/NeDdQOt.gifv)
+![SoundCloudify import playlist from YouTube](http://i.imgur.com/NeDdQOt.gifv)
 
 ###v1.1
 - last.fm integration
