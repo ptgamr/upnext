@@ -16,20 +16,19 @@ And ... it's free, opensource, yaaaay!!!
 - Playlist management
 - Last.fm scrobbling
 
-##VESION 1.x TODO LIST
-* Social Sharing
-* Share playlist
-* Drag n Drop playlist
-* autocomplete can not go up -1
-* When track stream error, auto next()
-* Batch action for multiple tracks (checkbox, delete, add to playlist etc)
-* Rename Playlist
-
-##VERSION 2.0
-* Sync music with your devices
-* Music recomendation
 
 ##CHANGES LOG
+
+###v1.2
+- Ability to sync playlists, favourite tracks if you logged in in Chrome
+- Ability to import YouTube playlist
+- A new chart for ***TOP 100 SONGS*** in Reddit's /r/Music/
+- Hotkey is available & configurable. The default are:
+  * Alt + N : next song
+  * Alt + Shift + N: previous song
+  * Alt + P: play or pause
+- Bugs fixes & performance boost, eat less RAM
+
 ###v1.1
 - last.fm integration
 - better repeat logic
