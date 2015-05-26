@@ -10,11 +10,13 @@ It's not just only a player, it's a way to discover new music. SoundCloud is a p
 
 And ... it's free, opensource, yaaaay!!!
 
-##KEY FEATURES: (v1.1)
+##KEY FEATURES:
 - Music Discovery
 - Playback history
 - Playlist management
 - Last.fm scrobbling
+- Import YouTube playlist
+- Sync Playlist accross devices
 
 
 ##CHANGES LOG
