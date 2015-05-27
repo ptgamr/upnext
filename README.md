@@ -10,6 +10,8 @@ It's not just only a player, it's a way to discover new music. SoundCloud is a p
 
 And ... it's free, opensource, yaaaay!!!
 
+[TNW: SoundCloudify is a slick YouTube- and SoundCloud-powered music player for Chrome](http://thenextweb.com/apps/2015/05/27/soundcloudify-is-a-slick-youtube-and-soundcloud-powered-music-player-for-chrome/)
+
 ##KEY FEATURES:
 - Music Discovery
 - Playback history
