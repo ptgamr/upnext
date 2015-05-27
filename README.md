@@ -20,6 +20,9 @@ And ... it's free, opensource, yaaaay!!!
 - Import YouTube playlist
 - Sync Playlist accross devices
 
+[How to configure SoundCloudify hot keys ?](https://gist.github.com/ptgamr/96caea84b206b7a361a1) 
+
+
 
 ##CHANGES LOG
 
