@@ -8,6 +8,8 @@
         return {
             restrict: 'E',
             template: '<span>' +
+                        '<md-button title="share" ng-click="vm.shareTwitter($event)"><md-icon md-font-icon="icon ion-social-twitter"></md-icon></md-button>' +
+                        '<md-button title="share" ng-click="vm.shareFacebook($event)"><md-icon md-font-icon="icon ion-social-facebook"></md-icon></md-button>' +
                         '<md-button title="about" ng-click="vm.showInformation($event)"><md-icon md-font-icon="icon ion-ios-information"></md-icon></md-button>' +
                         '<md-button title="settings" ng-click="vm.openConfigurationDialog($event)"><md-icon md-font-icon="icon ion-gear-b"></md-icon></md-button>' +
                       '</span>',
@@ -17,7 +19,7 @@
         };
     }
 
-    function ConfigurationController($mdDialog, $rootScope) {
+    function ConfigurationController($window, $mdDialog, $rootScope, CorePlayer) {
 
         var vm = this;
 
@@ -35,6 +37,24 @@
 
         vm.showInformation = function($event) {
             showInfoDialog($event);
+        };
+
+        vm.shareTwitter = function($event) {
+            var twitterURL = 'http://twitter.com/intent/tweet?text=';
+            var shareText;
+
+            if (CorePlayer.state.currentTrack) {
+                shareText = 'I\'m listening to "' + CorePlayer.state.currentTrack.title + '" with @SoundCloudify https://goo.gl/ljw69q';
+            } else {
+                shareText = "#SoundCloudify: Sweet YouTube-and-SoundCloud powered music player extension for Chrome  https://goo.gl/ljw69q";
+            }
+
+            $window.open(twitterURL + encodeURIComponent(shareText), '_blank');
+        };
+
+        vm.shareFacebook = function($event) {
+            var facebookShareUrl = 'https://www.facebook.com/sharer/sharer.php?u=';
+            $window.open(facebookShareUrl + encodeURIComponent('https://goo.gl/OW3dz8'), '_blank');
         };
 
         function showDialog($event) {
@@ -68,7 +88,7 @@
                     $mdDialog.hide();
                 };
             }
-        };
+        }
 
         function showInfoDialog($event) {
 
@@ -78,17 +98,14 @@
                 parent: parentEl,
                 targetEvent: $event,
                 templateUrl: 'scripts/views/info.html',
-                locals: {
-                    player: vm.player
-                },
                 controller: DialogController
             });
 
-            function DialogController(scope, $mdDialog, player) {
+            function DialogController(scope, $mdDialog) {
                 scope.close = function() {
                     $mdDialog.hide();
                 };
             }
-        };
+        }
     }
 }());
