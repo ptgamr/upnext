@@ -4,7 +4,7 @@
     "description": "The name of the application"
   },
   "appDescription": {
-    "message": "SoundCloud Player for Chrome",
+    "message": "SoundCloud & YouTube powered music player for Chrome",
     "description": "The description of the application"
   }
 }

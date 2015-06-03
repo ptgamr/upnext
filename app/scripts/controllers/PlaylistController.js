@@ -87,19 +87,42 @@
 
                     scope.$watch('playlistUrl', function(newVal, oldVal) {
 
-                        if (newVal && PlaylistImporter.extractPlaylistId(newVal)) {
+                        if (newVal) {
                             scope.invalidUrl = false;
                             scope.playlistNotFound = false;
+                            scope.loading = true;
 
                             var playlistId = PlaylistImporter.extractPlaylistId(newVal);
 
                             if (!playlistId) {
-                                scope.invalidUrl = true;
+
+                                //SOUNDCLOUD
+                                if (newVal.indexOf('soundcloud.com') > -1) {
+                                    PlaylistImporter.resolveSoundCloudPlaylist(newVal)
+                                        .then(function(playlist) {
+
+                                            if (playlist.name) {
+                                                scope.newPlaylistName = playlist.name;
+                                                scope.loadedTracks = playlist.tracks;
+                                            } else {
+                                                scope.playlistNotFound = true;
+                                            }
+                                            
+                                            scope.loading = false;
+
+                                        }, function() {
+                                            scope.invalidUrl = true;
+                                            scope.loading = false;
+                                        });
+                                } else {
+                                    scope.invalidUrl = true;
+                                    scope.loading = false;
+                                }
+
                                 return;
                             }
 
-                            scope.loading = true;
-
+                            //YOUTUBE
                             PlaylistImporter.fetchPlaylist(playlistId)
                                 .then(function(playlist) {
 
@@ -120,8 +143,6 @@
                                     scope.playlistNotFound = true;
                                     scope.loading = false;
                                 });
-                        } else if (newVal) {
-                            scope.invalidUrl = true;
                         } else {
                             scope.invalidUrl = false;
                         }

@@ -33,7 +33,7 @@
                 }).error(function() {
                     reject();
                 });
-            })
+            });
         }
 
         function searchYoutube(term, pagingObject) {

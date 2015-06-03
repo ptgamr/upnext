@@ -4,12 +4,13 @@
     angular.module('soundCloudify')
         .service('PlaylistImporter', PlaylistImporter);
 
-    function PlaylistImporter($rootScope, $log, $q, $http, YOUTUBE_KEY, TrackAdapter){
+    function PlaylistImporter($rootScope, $log, $q, $http, YOUTUBE_KEY, CLIENT_ID, TrackAdapter){
 
         return {
             fetchPlaylist: fetchPlaylist,
             fetchPlaylistItems: fetchPlaylistItems,
-            extractPlaylistId: extractPlaylistId
+            extractPlaylistId: extractPlaylistId,
+            resolveSoundCloudPlaylist: resolveSoundCloudPlaylist
         };
 
         function extractPlaylistId(playlistUrl) {
@@ -27,6 +28,7 @@
         }
 
         function fetchPlaylist(playlistId) {
+
             return $q(function(resolve, reject) {
 
                 if (!playlistId) {
@@ -133,6 +135,35 @@
 
                 return allItems;
             });
+        }
+
+        function resolveSoundCloudPlaylist(playlistUrl) {
+
+            return $q(function(resolve, reject) {
+
+                var params = {
+                    url: playlistUrl,
+                    client_id: CLIENT_ID
+                };
+
+                $http({
+                    url: 'http://api.soundcloud.com/resolve.json',
+                    method: 'GET',
+                    params: params,
+                    transformResponse: ServiceHelpers.appendTransform($http.defaults.transformResponse, function(result) {
+                        if (!result || !result.tracks) return [];
+                        return {
+                            name: result.title,
+                            tracks: TrackAdapter.adaptMultiple(result.tracks, 'sc')
+                        };
+                    })
+                }).success(function(data) {
+                    resolve(data);
+                }).error(function() {
+                    reject();
+                });
+            })
+
         }
     };
 }(angular));
