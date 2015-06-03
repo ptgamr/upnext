@@ -1,7 +1,7 @@
 <md-dialog class="import-modal" aria-label="List dialog"> 
     <md-content>
         <md-input-container ng-class="{'md-input-invalid': invalidUrl}">
-            <label>YouTube Playlist URL</label>
+            <label>YouTube or SoundCloud Playlist URL</label>
             <input ng-model="playlistUrl" type="text" placeholder="Enter YouTube playlist URL"> 
             <div ng-messages="invalidUrl">
                 <div ng-show="invalidUrl" ng-message="invalidUrl">Invalid Url</div>
