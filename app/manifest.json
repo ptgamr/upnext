@@ -47,13 +47,13 @@
     "content_scripts": [
         {
             "matches": [
-                "*://*.youtube.com/*",
-                "*://*.soundcloud.com/*",
-                "*://suggestqueries.google.com/*"
+                "http://*/*",
+                "https://*/*"
             ],
-            "css": [],
+            "css": ["vendor/material-floating-button/dist/mfb.css"],
             "js": [
-                "scripts/contentscript.js"
+                "scripts/contentscript.js",
+                "vendor/material-floating-button/dist/mfb.js"
             ],
             "run_at": "document_end",
             "all_frames": false
