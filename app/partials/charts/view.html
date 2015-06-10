@@ -3,7 +3,7 @@
         <div flex>
             <md-button class="back-link" ng-click="viewCtrl.backToTopChart()">
                 <md-icon md-font-icon="icon ion-chevron-left"></md-icon>
-                Back
+                {{'button_back' | translate}}
             </md-button>
         </div>
         <div flex="33" class="chosen-category">
@@ -13,6 +13,6 @@
     <track-list class="list-full" tracks="viewCtrl.tracks" on-track-click="playnow" list-context="charts"></track-list>
     <loading ng-show="viewCtrl.paginator.lastPromise.$$state.status === 0"></loading>
     <section layout="row" layout-align="center center" ng-hide="viewCtrl.paginator.lastPromise.$$state.status === 0">
-        <md-button ng-show="viewCtrl.paginator.hasMoreRow" class="md-primary" ng-click="viewCtrl.paginator.moreRows()">Load more</md-button>
+        <md-button ng-show="viewCtrl.paginator.hasMoreRow" class="md-primary" ng-click="viewCtrl.paginator.moreRows()">{{'button_loadMore' | translate}}</md-button>
     </section>
 </md-content>

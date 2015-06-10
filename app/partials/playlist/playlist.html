@@ -4,11 +4,11 @@
         <span flex>
             <md-button ng-click="playlistCtrl.playAllListView()" class="md-primary" ng-show="'playlist.view' | isState">
                 <i class="fa fa-play"></i>
-                &nbsp;Play all
+                &nbsp;{{'button_playAll' | translate}}
             </md-button>
             <md-button ng-click="playlistCtrl.openImportModal($event)" class="md-primary" ng-show="'playlist.list' | isState">
                 <i class="fa fa-plus"></i>
-                &nbsp;Import
+                &nbsp;{{'button_import' | translate}}
             </md-button>
         </span>
         <span flex></span>

@@ -1,7 +1,7 @@
 <md-content class="tab-content md-padding" playing-track-aware="index">
 	<loading ng-if="vm.loading"></loading>
     <div class="nowplaying-empty" ng-if="!vm.tracks.length && !vm.loading">
-        “Without music, life would be a mistake.”
+        “{{'without_music' | translate}}”
     </div>
     <track-list  tracks="vm.tracks" on-track-click="playpause" list-context="nowplaying"></track-list>
 </md-content>
@@ -10,11 +10,11 @@
         <span flex="50">
             <md-button ng-click="vm.saveStream($event)" class="md-primary">
                 <i class="fa fa-music"></i>
-                &nbsp;Create playlist
+                &nbsp;{{'button_createPlaylist' | translate}}
             </md-button>
             <md-button ng-click="vm.clearStream($event)">
                 <i class="fa fa-remove"></i>
-                &nbsp;Clear
+                &nbsp;{{'button_clear' | translate}}
             </md-button>
         </span>
         <span flex></span>

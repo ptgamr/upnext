@@ -27,19 +27,19 @@
                 <md-tabs class="main-nav md-primary" md-selected="vm.selectedIndex">
                     <md-tab md-on-select="vm.onTabSelect()">
                         <md-icon md-font-icon="icon ion-ios-musical-notes"></md-icon>
-                        <span>now playing</span>
+                        <span>{{'tab_nowPlaying' | translate}}</span>
                     </md-tab>
                     <md-tab md-on-select="vm.onTabSelect()">
                         <md-icon md-font-icon="icon ion-search"></md-icon>
-                        <span>search</span>
+                        <span>{{'tab_search' | translate}}</span>
                     </md-tab>
                     <md-tab md-on-select="vm.onTabSelect()">
                         <md-icon md-font-icon="icon ion-film-marker"></md-icon>
-                        <span>playlist</span>
+                        <span>{{'tab_playlist' | translate}}</span>
                     </md-tab>
                     <md-tab md-on-select="vm.onTabSelect()">
                         <md-icon md-font-icon="icon ion-stats-bars"></md-icon>
-                        <span>charts</span>
+                        <span>{{'tab_charts' | translate}}</span>
                     </md-tab>
                 </md-tabs>
                 <div class="tabpanel-container">
@@ -98,6 +98,7 @@
 
 <script src="scripts/filters/scArtworkFilter.js"></script>
 <script src="scripts/filters/prettyTimeFilter.js"></script>
+<script src="scripts/filters/translateFilter.js"></script>
 
 <script src="scripts/services/StorageService.js"></script>
 <script src="scripts/services/Messaging.js"></script>

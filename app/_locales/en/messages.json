@@ -6,5 +6,64 @@
   "appDescription": {
     "message": "SoundCloud & YouTube powered music player for Chrome",
     "description": "The description of the application"
-  }
+  },
+
+  "without_music": {
+    "message": "“Without music, life would be a mistake."
+  },
+
+  "button_back" : {
+    "message": "Back"
+  },
+  "button_loadMore" : {
+    "message": "Load more"
+  },
+  "button_playAll" : {
+    "message": "Play all"
+  },
+  "button_import" : {
+    "message": "Import"
+  },
+  "button_createPlaylist" : {
+    "message": "Create playlist"
+  },
+  "button_clear" : {
+    "message": "Clear"
+  },
+  "button_remove" : {
+    "message": "Remove"
+  },
+  "button_share" : {
+    "message": "Share"
+  },
+  "button_settings" : {
+    "message": "Settings"
+  },
+  "button_about" : {
+    "message": "About"
+  },
+
+
+  "tab_nowPlaying": {
+    "message": "Now Playing"
+  },
+  "tab_search": {
+    "message": "Search"
+  },
+  "tab_playlist": {
+    "message": "Playlist"
+  },
+  "tab_charts": {
+    "message": "Charts"
+  },
+
+  "search_placeholder" : {
+    "message": "Search anything"
+  },
+  "search_recentSearch" : {
+    "message": "Recent search"
+  },
+  "search_noResult" : {
+    "message": "No results for"
+  },
 }
