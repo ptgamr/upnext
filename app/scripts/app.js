@@ -40,7 +40,7 @@
 	var soundCloudify = angular.module('soundCloudify', ['ngMaterial', 'ngRoute', 'ui.router', 'react', 'indexedDB']);
 
     soundCloudify.value('API_ENDPOINT', 'http://api.getsoundcloudify.com');
-	soundCloudify.value('CLIENT_ID', '849e84ac5f7843ce1cbc0e004ae4fb69');
+	soundCloudify.value('CLIENT_ID', '458dac111e2456c40805cd838f4548c1');
     soundCloudify.value('YOUTUBE_KEY', 'AIzaSyDGbUJxAkFnaJqlTD4NwDmzWxXAk55gFh4');
 
 	soundCloudify.config(function($stateProvider, $urlRouterProvider, $mdThemingProvider,

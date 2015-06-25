@@ -40,7 +40,7 @@ var Utils = {
     }
 };
 
-var CLIENT_ID = '849e84ac5f7843ce1cbc0e004ae4fb69';
+var CLIENT_ID = '458dac111e2456c40805cd838f4548c1';
 var ORIGIN_YOUTUBE = 'yt';
 var ORIGIN_SOUNDCLOUD = 'sc';
 
@@ -411,7 +411,7 @@ Player.prototype = {
                 if (isManual) {
                     SCIndexedDB.update(self.state.currentTrack);
                 }
-                
+
                 if (!currentPort) return;
                 currentPort.postMessage({message: 'lastfm.scrobbled'});
 
@@ -473,7 +473,7 @@ Player.prototype = {
                     } else if (lastFmTrack.error) {
                         self.state.lastFmInvalid = true;
                         if (!currentPort) return;
-                        currentPort.postMessage({message: 'lastfm.trackInvalid'});    
+                        currentPort.postMessage({message: 'lastfm.trackInvalid'});
                     }
                 }, function() {
                     self.state.lastFmInvalid = true;
