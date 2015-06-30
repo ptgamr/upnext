@@ -27,21 +27,27 @@
     "commands": {
         "next": {
             "suggested_key": {
-                "default": "Alt+N"
+                "default": "Alt+N",
+                "mac": "MediaNextTrack"
             },
-            "description": "Play the next track"
+            "description": "Play the next track",
+            "global": true
         },
         "previous": {
             "suggested_key": {
-                "default": "Alt+Shift+N"
+                "default": "Alt+Shift+N",
+                "mac": "MediaPrevTrack"
             },
-            "description": "Play the previous track"
+            "description": "Play the previous track",
+            "global": true
         },
         "playpause": {
             "suggested_key": {
-                "default": "Alt+P"
+                "default": "Alt+P",
+                "mac": "MediaPlayPause"
             },
-            "description": "Play/Pause the playing track"
+            "description": "Play/Pause the playing track",
+            "global": true
         }
     },
     "content_scripts": [
