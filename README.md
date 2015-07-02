@@ -1,18 +1,18 @@
-###SoundCloudify: stream music from SoundCloud and Youtube, Last.fm Scrobbling
+###UpNext: stream music from SoundCloud and Youtube, Last.fm Scrobbling (Formally: SoundCloudify)
 
 [![Join the chat at https://gitter.im/ptgamr/soundcloudify](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/ptgamr/soundcloudify?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-![SoundCloudify](http://i.imgur.com/S12Ix9j.png)
+![UpNext](http://i.imgur.com/S12Ix9j.png)
 
-[SoundCloudify](https://chrome.google.com/webstore/detail/soundcloudify/boblphpidkohagaoinepjgecndchlnbk) helps you listen to endless music from Youtube and SoundCloud, right in your Chrome Browser, without the need to open a new tab. It's an extension, a little player with all the power you need.
+[UpNext](https://chrome.google.com/webstore/detail/soundcloudify/boblphpidkohagaoinepjgecndchlnbk) helps you listen to endless music from Youtube and SoundCloud, right in your Chrome Browser, without the need to open a new tab. It's an extension, a little player with all the power you need.
 
-It's not just only a player, it's a way to discover new music. SoundCloud is a place for sound creator to share their works, while Youtube is just great for everything. Soundcloudify take advantages of both and help you have all the music in one place. 
+It's not just only a player, it's a way to discover new music. SoundCloud is a place for sound creator to share their works, while Youtube is just great for everything. Soundcloudify take advantages of both and help you have all the music in one place.
 
 And ... it's free, opensource, yaaaay!!!
 
-[TNW: SoundCloudify is a slick YouTube- and SoundCloud-powered music player for Chrome](http://thenextweb.com/apps/2015/05/27/soundcloudify-is-a-slick-youtube-and-soundcloud-powered-music-player-for-chrome/)
+[TNW: UpNext is a slick YouTube- and SoundCloud-powered music player for Chrome](http://thenextweb.com/apps/2015/05/27/soundcloudify-is-a-slick-youtube-and-soundcloud-powered-music-player-for-chrome/)
 
-[If you like SoundCloudify, buy its author a cup of Vietnamese coffee :)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=PJHLAT7APWS62&lc=VN&item_name=SoundCloudify&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted)
+[If you like UpNext, buy its author a cup of Vietnamese coffee :)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=PJHLAT7APWS62&lc=VN&item_name=SoundCloudify&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted)
 
 ##KEY FEATURES:
 - Music Discovery
@@ -22,7 +22,7 @@ And ... it's free, opensource, yaaaay!!!
 - Import YouTube playlist
 - Sync Playlist accross devices
 
-[How to configure SoundCloudify hot keys ?](https://gist.github.com/ptgamr/96caea84b206b7a361a1) 
+[How to configure UpNext hot keys ?](https://gist.github.com/ptgamr/96caea84b206b7a361a1)
 
 
 
@@ -38,7 +38,7 @@ And ... it's free, opensource, yaaaay!!!
   * Alt + P: play or pause
 - Bugs fixes & performance boost, eat less RAM
 
-![SoundCloudify import playlist from YouTube](http://i.imgur.com/NeDdQOt.gif)
+![UpNext import playlist from YouTube](http://i.imgur.com/NeDdQOt.gif)
 
 ###v1.1
 - last.fm integration

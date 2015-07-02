@@ -1,5 +1,5 @@
 {
-    "name": "SoundCloudify",
+    "name": "UpNext",
     "version": "1.2.5",
     "manifest_version": 2,
     "description": "__MSG_appDescription__",
@@ -21,9 +21,6 @@
         "default_popup": "popup.html"
     },
     "options_page": "options.html",
-    "omnibox": {
-        "keyword": "SoundCloudify"
-    },
     "commands": {
         "next": {
             "suggested_key": {
