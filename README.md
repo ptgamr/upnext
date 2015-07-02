@@ -3,7 +3,7 @@
 
 [![Join the chat at https://gitter.im/ptgamr/soundcloudify](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/ptgamr/soundcloudify?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
-![UpNext](http://i.imgur.com/S12Ix9j.png)
+![UpNext](http://i.imgur.com/gSUHUBw.png)
 
 [UpNext](https://chrome.google.com/webstore/detail/soundcloudify/boblphpidkohagaoinepjgecndchlnbk) helps you listen to endless music from Youtube and SoundCloud, right in your Chrome Browser, without the need to open a new tab. It's an extension, a little player with all the power you need.
 
