@@ -44,9 +44,9 @@
             var shareText;
 
             if (CorePlayer.state.currentTrack) {
-                shareText = 'I\'m listening to "' + CorePlayer.state.currentTrack.title + '" with @SoundCloudify https://goo.gl/ljw69q';
+                shareText = 'I\'m listening to "' + CorePlayer.state.currentTrack.title + '" with @upnextplayer #upnext https://goo.gl/ljw69q';
             } else {
-                shareText = "#SoundCloudify: Sweet YouTube-and-SoundCloud powered music player extension for Chrome  https://goo.gl/ljw69q";
+                shareText = "#UpNext: Sweet YouTube-and-SoundCloud powered music player extension for Chrome  https://goo.gl/ljw69q";
             }
 
             $window.open(twitterURL + encodeURIComponent(shareText), '_blank');

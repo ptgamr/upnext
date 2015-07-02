@@ -306,7 +306,7 @@ module.exports = function (grunt) {
         options: {
           archive: function() {
             var manifest = grunt.file.readJSON('app/manifest.json');
-            return 'package/SoundCloudify-' + manifest.version + '.zip';
+            return 'package/upnext-' + manifest.version + '.zip';
           }
         },
         files: [{
