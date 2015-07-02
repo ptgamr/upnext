@@ -1,4 +1,5 @@
-###UpNext: stream music from SoundCloud and Youtube, Last.fm Scrobbling (Formally: SoundCloudify)
+#UpNext
+###Music streaming from SoundCloud and Youtube, Last.fm Scrobbling (Formally: SoundCloudify)
 
 [![Join the chat at https://gitter.im/ptgamr/soundcloudify](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/ptgamr/soundcloudify?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
@@ -13,6 +14,8 @@ And ... it's free, opensource, yaaaay!!!
 [TNW: UpNext is a slick YouTube- and SoundCloud-powered music player for Chrome](http://thenextweb.com/apps/2015/05/27/soundcloudify-is-a-slick-youtube-and-soundcloud-powered-music-player-for-chrome/)
 
 [If you like UpNext, buy its author a cup of Vietnamese coffee :)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=PJHLAT7APWS62&lc=VN&item_name=SoundCloudify&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted)
+
+*UpNext* is named "SoundCloudify" before. However, it has been taken down from Chrome Store because it has `SoundCloud` part in uts name. Therefore, it has been renamed to UpNext.
 
 ##KEY FEATURES:
 - Music Discovery
