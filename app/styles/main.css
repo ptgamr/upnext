@@ -2,7 +2,7 @@
  * Spotify: #84bd00;
  *
  * light-green: #8bc34a;
- * 
+ *
  */
 html {
   max-height: 448px;
@@ -25,7 +25,11 @@ html {
 
 md-icon { font-size: 24px; line-height: 24px;}
 
-.md-tile-content .statistic {font-size: 12px;}
+.md-tile-content .statistic {
+  font-size: 12px;
+  white-space: nowrap;
+  overflow: hidden;
+}
 .md-tile-content .statistic > md-icon {font-size: 12px; line-height: 12px; color: #555; width: 12px; height: 12px;}
 .md-tile-content .statistic > span {margin-right: 10px; vertical-align: middle;}
 
@@ -103,7 +107,7 @@ md-autocomplete ul li:hover, md-autocomplete ul li.selected {
 .chosen-category {
   text-align: right;
 }
-.chosen-category h3{ 
+.chosen-category h3{
   display: inline-block;
   margin: 0px;
   padding: 5px 0;
@@ -370,11 +374,11 @@ md-slider:not([md-discrete]):not([disabled]):focus .md-focus-ring, md-slider:not
   .track-item .statistic i {
     margin-right: 5px;
   }
-  
+
   .media-list a.original-link {width: 20px; margin-top: 25px; margin-right: 5px;}
   .media-list .statistic { display: none; }
   .media-list .brand-icon {font-size: 18px; line-height: 18px; width: 24px; height: 18px;}
-    
+
   .media-list .face {
     position: relative;
     width: 40px;
@@ -439,7 +443,7 @@ md-slider:not([md-discrete]):not([disabled]):focus .md-focus-ring, md-slider:not
   .media-list .playing h3, .media-list .pause h3 {
     color: #8bc34a;
   }
-  
+
   .media-list .playing .icon-playing{
     display: inline-block;
   }
@@ -502,7 +506,7 @@ track-list > div {
   z-index: 100;
   display: none;
   animation: fadeOut .25s;
-  box-shadow: 0px 2px 5px 0 rgba(0, 0, 0, 0.26); 
+  box-shadow: 0px 2px 5px 0 rgba(0, 0, 0, 0.26);
 }
 
 #singleton-playlist-menu.open {

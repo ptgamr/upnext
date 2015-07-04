@@ -8,7 +8,7 @@
 
 
     function SearchService($http, CLIENT_ID, YOUTUBE_KEY, TrackAdapter, $q){
-        
+
         return {
             search: search,
             searchYoutube: searchYoutube
@@ -65,13 +65,14 @@
                     return item.id.videoId;
                 });
 
-                var parts = ['id', 'snippet', 'statistics', 'status'];
+                var parts = ['id', 'snippet', 'statistics', 'contentDetails', 'status'];
                 var fields = [
                     'items/id',
                     'items/snippet/title',
                     'items/snippet/thumbnails',
                     'items/statistics/viewCount',
                     'items/statistics/likeCount',
+                    'items/contentDetails/duration',
                     'items/status/embeddable'
                 ];
 

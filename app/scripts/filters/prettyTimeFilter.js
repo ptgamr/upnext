@@ -12,9 +12,9 @@
                     secs = secs.substr(secs.length - 2);
             if(!isNaN(secs)){
                 if (hours){
-                    return hours+':'+mins+':'+secs;  
+                    return hours+':'+mins+':'+secs;
                 } else {
-                    return mins+':'+secs;  
+                    return mins+':'+secs;
                 };
             } else {
                 return '00:00';
