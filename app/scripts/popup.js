@@ -3,7 +3,7 @@
 function getWatchers(root) {
   root = angular.element(root || document.documentElement);
   var watcherCount = 0;
- 
+
   function getElemWatchers(element) {
     var isolateWatchers = getWatchersFromScope(element.data().$isolateScope);
     var scopeWatchers = getWatchersFromScope(element.data().$scope);
@@ -13,7 +13,7 @@ function getWatchers(root) {
     });
     return watchers;
   }
-  
+
   function getWatchersFromScope(scope) {
     if (scope) {
       return scope.$$watchers || [];
@@ -21,7 +21,7 @@ function getWatchers(root) {
       return [];
     }
   }
- 
+
   return getElemWatchers(root);
 }
 

@@ -52,7 +52,7 @@
         </div>
 
         <!-- <div ng-view></div> -->
-        
+
 <!-- build:js scripts/vendor.js -->
 <!-- bower:js -->
 <script src="bower_components/underscore/underscore-min.js"></script>
@@ -70,53 +70,57 @@
 <!-- endbower -->
 <!-- endbuild -->
 <!-- build:js scripts/popup.js -->
+
+<script src="scripts/core/app.js"></script>
+
+<script src="scripts/core/controllers/MainController.js"></script>
+<script src="scripts/core/controllers/DiscoveryController.js"></script>
+<script src="scripts/core/controllers/PlaylistController.js"></script>
+<script src="scripts/core/controllers/PlaylistViewController.js"></script>
+<script src="scripts/core/controllers/ChartsController.js"></script>
+<script src="scripts/core/controllers/ChartsViewController.js"></script>
+<script src="scripts/core/controllers/NowPlayingController.js"></script>
+<script src="scripts/core/controllers/SearchController.js"></script>
+
+<script src="scripts/core/directives/scdPlayerDirective.js"></script>
+<script src="scripts/core/directives/loadingDirective.js"></script>
+<script src="scripts/core/directives/trackTitleDirective.js"></script>
+<script src="scripts/core/directives/toggleButtonDirective.js"></script>
+<script src="scripts/core/directives/playlistMenuDirective.js"></script>
+<script src="scripts/core/directives/trackListDirective.js"></script>
+<script src="scripts/core/directives/playingTrackAwareDirective.js"></script>
+<script src="scripts/core/directives/configurationDirective.js"></script>
+<script src="scripts/core/directives/rightClickDirective.js"></script>
+
+<script src="scripts/core/providers/Paginator.js"></script>
+<script src="scripts/core/providers/SCConfigurationProvider.js"></script>
+
+<script src="scripts/core/filters/scArtworkFilter.js"></script>
+<script src="scripts/core/filters/prettyTimeFilter.js"></script>
+<script src="scripts/core/filters/translateFilter.js"></script>
+
+<script src="scripts/core/services/StorageService.js"></script>
+<script src="scripts/core/services/Messaging.js"></script>
+<script src="scripts/core/services/CategoryService.js"></script>
+<script src="scripts/core/services/SearchService.js"></script>
+<script src="scripts/core/services/SearchSingleton.js"></script>
+<script src="scripts/core/services/SuggestionService.js"></script>
+<script src="scripts/core/services/NowPlayingService.js"></script>
+<script src="scripts/core/services/PlaylistService.js"></script>
+<script src="scripts/core/services/PlaylistImporter.js"></script>
+<script src="scripts/core/services/StarService.js"></script>
+<script src="scripts/core/services/TrackAdapter.js"></script>
+<script src="scripts/core/services/GATracker.js"></script>
+<script src="scripts/core/services/LastFMAuthentication.js"></script>
+<script src="scripts/core/services/UserService.js"></script>
+<script src="scripts/core/services/HttpRequestInterceptor.js"></script>
+<script src="scripts/core/services/SyncService.js"></script>
+<script src="scripts/core/services/MigrationService.js"></script>
+
 <script src="scripts/LastFM.js"></script>
 <script src="scripts/trackList.js"></script> <!-- React component -->
 <script src="scripts/app.js"></script>
 <script src="scripts/corePlayer.js"></script>
-
-<script src="scripts/controllers/MainController.js"></script>
-<script src="scripts/controllers/DiscoveryController.js"></script>
-<script src="scripts/controllers/PlaylistController.js"></script>
-<script src="scripts/controllers/PlaylistViewController.js"></script>
-<script src="scripts/controllers/ChartsController.js"></script>
-<script src="scripts/controllers/ChartsViewController.js"></script>
-<script src="scripts/controllers/NowPlayingController.js"></script>
-<script src="scripts/controllers/SearchController.js"></script>
-
-<script src="scripts/directives/scdPlayerDirective.js"></script>
-<script src="scripts/directives/loadingDirective.js"></script>
-<script src="scripts/directives/trackTitleDirective.js"></script>
-<script src="scripts/directives/toggleButtonDirective.js"></script>
-<script src="scripts/directives/playlistMenuDirective.js"></script>
-<script src="scripts/directives/trackListDirective.js"></script>
-<script src="scripts/directives/playingTrackAwareDirective.js"></script>
-<script src="scripts/directives/configurationDirective.js"></script>
-<script src="scripts/directives/rightClickDirective.js"></script>
-
-<script src="scripts/providers/Paginator.js"></script>
-
-<script src="scripts/filters/scArtworkFilter.js"></script>
-<script src="scripts/filters/prettyTimeFilter.js"></script>
-<script src="scripts/filters/translateFilter.js"></script>
-
-<script src="scripts/services/StorageService.js"></script>
-<script src="scripts/services/Messaging.js"></script>
-<script src="scripts/services/CategoryService.js"></script>
-<script src="scripts/services/SearchService.js"></script>
-<script src="scripts/services/SearchSingleton.js"></script>
-<script src="scripts/services/SuggestionService.js"></script>
-<script src="scripts/services/NowPlayingService.js"></script>
-<script src="scripts/services/PlaylistService.js"></script>
-<script src="scripts/services/PlaylistImporter.js"></script>
-<script src="scripts/services/StarService.js"></script>
-<script src="scripts/services/TrackAdapter.js"></script>
-<script src="scripts/services/GATracker.js"></script>
-<script src="scripts/services/LastFMAuthentication.js"></script>
-<script src="scripts/services/UserService.js"></script>
-<script src="scripts/services/HttpRequestInterceptor.js"></script>
-<script src="scripts/services/SyncService.js"></script>
-<script src="scripts/services/MigrationService.js"></script>
 
 <script src="scripts/popup.js"></script>
 <!-- endbuild -->

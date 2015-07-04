@@ -2,7 +2,7 @@
 
     'use strict';
 
-    var soundCloudify = angular.module('soundCloudify');
+    var soundCloudify = angular.module('upnext');
 
     soundCloudify.service('CorePlayer', function($rootScope, $window, $mdToast, Messaging, NowPlaying, CLIENT_ID, GATracker, LastFMAuthentication) {
 
@@ -22,7 +22,7 @@
 
         //this is used for commincating with background (one way)
         var backgroundPage = chrome.extension.getBackgroundPage();
-        
+
         this.nowplaying = NowPlaying.getTrackIds();
         this.state = NowPlaying.getState();
 
@@ -72,7 +72,7 @@
          */
         this.remove = function(index) {
             NowPlaying.removeTrack(index)
-            
+
             if (self.state.currentIndex === index) {
                 self.play(index);
             } else if (index < self.state.currentIndex){
