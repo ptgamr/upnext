@@ -8,7 +8,8 @@
             md-items="item in vm.suggest(vm.search.term)"
             md-item-text="item.display"
             md-floating-label="{{'search_placeholder' | translate}}"
-            md-selected-item-change="vm.getMore(true)">
+            md-selected-item-change="vm.getMore(true)"
+            md-autoselect="false">
 
             <span md-highlight-text="vm.search.term">{{item.display}}</span>
           </md-autocomplete>
