@@ -22,7 +22,7 @@ window.TrackItem = React.createClass({displayName: "TrackItem",
             this.props.onStarTrack(this.props.track);
     },
     seconds2time: function (value) {
-        if (!value) return 'N/A';
+        if (!value || value < 0) return 'N/A';
         var hours = Math.floor(value / 3600),
             mins = '0' + Math.floor((value % 3600) / 60),
             secs = '0' + Math.floor((value % 60));
