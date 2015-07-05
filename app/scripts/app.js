@@ -59,21 +59,21 @@
 
             $urlRouterProvider.otherwise("/charts");
 
-            $mdThemingProvider.definePalette('amazingPaletteName', {
-                '50': 'ffebee',
-                '100': 'ffcdd2',
-                '200': 'ef9a9a',
-                '300': 'e57373',
-                '400': 'ef5350',
-                '500': 'f44336',
-                '600': 'e53935',
-                '700': 'd32f2f',
-                '800': 'c62828',
-                '900': 'b71c1c',
-                'A100': 'ff8a80',
-                'A200': 'ff5252',
-                'A400': 'ff1744',
-                'A700': 'd50000',
+            $mdThemingProvider.definePalette('dart', {
+                '50': 'ffffff',
+                '100': '999999',
+                '200': '777777',
+                '300': '555555',
+                '400': '333333',
+                '500': '000000',
+                '600': '000000',
+                '700': '000000',
+                '800': '000000',
+                '900': '000000',
+                'A100': 'DDDDDD',
+                'A200': 'CCCCCC',
+                'A400': 'BBBBBB',
+                'A700': '000000',
                 'contrastDefaultColor': 'light',    // whether, by default, text (contrast)
                                                     // on this palette should be dark or light
                 'contrastDarkColors': ['50', '100', //hues which contrast should be 'dark' by default
@@ -82,7 +82,9 @@
             });
 
             $mdThemingProvider.theme('default')
-                .primaryPalette('light-green').dark();
+                .primaryPalette('light-green')
+                .accentPalette('dart')
+                .dark();
 
             $compileProvider.imgSrcSanitizationWhitelist(/^\s*((https?|ftp|file|blob|chrome-extension):|data:image\/)/);
 

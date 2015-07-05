@@ -62,7 +62,7 @@
             "all_frames": false
         }
     ],
-    "content_security_policy": "script-src 'self' 'unsafe-eval' https://www.google-analytics.com https://api-v2.soundcloud.com; object-src 'self'",
+    "content_security_policy": "script-src 'self' 'unsafe-eval' https://www.google-analytics.com https://suggestqueries.google.com https://api-v2.soundcloud.com; object-src 'self'",
     "permissions": [
         "identity",
         "identity.email",
@@ -73,7 +73,8 @@
         "*://*.youtube.com/*",
         "*://*.ytimg.com/*",
         "*://*.sndcdn.com/*",
-        "http://api.getsoundcloudify.com/*"
+        "http://api.getsoundcloudify.com/*",
+        "http://suggestqueries.google.com/*"
     ],
     "oauth2": {
         "client_id": "393554771612-pgq8aevpbcd33qrdd3veaqg0d2jvqqfv.apps.googleusercontent.com",

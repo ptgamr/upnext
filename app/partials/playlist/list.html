@@ -3,41 +3,33 @@
         <label>New Playlist</label>
         <input ng-model="playlistCtrl.newPlaylistName" type="text" placeholder="Enter playlist name" ng-keypress="playlistCtrl.addNew($event)">
     </md-input-container>
-    <md-list class="playlist">
-        <md-item ng-click="playlistCtrl.selectPlaylist(-1)">
-            <md-item-content>
-                <div class="md-tile-left">
-                    <md-icon md-font-icon="icon ion-ios-star"></md-icon>
-                </div>
-                <div class="md-tile-content">
-                    <h3>Starred</h3>
-                    <h4>{{playlistCtrl.starredListLength}} tracks</h4>
-                </div>
-                <div class="md-tile-hover" layout="row" layout-margin layout-align="center center" >
-                    <md-button title="Play All" aria-label="Play All" ng-click="playlistCtrl.playAll($event, -1)">
-                        <md-icon md-font-icon="icon ion-play"></md-icon>
-                    </md-button>
-                </div>
-            </md-item-content>
-        </md-item>
-        <md-item ng-repeat="playlist in playlistCtrl.playlists.items track by $index" ng-click="playlistCtrl.selectPlaylist($index)">
-            <md-item-content>
-                <div class="md-tile-left">
-                    <md-icon md-font-icon="icon ion-ios-musical-notes"></md-icon>
-                </div>
-                <div class="md-tile-content">
-                    <h3>{{playlist.name}}</h3>
-                    <h4>{{playlist.tracks.length}} tracks</h4>
-                </div>
-                <div class="md-tile-hover" layout="row" layout-margin layout-align="center center" >
-                    <md-button title="Play All" aria-label="Play All" ng-click="playlistCtrl.playAll($event, $index)">
-                        <md-icon md-font-icon="icon ion-play"></md-icon>
-                    </md-button>
-                    <md-button aria-label="Remove Playlist" ng-click="playlistCtrl.remove($event, $index)">
-                        <md-icon md-font-icon="icon ion-android-delete"></md-icon>
-                    </md-button>
-                </div>
-            </md-item-content>
-        </md-item>
-    </md-list>
+
+    <ul class="upnext-list">
+
+        <li class="upnext-list-item" layout="row" layout-align="start start" ng-click="playlistCtrl.selectPlaylist(-1)">
+            <div flex class="item-left">
+                <i class="icon ion-ios-star"></i>
+            </div>
+            <div flex class="item-content">
+                Starred
+            </div>
+            <div flex class="item-hover">
+                <i class="fa fa-play" ng-click="playlistCtrl.playAll($event, $index)"></i>
+                <i class="fa fa-trash-o" ng-click="playlistCtrl.remove($event, $index)"></i>
+            </div>
+        </li>
+
+        <li class="upnext-list-item" layout="row" layout-align="start start" ng-repeat="playlist in playlistCtrl.playlists.items track by $index" ng-click="playlistCtrl.selectPlaylist($index)">
+            <div flex class="item-left">
+                <i class="icon ion-ios-musical-notes"></i>
+            </div>
+            <div flex class="item-content">
+                {{playlist.name}}
+            </div>
+            <div flex class="item-hover">
+                <i class="fa fa-play" ng-click="playlistCtrl.playAll($event, $index)"></i>
+                <i class="fa fa-trash-o" ng-click="playlistCtrl.remove($event, $index)"></i>
+            </div>
+        </li>
+    </ul>
 </md-content>
