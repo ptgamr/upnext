@@ -1,41 +1,41 @@
  <section id="search">
- 	<md-content class="md-padding tab-content " playing-track-aware="track">
-	    <md-autocomplete
-	    	md-autofocus="!vm.search.term"
-	        md-selected-item="vm.selectedItem"
-	        md-search-text="vm.search.term"
-	        md-search-text-change="vm.search.term"
-	        md-items="item in vm.suggest(vm.search.term)"
-	        md-item-text="item.display"
-	        md-floating-label="{{'search_placeholder' | translate}}"
-	        md-selected-item-change="vm.getMore(true)">
-	        
-	        <span md-highlight-text="vm.search.term">{{item.display}}</span>
-	      </md-autocomplete>
+    <md-content class="md-padding tab-content " playing-track-aware="track">
+        <md-autocomplete
+            md-autofocus="!vm.search.term"
+            md-selected-item="vm.selectedItem"
+            md-search-text="vm.search.term"
+            md-search-text-change="vm.search.term"
+            md-items="item in vm.suggest(vm.search.term)"
+            md-item-text="item.display"
+            md-floating-label="{{'search_placeholder' | translate}}"
+            md-selected-item-change="vm.getMore(true)">
 
-		<section layout="row" layout-align="left center">
-			<md-checkbox class="md-primary" ng-model="vm.toggle.soundcloud" aria-label="Toggle Soundcloud">
-				SoundCloud
-			</md-checkbox>
-			<md-checkbox class="md-primary" ng-model="vm.toggle.youtube" aria-label="Toggle Youtbe">
-				Youtube
-			</md-checkbox>
-		</section>
+            <span md-highlight-text="vm.search.term">{{item.display}}</span>
+          </md-autocomplete>
 
-	    <section ng-show="vm.showNoResultMessage">{{'search_noResult' | translate}} <strong>{{vm.recentSearch[0]}}</strong></section>
+        <section layout="row" layout-align="left center">
+            <md-checkbox class="md-primary" ng-model="vm.toggle.soundcloud" aria-label="Toggle Soundcloud">
+                SoundCloud
+            </md-checkbox>
+            <md-checkbox class="md-primary" ng-model="vm.toggle.youtube" aria-label="Toggle Youtbe">
+                Youtube
+            </md-checkbox>
+        </section>
 
-	    <section class="recent-search" ng-show="vm.recentSearch.length && !vm.filteredResults.length && !(vm.soundcloudPaginator.lastPromise.$$state.status === 0 || vm.youtubePaginator.lastPromise.$$state.status === 0)">
-	        <h3>{{'search_recentSearch' | translate}}:</h3>
-	        <p ng-repeat="term in vm.recentSearch">
-	            <a ng-click="vm.recentSearchClick(term)">{{term}}</a>
-	        </p>
-	    </section>
-	    <track-list class="list-full" ng-show="vm.filteredResults.length" tracks="vm.filteredResults" on-track-click="playnow" origin-toggle="vm.toggle" list-context="search"></track-list>
-	    <loading ng-show="vm.soundcloudPaginator.lastPromise.$$state.status === 0 || vm.youtubePaginator.lastPromise.$$state.status === 0"></loading>
-	    <section layout="row" layout-align="center center" ng-hide="vm.soundcloudPaginator.lastPromise.$$state.status === 0 || vm.youtubePaginator.lastPromise.$$state.status === 0">
-	    	<md-button ng-show="vm.hasMoreRow()" class="md-primary" ng-click="vm.getMore(false)">{{'button_loadMore' | translate}}</md-button>
-	    </section>
-	</md-content>
+        <section ng-show="vm.showNoResultMessage">{{'search_noResult' | translate}} <strong>{{vm.recentSearch[0]}}</strong></section>
+
+        <section class="recent-search" ng-show="vm.recentSearch.length && !vm.filteredResults.length && !(vm.soundcloudPaginator.lastPromise.$$state.status === 0 || vm.youtubePaginator.lastPromise.$$state.status === 0)">
+            <h3>{{'search_recentSearch' | translate}}:</h3>
+            <p ng-repeat="term in vm.recentSearch">
+                <a ng-click="vm.recentSearchClick(term)">{{term}}</a>
+            </p>
+        </section>
+        <track-list class="list-full" ng-show="vm.filteredResults.length" tracks="vm.filteredResults" on-track-click="playnow" origin-toggle="vm.toggle" list-context="search"></track-list>
+        <loading ng-show="vm.soundcloudPaginator.lastPromise.$$state.status === 0 || vm.youtubePaginator.lastPromise.$$state.status === 0"></loading>
+        <section layout="row" layout-align="center center" ng-hide="vm.soundcloudPaginator.lastPromise.$$state.status === 0 || vm.youtubePaginator.lastPromise.$$state.status === 0">
+            <md-button ng-show="vm.hasMoreRow()" class="md-primary" ng-click="vm.getMore(false)">{{'button_loadMore' | translate}}</md-button>
+        </section>
+    </md-content>
  </section>
 <md-toolbar class="bottom-toolbar">
     <div class="md-toolbar-tools">

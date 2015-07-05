@@ -40,14 +40,6 @@ md-icon { font-size: 24px; line-height: 24px;}
   outline: none !important;
 }
 
-.md-tile-content .statistic {
-  font-size: 12px;
-  white-space: nowrap;
-  overflow: hidden;
-}
-.md-tile-content .statistic > md-icon {font-size: 12px; line-height: 12px; color: #555; width: 12px; height: 12px;}
-.md-tile-content .statistic > span {margin-right: 10px; vertical-align: middle;}
-
 md-divider.md-default-theme {
   border-top-color: #f2f2f2;
 }
@@ -325,15 +317,6 @@ md-slider:not([md-discrete]):not([disabled]):focus .md-focus-ring, md-slider:not
 .md-tile-left > img { width: 40px; height: 40px;}
 
 
-.list-full {}
-.list-full .track-item {background-color: #1C1C1F; border-bottom: none; margin-bottom: 10px; border-left: 2px solid #1C1C1F;}
-.list-full .track-item:hover {border-color: #8bc34a; color: #fff;}
-.list-full .face {width: 60px; height: 60px;}
-.list-full .play-actions, .list-full .starred {line-height: 60px;}
-.list-full .statistic { display: block; }
-.list-full .md-tile-content h3 {line-height: 30px;}
-.list-full .md-tile-hover {line-height: 60px;}
-
 .playlist {}
 .playlist md-item-content {background-color: #1C1C1F; border-left: 2px solid #1C1C1F; margin-bottom: 10px;}
 .playlist .md-tile-left {text-align: center;}
@@ -525,6 +508,25 @@ md-slider:not([md-discrete]):not([disabled]):focus .md-focus-ring, md-slider:not
   .media-list .error .dynamic-icon {
     display: none !important;
   }
+
+  .list-full {}
+  .list-full .md-tile-left {max-width: 60px;}
+  .list-full .track-item {background-color: #1C1C1F; border-bottom: none; margin-bottom: 10px; border-left: 2px solid #1C1C1F;}
+  .list-full .track-item:hover {border-color: #8bc34a; color: #fff;}
+  .list-full .face {width: 60px; height: 60px;}
+  .list-full .play-actions, .list-full .starred {line-height: 60px;}
+  .list-full .statistic { display: block; }
+  .list-full .md-tile-content h3 {line-height: 30px;}
+  .list-full .md-tile-hover {line-height: 60px;}
+
+  .md-tile-content .statistic {
+    font-size: 12px;
+    white-space: nowrap;
+    overflow: hidden;
+    margin: 5px 0;
+  }
+  .md-tile-content .statistic > md-icon {font-size: 12px; line-height: 12px; color: #555; width: 12px; height: 12px;}
+  .md-tile-content .statistic > span {margin-right: 10px; vertical-align: middle;}
 
 .upnext-list {
   padding: 0;
