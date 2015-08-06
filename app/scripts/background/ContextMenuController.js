@@ -1,19 +1,23 @@
 (function() {
-
-    console.log("YOOOOOOOOOOOOO");
-
-    angular.module('soundcloudify.contextMenu')
+    
+    angular.module('soundcloudify.background')
         .controller('ContextMenuController', ContextMenuController);
 
-    console.log("YOOOOOOOOOOOOO");
-
-    function ContextMenuController ($scope, $rootScope, $http, PlaylistService, TrackAdapter, SearchService, API_ENDPOINT, CLIENT_ID, YOUTUBE_KEY){
+    function ContextMenuController ($scope, $rootScope, $http, CorePlayer, PlaylistService, TrackAdapter, SearchService, API_ENDPOINT, CLIENT_ID, YOUTUBE_KEY){
 
         var cm = this;
 
         cm.init = function(){
             chrome.contextMenus.removeAll();
             $scope.backgroundPage = chrome.extension.getBackgroundPage();
+
+            $scope.targetUrlPatterns = [
+                'https://soundcloud.com/*/*',
+                'http://www.youtube.com/watch?v=*',
+                'https://www.youtube.com/watch?v=*',
+                'http://youtube.com/watch?v=*',
+                'https://youtube.com/watch?v=*'
+            ];
 
             //===========================
             //CONTEXT MENU
@@ -30,13 +34,7 @@
                 'type': 'normal',
                 'title': 'Play',
                 'contexts': ['link'],
-                'targetUrlPatterns': [
-                    'https://soundcloud.com/*/*',
-                    'http://www.youtube.com/watch?v=*',
-                    'https://www.youtube.com/watch?v=*',
-                    'http://youtube.com/watch?v=*',
-                    'https://youtube.com/watch?v=*'
-                ],
+                'targetUrlPatterns': $scope.targetUrlPatterns,
                 'onclick': cm.playTrack
             });
 
@@ -44,6 +42,7 @@
                 'type': 'normal',
                 'title': 'UpNext',
                 'contexts': ['link'],
+                'targetUrlPatterns': $scope.targetUrlPatterns,
                 'onclick': function (info, tab) {
                     console.log("contextTrigger");
                 }
@@ -81,6 +80,7 @@
                     'parentId': $scope.playlistRootId,
                     'title': playlists.items[i].name,
                     'contexts': ['link'],
+                    'targetUrlPatterns': $scope.targetUrlPatterns,
                     'onclick': cm.addLinkToPlaylist
                 });
                 $scope.playlistItemIds.push(id);

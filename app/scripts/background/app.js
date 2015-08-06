@@ -19,7 +19,7 @@
         return '_' + Math.random().toString(36).substr(2, 9);
     }
 
-    var contextMenu = angular.module('soundcloudify.contextMenu', ['indexedDB']);
+    var contextMenu = angular.module('soundcloudify.background', ['ngMaterial', 'indexedDB']);
 
     contextMenu.config(function($indexedDBProvider) {
             $indexedDBProvider
