@@ -70,6 +70,7 @@
         "webRequestBlocking",
         "storage",
         "notifications",
+        "contextMenus",
         "*://*.youtube.com/*",
         "*://*.ytimg.com/*",
         "*://*.sndcdn.com/*",
