@@ -37,7 +37,7 @@
 
         this.add = function(track, andPlay) {
 
-            andPlay = andPlay || true;
+            andPlay = andPlay;
 
             if (track) {
                 NowPlaying.addTrack(track).then(function() {

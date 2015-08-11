@@ -19,9 +19,9 @@
         return '_' + Math.random().toString(36).substr(2, 9);
     }
 
-    var contextMenu = angular.module('soundcloudify.background', ['ngMaterial', 'indexedDB']);
+    var background = angular.module('soundcloudify.background', ['ngMaterial', 'indexedDB']);
 
-    contextMenu.config(function($indexedDBProvider) {
+    background.config(function($indexedDBProvider) {
             $indexedDBProvider
                 .connection('soundcloudify')
                 .upgradeDatabase(1, function(event, db, tx){
@@ -33,11 +33,13 @@
         })
 
 
-    contextMenu.value('API_ENDPOINT', 'http://api.getsoundcloudify.com');
+    background.value('API_ENDPOINT', 'http://api.getsoundcloudify.com');
 
     //SoundCloud API key
-    contextMenu.value('CLIENT_ID', '458dac111e2456c40805cd838f4548c1');
+    background.value('CLIENT_ID', '458dac111e2456c40805cd838f4548c1');
 
     //YouTube API key
-    contextMenu.value('YOUTUBE_KEY', 'AIzaSyDGbUJxAkFnaJqlTD4NwDmzWxXAk55gFh4');
+    background.value('YOUTUBE_KEY', 'AIzaSyDGbUJxAkFnaJqlTD4NwDmzWxXAk55gFh4');
+
+
 }());
