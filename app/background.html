@@ -1,35 +1,51 @@
 <!DOCTYPE html>
-<body ng-app="soundcloudify.background">
-<div id="player"></div>
-<!-- build:js scripts/background.js -->
-<script src="bower_components/jquery/dist/jquery.min.js"></script>
-<script src="bower_components/angular/angular.min.js"></script>
-<script src="bower_components/angular-indexed-db/angular-indexed-db.js"></script>
-<script src="bower_components/angular-animate/angular-animate.min.js"></script>
-<script src="bower_components/angular-aria/angular-aria.min.js"></script>
-<script src="bower_components/angular-material/angular-material.js"></script>
-<script src="bower_components/underscore/underscore-min.js"></script>
+<html> 
+	<body>
+		<div id="player"></div>
 
-<script src="scripts/md5.js"></script>
-<script src="scripts/LastFM.js"></script>
-<script src="scripts/indexeddb.js"></script>
-<script src="scripts/background.js"></script>
+		<!-- build:js scripts/background.js -->
+		<script src="bower_components/underscore/underscore-min.js"></script>
+		<script src="bower_components/jquery/dist/jquery.min.js"></script>
+		<script src="bower_components/angular/angular.min.js"></script>
+		<script src="bower_components/angular-animate/angular-animate.min.js"></script>
+		<script src="bower_components/angular-aria/angular-aria.min.js"></script>
+		<script src="bower_components/angular-material/angular-material.js"></script>
+		<script src="bower_components/angular-route/angular-route.min.js"></script>
+		<script src="bower_components/angular-ui-router/release/angular-ui-router.min.js"></script>
+		<script src="bower_components/react/react.js"></script>
+		<script src="bower_components/ngReact/ngReact.min.js"></script>
+		<script src="bower_components/angular-indexed-db/angular-indexed-db.js"></script>
+		<script src="scripts/md5.js"></script>
+
+		<script src="scripts/md5.js"></script>
+		<script src="scripts/LastFM.js"></script>
+		<script src="scripts/indexeddb.js"></script>
+		<script src="scripts/background.js"></script>
+
+		<script src="scripts/core/app.js"></script>
+		<script src="scripts/core/services/StorageService.js"></script>
+		<script src="scripts/core/services/PlaylistService.js"></script>
+		<script src="scripts/core/services/StarService.js"></script>
+		<script src="scripts/core/services/TrackAdapter.js"></script>
+		<script src="scripts/core/services/SearchService.js"></script>
+		<script src="scripts/core/services/NowPlayingService.js"></script>
+		<script src="scripts/core/services/LastFMAuthentication.js"></script>
+		<script src="scripts/core/services/GATracker.js"></script>
+		<script src="scripts/core/services/Messaging.js"></script>
+		<script src="scripts/core/providers/SCConfigurationProvider.js"></script>
+		<script src="scripts/youtube.js"></script>
+
+		<script src="scripts/background/app.js"></script>
+		<script src="scripts/background/ContextMenuService.js"></script>
+		<script src="scripts/background/BackgroundController.js"></script>
+
+		<script src="scripts/corePlayer.js"></script>
+
+		<div ng-app="soundcloudify.core"></div>
+		<div ng-app="soundcloudify.background"><div ng-controller="BackgroundController"></div></div>
+	</body>
+</html>
 
 
-<script src="scripts/background/app.js"></script>
-<script src="scripts/background/contextMenuController.js"></script>
-<script src="scripts/core/services/StorageService.js"></script>
-<script src="scripts/core/services/PlaylistService.js"></script>
-<script src="scripts/core/services/StarService.js"></script>
-<script src="scripts/core/services/TrackAdapter.js"></script>
-<script src="scripts/core/services/SearchService.js"></script>
-<script src="scripts/corePlayer.js"></script>
-<script src="scripts/core/services/NowPlayingService.js"></script>
-<script src="scripts/core/services/LastFMAuthentication.js"></script>
-<script src="scripts/core/services/GATracker.js"></script>
-<script src="scripts/core/services/Messaging.js"></script>
-<script src="scripts/core/providers/SCConfigurationProvider.js"></script>
-<script src="scripts/youtube.js"></script>
 
-<div ng-controller="ContextMenuController"></div>
 <!-- endbuild -->

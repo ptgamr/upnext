@@ -1,17 +1,33 @@
 (function() {
 
+    'use strict';
+
     angular.module('soundcloudify.background')
-        .controller('ContextMenuController', ContextMenuController);
+        .service('ContextMenuService', ContextMenuService);
 
-    function ContextMenuController ($scope, $rootScope, $http, $q, CorePlayer, PlaylistService, TrackAdapter, StorageService, SearchService, API_ENDPOINT, CLIENT_ID, YOUTUBE_KEY){
+    function ContextMenuService ($rootScope, $http, $q, CorePlayer, PlaylistService, TrackAdapter, StorageService, SearchService, API_ENDPOINT, CLIENT_ID, YOUTUBE_KEY){
 
-        var cm = this;
+        var backgroundPage;
+        var targetUrlPatterns;
+        var playlistItemIds;
+        var playlistRootId;
 
-        cm.init = function(){
+        return {
+            init: init,
+            updateMenuPlaylists: updateMenuPlaylists,
+            playTrack: playTrack,
+            playTrackNext: playTrackNext,
+            queueTrack: queueTrack,
+            addLinkToPlaylist: addLinkToPlaylist,
+            resolveTrack: resolveTrack,
+            getParameterByName, getParameterByName,
+        }
+
+        function init(){
             chrome.contextMenus.removeAll();
-            $scope.backgroundPage = chrome.extension.getBackgroundPage();
+            backgroundPage = chrome.extension.getBackgroundPage();
 
-            $scope.targetUrlPatterns = [
+            targetUrlPatterns = [
                 'https://soundcloud.com/*/*',
                 'http://www.youtube.com/watch?v=*',
                 'https://www.youtube.com/watch?v=*',
@@ -34,72 +50,75 @@
                 'type': 'normal',
                 'title': 'Play',
                 'contexts': ['link'],
-                'targetUrlPatterns': $scope.targetUrlPatterns,
-                'onclick': cm.playTrack
+                'targetUrlPatterns': targetUrlPatterns,
+                'onclick': playTrack
             });
 
             chrome.contextMenus.create({
                 'type': 'normal',
                 'title': 'UpNext',
                 'contexts': ['link'],
-                'targetUrlPatterns': $scope.targetUrlPatterns,
-                'onclick': cm.playTrackNext
+                'targetUrlPatterns': targetUrlPatterns,
+                'onclick': playTrackNext
             });
 
-            $scope.playlistRootId = chrome.contextMenus.create({
+            playlistRootId = chrome.contextMenus.create({
                 'type': 'normal',
                 'title': 'Add To Playlist',
                 'contexts': ['link'],
-                'targetUrlPatterns': $scope.targetUrlPatterns
+                'targetUrlPatterns': targetUrlPatterns
             });
 
-            $scope.playlistItemIds = [];
-            $scope.contextPlaylists = PlaylistService.getList();
-            cm.updateMenuPlaylists();
+            playlistItemIds = [];
+            $rootScope.contextPlaylists = PlaylistService.getList();
+            updateMenuPlaylists();
 
-            $scope.$watch('contextPlaylists', cm.updateMenuPlaylists, true);
+            //Watch for changes to playlists
+            $rootScope.$watch('contextPlaylists', updateMenuPlaylists, true);
         };
 
-        cm.updateMenuPlaylists = function()
+        function updateMenuPlaylists()
         {
-            console.log("HERE");
-            console.log(JSON.stringify($scope.contextPlaylists));
-            playlists = $scope.contextPlaylists;
-            $scope.playlistItemIds.forEach(function(id) {
+            var playlists = $rootScope.contextPlaylists;
+            playlistItemIds.forEach(function(id) {
                 chrome.contextMenus.remove(id, function(){
                     //ignore
                 })
             })
 
-            $scope.playlistItemIds = [];
+            playlistItemIds = [];
 
             for(var i = 0; i < playlists.items.length; i++)
             {
-                console.log("adding a menu item");
                 var id = chrome.contextMenus.create({
                     'id': "playlistitem_"+i,
                     'type': 'normal',
-                    'parentId': $scope.playlistRootId,
+                    'parentId': playlistRootId,
                     'title': playlists.items[i].name,
                     'contexts': ['link'],
-                    'targetUrlPatterns': $scope.targetUrlPatterns,
-                    'onclick': cm.addLinkToPlaylist
+                    'targetUrlPatterns': targetUrlPatterns,
+                    'onclick': addLinkToPlaylist
                 });
-                $scope.playlistItemIds.push(id);
+                playlistItemIds.push(id);
             }
         };
 
-        cm.playTrack = function(info, tab)
+        function playTrack(info, tab)
         {
-            cm.queueTrack(cm.resolveTrack(info.linkUrl), true);   
+            resolveTrack(info.linkUrl).then(
+                function (track){
+                    queueTrack(track, true);  
+                }
+            )
+             
         };
 
-        cm.playTrackNext = function(info, tab)
+        function playTrackNext(info, tab)
         {
-            cm.queueTrack(cm.resolveTrack(info.linkUrl), false);
+            queueTrack(resolveTrack(info.linkUrl), false);
         };
 
-        cm.queueTrack = function (track, playNow)
+        function queueTrack(track, playNow)
         {
             if(playNow){
                 CorePlayer.add(track, true);
@@ -109,21 +128,20 @@
             }
         }
 
-        cm.addLinkToPlaylist = function(info, tab)
+        function addLinkToPlaylist(info, tab)
         {
-            cm.resolveTrack(info.linkUrl).then(function(track){
-                console.log(JSON.stringify(track));
+            resolveTrack(info.linkUrl).then(function(track){
                 var index = parseInt(info.menuItemId.split("_")[1]);
                 PlaylistService.addTrackToPlaylist(track, index); 
             });
         };
 
-        cm.resolveTrack = function(linkUrl, isYoutube)
+        function resolveTrack(linkUrl, isYoutube)
         {
             var defer = $q.defer();
             if(linkUrl.includes('youtube'))
             {
-                videoId = getParameterByName(linkUrl, "v");
+                var videoId = getParameterByName(linkUrl, "v");
                 SearchService.searchYoutube(videoId, {limit: 1, nextPageToken: ''}).then(function (result){
                     console.log(result.tracks[0]);
                     defer.resolve(result.tracks[0]);
@@ -149,7 +167,5 @@
                 results = regex.exec(url);
             return results === null ? "" : decodeURIComponent(results[1].replace(/\+/g, " "));
         }
-        PlaylistService.init();
-        cm.init();
     };
 })();
