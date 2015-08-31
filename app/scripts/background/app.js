@@ -13,6 +13,10 @@
                     // var starStore = db.createObjectStore('starred', {keyPath: 'id'});
                 });
         })
+    .run(function(ContextMenuService, PlaylistService) {
+        PlaylistService.init();
+        ContextMenuService.init();
+    });
 
     angular.element(document).ready(function() {
         setTimeout(function() { angular.bootstrap(document, ["soundcloudify.background"]); }, 100);
