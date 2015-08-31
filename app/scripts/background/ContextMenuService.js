@@ -115,7 +115,11 @@
 
         function playTrackNext(info, tab)
         {
-            queueTrack(resolveTrack(info.linkUrl), false);
+            resolveTrack(info.linkUrl).then(
+                function (track) {
+                    queueTrack(track, false);
+            });
+            
         };
 
         function queueTrack(track, playNow)
