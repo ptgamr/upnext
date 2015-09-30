@@ -25,7 +25,7 @@ And ... it's free, opensource, yaaaay!!!
 - Playlist management
 - Last.fm scrobbling
 - Import YouTube playlist
-- Sync Playlist accross devices
+- Sync Playlist across devices
 
 [How to configure UpNext hot keys ?](https://gist.github.com/ptgamr/96caea84b206b7a361a1)
 
