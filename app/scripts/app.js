@@ -8,32 +8,32 @@
 
             $stateProvider
                 .state('nowPlaying', {
-                    url: "/now-playing",
-                    templateUrl: "partials/nowPlaying.html",
+                    url: '/now-playing',
+                    templateUrl: 'partials/nowPlaying.html',
                     controller: 'NowPlayingController',
                     controllerAs: 'vm'
                 })
                 .state('search', {
-                    url: "/search",
-                    templateUrl: "partials/search.html",
+                    url: '/search',
+                    templateUrl: 'partials/search.html',
                     controller: 'SearchController'
                 })
 
                 // PLAYLIST
                 .state('playlist', {
                     abstract: true,
-                    url: "/playlist",
-                    templateUrl: "partials/playlist/playlist.html",
+                    url: '/playlist',
+                    templateUrl: 'partials/playlist/playlist.html',
                     controller: 'PlaylistController',
                     controllerAs: 'playlistCtrl'
                 })
                     .state('playlist.list', {
-                        url: "",
-                        templateUrl: "partials/playlist/list.html"
+                        url: '',
+                        templateUrl: 'partials/playlist/list.html'
                     })
                     .state('playlist.view', {
-                        url: "/:playlistIndex",
-                        templateUrl: "partials/playlist/view.html",
+                        url: '/:playlistIndex',
+                        templateUrl: 'partials/playlist/view.html',
                         controller: 'PlaylistViewController',
                         controllerAs: 'playlistViewCtrl'
                     })
@@ -41,23 +41,23 @@
                 // CHARTS
                 .state('charts', {
                     abstract: true,
-                    url: "/charts",
-                    templateUrl: "partials/charts/charts.html",
+                    url: '/charts',
+                    templateUrl: 'partials/charts/charts.html',
                     controller: 'ChartsController',
                     controllerAs: 'chartsCtrl'
                 })
                     .state('charts.list', {
-                        url: "",
-                        templateUrl: "partials/charts/list.html"
+                        url: '',
+                        templateUrl: 'partials/charts/list.html'
                     })
                     .state('charts.detail', {
-                        url: "/:category",
-                        templateUrl: "partials/charts/view.html",
+                        url: '/:category',
+                        templateUrl: 'partials/charts/view.html',
                         controller: 'ChartsViewController',
                         controllerAs: 'viewCtrl'
                     });
 
-            $urlRouterProvider.otherwise("/charts");
+            $urlRouterProvider.otherwise('/charts');
 
             $mdThemingProvider.definePalette('dart', {
                 '50': 'ffffff',
@@ -107,8 +107,8 @@
         }
     );
 
-    soundCloudify.run(function($rootScope, GATracker, $location, MigrationService, PlaylistService, StarService, UserService, SyncService) {
-        $rootScope.$on('$stateChangeSuccess', function(event) {
+    extension.run(function($rootScope, GATracker, $location, MigrationService, PlaylistService, StarService, UserService, SyncService) {
+        $rootScope.$on('$stateChangeSuccess', function() {
             GATracker.trackPageView($location.path());
         });
 
@@ -124,7 +124,7 @@
     });
 
     angular.element(document).ready(function() {
-        setTimeout(function() { angular.bootstrap(document, ["upnext"]); }, 100);
+        setTimeout(function() { angular.bootstrap(document, ['upnext']); }, 100);
     });
 
 }());
