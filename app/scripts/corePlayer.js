@@ -1,8 +1,17 @@
 (function() {
 
     'use strict';
+    var soundCloudify;
 
-    var soundCloudify = angular.module('upnext');
+    try{
+        soundCloudify = angular.module('upnext')
+    }
+    catch (err){ /*ignore*/ }
+
+    try{
+        soundCloudify = angular.module('soundcloudify.background');
+    }
+    catch (err){ /*ignore*/ }
 
     soundCloudify.service('CorePlayer', function($rootScope, $window, $mdToast, Messaging, NowPlaying, CLIENT_ID, GATracker, LastFMAuthentication) {
 
@@ -28,7 +37,7 @@
 
         this.add = function(track, andPlay) {
 
-            andPlay = andPlay || true;
+            andPlay = andPlay;
 
             if (track) {
                 NowPlaying.addTrack(track).then(function() {
