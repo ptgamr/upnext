@@ -52,7 +52,7 @@
                 normalizedTrack.id = track.id;
                 normalizedTrack.title = track.title;
                 normalizedTrack.artworkUrl = track.artwork_url || track.user.avatar_url || DEFAULT_THUMBNAIL;
-                normalizedTrack.streamUrl = track.stream_url;
+                normalizedTrack.streamUrl = track.stream_url || (track.uri + '/stream');
                 normalizedTrack.user = track.user.username;
                 normalizedTrack.likeCount = track.likes_count;
                 normalizedTrack.dislikeCount = null;

@@ -44,9 +44,9 @@
             var shareText;
 
             if (CorePlayer.state.currentTrack) {
-                shareText = 'I\'m listening to "' + CorePlayer.state.currentTrack.title + '" with @upnextplayer #upnext https://goo.gl/ljw69q';
+                shareText = 'I\'m listening to "' + CorePlayer.state.currentTrack.title + '" with @upnextplayer #upnext https://goo.gl/oybyjt';
             } else {
-                shareText = "#UpNext: Sweet YouTube-and-SoundCloud powered music player extension for Chrome  https://goo.gl/ljw69q";
+                shareText = "#UpNext: Sweet YouTube-and-SoundCloud powered music player extension for Chrome  https://goo.gl/oybyjt";
             }
 
             $window.open(twitterURL + encodeURIComponent(shareText), '_blank');
@@ -54,7 +54,7 @@
 
         vm.shareFacebook = function($event) {
             var facebookShareUrl = 'https://www.facebook.com/sharer/sharer.php?u=';
-            $window.open(facebookShareUrl + encodeURIComponent('https://goo.gl/OW3dz8'), '_blank');
+            $window.open(facebookShareUrl + encodeURIComponent('https://goo.gl/3PnQrL'), '_blank');
         };
 
         function showDialog($event) {
