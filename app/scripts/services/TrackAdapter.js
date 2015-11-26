@@ -46,7 +46,7 @@
                 normalizedTrack.viewCount = track.statistics ? track.statistics.viewCount : 0;
                 normalizedTrack.origin = ORIGIN_YOUTUBE;
                 normalizedTrack.originalUrl = 'https://www.youtube.com/watch?v=' + track.id + '&source=soundcloudify';
-                normalizedTrack.duration = parseDuration(track.contentDetails.duration);
+                normalizedTrack.duration = track.contentDetails ? parseDuration(track.contentDetails.duration) : 0;
 
             } else {
                 normalizedTrack.id = track.id;
@@ -59,7 +59,7 @@
                 normalizedTrack.viewCount = track.playback_count;
                 normalizedTrack.origin = ORIGIN_SOUNDCLOUD;
                 normalizedTrack.originalUrl = track.permalink_url + '?source=soundcloudify';
-                normalizedTrack.duration = parseDuration(track.duration/1000);
+                normalizedTrack.duration = track.duration ? parseDuration(track.duration/1000) : 0;
             }
 
             normalizedTrack.uuid = window.ServiceHelpers.ID();
