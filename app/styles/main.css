@@ -25,6 +25,16 @@ html {
 
 md-icon { font-size: 24px; line-height: 24px;}
 
+/**
+ * SPECIAL HACK FOR FIXING THE TEXT OVERFLOW OF TRACK TITLE (max-width 100% worked before, but nolonger work in Chrome 48)
+ * Reference:
+ * - http://jsfiddle.net/laukstein/LLNsV/
+ * - Implied Minimum Size of Flex Items http://dev.w3.org/csswg/css3-flexbox/#min-size-auto
+ */
+.md-tile-content {
+    min-width: 0;
+}
+
 .md-tile-content .statistic {
   font-size: 12px;
   white-space: nowrap;
@@ -333,6 +343,7 @@ md-slider:not([md-discrete]):not([disabled]):focus .md-focus-ring, md-slider:not
   .track-item .md-tile-hover, md-item .md-tile-hover{
     padding-right: 10px;
     display: none;
+    flex: none;
     flex-direction: row;
     align-items: flex-start;
     box-sizing: border-box;
@@ -402,6 +413,7 @@ md-slider:not([md-discrete]):not([disabled]):focus .md-focus-ring, md-slider:not
     position: relative;
     min-width: 0;
     margin-right: 0;
+    flex: none;
   }
 
   .media-list .md-tile-left:hover {
@@ -412,6 +424,7 @@ md-slider:not([md-discrete]):not([disabled]):focus .md-focus-ring, md-slider:not
     line-height: 40px;
     width: 30px;
     text-align: center;
+    flex: none;
   }
 
   .media-list .play-actions .dynamic-icon {

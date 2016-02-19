@@ -1,6 +1,6 @@
 {
     "name": "UpNext Music Player",
-    "version": "1.2.10",
+    "version": "1.2.12",
     "manifest_version": 2,
     "description": "__MSG_appDescription__",
     "icons": {
