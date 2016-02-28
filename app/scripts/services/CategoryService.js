@@ -2,22 +2,22 @@
     'use strict';
 
     angular.module('soundCloudify')
-        .service("Category", CategoryService);
+        .service('Category', CategoryService);
 
     function CategoryService($http, $q, CLIENT_ID, TrackAdapter, API_ENDPOINT){
 
         var cachedCategory = JSON.parse(localStorage.getItem('charts')) || [];
-        var cachedRedditVideoIds = [];
-        
+        var cachedUpnextCategory = {};
+
         return {
             getList: getList,
             getTracks: getTracks,
-            getRedditHot: getRedditHot
+            getUpnextCategory: getUpnextCategory
         };
 
         function getList(){
 
-            return $q(function(resolve, reject) {
+            return $q(function(resolve) {
 
                 if (cachedCategory.length) {
                     resolve(cachedCategory);
@@ -25,7 +25,7 @@
                     var params = { limit: 10, offset: 0, linked_partitioning: 1, client_id: CLIENT_ID };
                     $http.get('https://api-v2.soundcloud.com/explore/categories', { params: params })
                     .success(function(data) {
-                        cachedCategory = data['music'] || [];
+                        cachedCategory = data.music || [];
                         resolve(cachedCategory);
 
                         localStorage.setItem('charts', JSON.stringify(cachedCategory));
@@ -44,7 +44,9 @@
                     method: 'GET',
                     params: params,
                     transformResponse: ServiceHelpers.appendTransform($http.defaults.transformResponse, function(result) {
-                        if (!result || !result.tracks) return [];
+                        if (!result || !result.tracks) {
+                            return [];
+                        }
                         return {
                             tracks: TrackAdapter.adaptMultiple(result.tracks, 'sc')
                         };
@@ -57,43 +59,41 @@
             });
         }
 
-        function getRedditHot(pagingObject) {
+        function getUpnextCategory(category, pagingObject) {
             return $q(function(resolve, reject) {
 
-                if (!cachedRedditVideoIds.length) {
+                if (!cachedUpnextCategory[category] || !cachedUpnextCategory[category].length) {
 
                     $http({
-                        url: API_ENDPOINT + '/reddit',
+                        url: API_ENDPOINT + '/' + category,
                         method: 'GET'
                     }).success(function(videoIds) {
 
-                        cachedRedditVideoIds = videoIds;
+                        cachedUpnextCategory[category] = videoIds;
 
-                        var pagingVideoIds = angular.copy(cachedRedditVideoIds).splice(pagingObject.skip, pagingObject.limit);
+                        var pagingVideoIds = angular.copy(cachedUpnextCategory[category]).splice(pagingObject.skip, pagingObject.limit);
                         getVideosInfo(pagingVideoIds, resolve, reject);
 
                     }).error(function() {
                         reject();
-                    })
+                    });
                 } else {
-
-                    var pagingVideoIds = angular.copy(cachedRedditVideoIds).splice(pagingObject.skip, pagingObject.limit);
+                    var pagingVideoIds = angular.copy(cachedUpnextCategory[category]).splice(pagingObject.skip, pagingObject.limit);
                     getVideosInfo(pagingVideoIds, resolve, reject);
-
                 }
-
             });
         }
 
         function getVideosInfo(ids, resolve, reject) {
 
-            var parts = ['id', 'snippet', 'statistics', 'status'];
+            var parts = ['id', 'snippet', 'statistics', 'contentDetails', 'status'];
             var fields = [
                 'items/id',
                 'items/snippet/title',
                 'items/snippet/thumbnails',
                 'items/statistics/viewCount',
                 'items/statistics/likeCount',
+                'items/contentDetails/duration',
                 'items/status/embeddable'
             ];
 
@@ -111,10 +111,12 @@
                 method: 'GET',
                 params: requestParam,
                 transformResponse: ServiceHelpers.appendTransform($http.defaults.transformResponse, function(result) {
-                    if (!result || !result.items) return [];
+                    if (!result || !result.items) {
+                        return [];
+                    }
                     return {
                         tracks: TrackAdapter.adaptMultiple(result.items, 'yt')
-                    }
+                    };
                 })
             }).success(function(data) {
                 resolve(data);
@@ -123,6 +125,5 @@
             });
 
         }
-    };
-
+    }
 }());

@@ -1,7 +1,23 @@
 <md-content class="list-hover tab-content md-padding">
     <md-list class="charts">
         <md-item>
-            <md-item-content layout="row" layout-align="start start" ng-click="chartsCtrl.selectReddit()">
+            <md-item-content layout="row" layout-align="start start" ng-click="chartsCtrl.selectCategory('upnext-featured')">
+                <div class="md-tile-content">
+                    <h3>UpNext Featured Playlist</h3>
+                </div>
+                <md-icon md-font-icon="icon ion-ios-star"></md-icon>
+            </md-item-content>
+        </md-item>
+        <md-item>
+            <md-item-content layout="row" layout-align="start start" ng-click="chartsCtrl.selectCategory('spotify-global')">
+                <div class="md-tile-content">
+                    <h3>SPOTIFY Global Top 100</h3>
+                </div>
+                <md-icon md-font-icon="icon-spotify"></md-icon>
+            </md-item-content>
+        </md-item>
+        <md-item>
+            <md-item-content layout="row" layout-align="start start" ng-click="chartsCtrl.selectCategory('reddit')">
                 <div class="md-tile-content">
                     <h3>Reddit Hot</h3>
                 </div>
@@ -13,6 +29,7 @@
                 <div class="md-tile-content">
                     <h3>{{chartsCtrl.sanitizeCategory(cat)}}</h3>
                 </div>
+                <md-icon md-font-icon="icon-soundcloud"></md-icon>
             </md-item-content>
         </md-item>
     </md-list>

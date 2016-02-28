@@ -18,10 +18,6 @@
             $state.go('charts.detail', {category: category});
         };
 
-        vm.selectReddit = function() {
-            $state.go('charts.detail', {category: 'reddit'});
-        }
-
         vm.sanitizeCategory = function(category) {
             return unescape(category).replace(/\+/g, " ");
         };

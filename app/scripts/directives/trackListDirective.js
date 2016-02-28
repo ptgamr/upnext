@@ -61,7 +61,7 @@
 
                         CorePlayer.playPause(index);
 
-                        GATracker.trackDiscovery('play - pause', $scope.listContext);
+                        GATracker.trackDiscovery('play - pause', $scope.listContext, track.title);
 
                     } else if ($scope.onTrackClick = 'playnow') {
 
@@ -71,7 +71,7 @@
 
                         CorePlayer.add(track, true);
 
-                        GATracker.trackDiscovery('add track', $scope.listContext);
+                        GATracker.trackDiscovery('add track', $scope.listContext, track.title);
                     } else {
 
                     }
@@ -81,7 +81,7 @@
 
                     CorePlayer.playNext(track);
 
-                    GATracker.trackDiscovery('up next', $scope.listContext);
+                    GATracker.trackDiscovery('up next', $scope.listContext, track.title);
 
                     $mdToast.show(
                       $mdToast.simple()

@@ -1,13 +1,19 @@
 (function() {
 
+    'use strict';
+
     angular.module('soundCloudify')
-            .controller('ChartsViewController', ChartsViewController)
+            .controller('ChartsViewController', ChartsViewController);
+
+    var UPNEXT_OWN_CHART = ['reddit', 'upnext-featured', 'spotify-global'];
 
     function ChartsViewController($scope, Category, $state, $stateParams, CorePlayer, Paginator, $mdToast, GATracker) {
         var vm = this;
         vm.category = $stateParams.category;
 
-        if (!vm.category) throw new Error('ChartsViewController: category is undefined');
+        if (!vm.category) {
+            throw new Error('ChartsViewController: category is undefined');
+        }
 
         vm.fallbackArtwork = chrome.extension.getURL('images/artwork-default.jpg');
         vm.tracks = [];
@@ -16,8 +22,8 @@
             limit: 10,
             getFirstPage: true,
             pagingFunction: function(paginationModel) {
-                if (vm.category === 'reddit') {
-                    return Category.getRedditHot(paginationModel);
+                if (UPNEXT_OWN_CHART.indexOf(vm.category) > -1) {
+                    return Category.getUpnextCategory(vm.category, paginationModel);
                 } else {
                     return Category.getTracks(vm.category, paginationModel);
                 }

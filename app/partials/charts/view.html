@@ -10,7 +10,7 @@
             <h3>{{chartsCtrl.sanitizeCategory(viewCtrl.category)}}</h3>
         </div>
     </div>
-    <track-list class="list-full" tracks="viewCtrl.tracks" on-track-click="playnow" list-context="charts"></track-list>
+    <track-list class="list-full" tracks="viewCtrl.tracks" on-track-click="playnow" list-context="charts {{viewCtrl.category}}"></track-list>
     <loading ng-show="viewCtrl.paginator.lastPromise.$$state.status === 0"></loading>
     <section layout="row" layout-align="center center" ng-hide="viewCtrl.paginator.lastPromise.$$state.status === 0">
         <md-button ng-show="viewCtrl.paginator.hasMoreRow" class="md-primary" ng-click="viewCtrl.paginator.moreRows()">{{'button_loadMore' | translate}}</md-button>
