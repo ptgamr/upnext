@@ -7,10 +7,11 @@
     function CategoryService($http, $q, CLIENT_ID, TrackAdapter, API_ENDPOINT){
 
         var cachedCategory = JSON.parse(localStorage.getItem('charts')) || [];
-        var cachedUpnextCategory = {};
+        var cachedUpnextCategory = JSON.parse(localStorage.getItem('upnext-charts')) || [];
 
         return {
             getList: getList,
+            getUpNextList: getUpNextList,
             getTracks: getTracks,
             getUpnextCategory: getUpnextCategory
         };
@@ -32,7 +33,28 @@
                     });
                 }
             });
+        }
 
+        function getUpNextList() {
+            return $q(function(resolve) {
+                var isResolve = false;
+                if (cachedUpnextCategory.length) {
+                    resolve(cachedUpnextCategory);
+                    isResolve = true;
+                }
+
+                $http({
+                    url: API_ENDPOINT + '/charts',
+                    method: 'GET'
+                }).success(function(charts) {
+                    cachedUpnextCategory = charts;
+                    localStorage.setItem('upnext-charts', JSON.stringify(cachedUpnextCategory));
+
+                    if (!isResolve) {
+                        resolve(cachedUpnextCategory);
+                    }
+                });
+            });
         }
 
         function getTracks(category, pagingObject) {
@@ -65,7 +87,7 @@
                 if (!cachedUpnextCategory[category] || !cachedUpnextCategory[category].length) {
 
                     $http({
-                        url: API_ENDPOINT + '/' + category,
+                        url: API_ENDPOINT + '/chart?key=' + category,
                         method: 'GET'
                     }).success(function(videoIds) {
 

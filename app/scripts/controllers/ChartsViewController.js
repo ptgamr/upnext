@@ -5,11 +5,11 @@
     angular.module('soundCloudify')
             .controller('ChartsViewController', ChartsViewController);
 
-    var UPNEXT_OWN_CHART = ['reddit', 'upnext-featured', 'spotify-global'];
-
     function ChartsViewController($scope, Category, $state, $stateParams, CorePlayer, Paginator, $mdToast, GATracker) {
         var vm = this;
         vm.category = $stateParams.category;
+        vm.categoryLabel = $stateParams.label || $stateParams.category;
+        vm.fromUpnext = $stateParams.fromUpnext;
 
         if (!vm.category) {
             throw new Error('ChartsViewController: category is undefined');
@@ -22,7 +22,7 @@
             limit: 10,
             getFirstPage: true,
             pagingFunction: function(paginationModel) {
-                if (UPNEXT_OWN_CHART.indexOf(vm.category) > -1) {
+                if (vm.fromUpnext) {
                     return Category.getUpnextCategory(vm.category, paginationModel);
                 } else {
                     return Category.getTracks(vm.category, paginationModel);

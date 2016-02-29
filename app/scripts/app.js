@@ -93,7 +93,7 @@
 						templateUrl: "partials/charts/list.html"
 					})
 					.state('charts.detail', {
-						url: "/:category",
+						url: "/detail?category&label&fromUpnext",
 						templateUrl: "partials/charts/view.html",
 						controller: 'ChartsViewController',
 						controllerAs: 'viewCtrl'

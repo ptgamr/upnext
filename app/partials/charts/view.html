@@ -6,8 +6,8 @@
                 {{'button_back' | translate}}
             </md-button>
         </div>
-        <div flex="33" class="chosen-category">
-            <h3>{{chartsCtrl.sanitizeCategory(viewCtrl.category)}}</h3>
+        <div flex="66" class="chosen-category">
+            <h3>{{chartsCtrl.sanitizeCategory(viewCtrl.categoryLabel)}}</h3>
         </div>
     </div>
     <track-list class="list-full" tracks="viewCtrl.tracks" on-track-click="playnow" list-context="charts {{viewCtrl.category}}"></track-list>

@@ -6,6 +6,10 @@
     function ChartsController(Category, $state, $scope) {
         var vm = this;
 
+        Category.getUpNextList().then(function(upnextCategories) {
+            vm.upnextCategories = upnextCategories;
+        });
+
         Category.getList().then(function(categories) {
             vm.categories = categories;
         });
@@ -14,8 +18,8 @@
             $scope.$broadcast('charts.playAll');
         };
 
-        vm.selectCategory = function(category) {
-            $state.go('charts.detail', {category: category});
+        vm.selectCategory = function(category, label, fromUpnext) {
+            $state.go('charts.detail', {category: category, label: label, fromUpnext: fromUpnext});
         };
 
         vm.sanitizeCategory = function(category) {
