@@ -3,7 +3,7 @@
 
   [The extension has been removed from Chrome WebStore because of some legal issues from YouTube](http://trinhtrunganh.com/fyi-upnext-music-player-has-been-removed-from-chrome-web-store/)
 
-  [Click here to download the binary version and do a manual install](https://www.dropbox.com/s/h11rjlet74r3m4v/upnext-1.2.14.zip?dl=0)
+  [Click here to download the binary version and do a manual install](https://github.com/ptgamr/upnext/blob/master/upnext-1.2.14.zip?raw=true)
 
 [![Join the chat at https://gitter.im/ptgamr/soundcloudify](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/ptgamr/soundcloudify?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
