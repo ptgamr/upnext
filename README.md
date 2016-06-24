@@ -5,13 +5,13 @@
 
   [Click here to download the binary version and do a manual install](https://www.dropbox.com/s/h11rjlet74r3m4v/upnext-1.2.14.zip?dl=0)
 
-*UpNext* was named "SoundCloudify" before. However, it has been taken down from Chrome Store because it has `SoundCloud` part in uts name. Therefore, it has been renamed to UpNext.
-
-http://trinhtrunganh.com/soundcloudify-is-now-upnext/
-
 [![Join the chat at https://gitter.im/ptgamr/soundcloudify](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/ptgamr/soundcloudify?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 ![UpNext](http://i.imgur.com/gSUHUBw.png)
+
+*UpNext* was named "SoundCloudify" before. However, it has been taken down from Chrome Store because it has `SoundCloud` part in uts name. Therefore, it has been renamed to UpNext.
+
+http://trinhtrunganh.com/soundcloudify-is-now-upnext/
 
 [UpNext](https://chrome.google.com/webstore/detail/upnext-music-player/dgkfcdlmdppfhbfmooinbcejdaplobpk) helps you listen to endless music from Youtube and SoundCloud, right in your Chrome Browser, without the need to open a new tab. It's an extension, a little player with all the power you need.
 
