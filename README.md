@@ -1,7 +1,7 @@
 # UpNext
 ### Music streaming from SoundCloud and Youtube, Last.fm Scrobbling (Formally: SoundCloudify)
 
-  [The extension has been removed from Chrome WebStore because of some legal issues from YouTube](http://trinhtrunganh.com/fyi-upnext-music-player-has-been-removed-from-chrome-web-store/)
+  [The extension has been removed from Chrome WebStore because of some legal issues from YouTube](http://trinhtrunganh.com/2016/06/24/fyi-upnext-music-player-has-been-removed-from-chrome-web-store/)
 
   [CLICK HERE to download the binary version and do a manual install](https://github.com/ptgamr/upnext/blob/master/upnext-1.2.14.zip?raw=true)
 
