@@ -1,5 +1,5 @@
-#UpNext
-###Music streaming from SoundCloud and Youtube, Last.fm Scrobbling (Formally: SoundCloudify)
+# UpNext
+### Music streaming from SoundCloud and Youtube, Last.fm Scrobbling (Formally: SoundCloudify)
 
   [The extension has been removed from Chrome WebStore because of some legal issues from YouTube](http://trinhtrunganh.com/fyi-upnext-music-player-has-been-removed-from-chrome-web-store/)
 
@@ -35,9 +35,9 @@ And ... it's free, opensource, yaaaay!!!
 
 
 
-##CHANGES LOG
+## CHANGES LOG
 
-###v1.2
+### v1.2
 - Ability to sync playlists, favourite tracks if you logged in in Chrome
 - Ability to import YouTube playlist
 - A new chart for ***TOP 100 SONGS*** in Reddit's /r/Music/
@@ -49,13 +49,13 @@ And ... it's free, opensource, yaaaay!!!
 
 ![UpNext import playlist from YouTube](http://i.imgur.com/NeDdQOt.gif)
 
-###v1.1
+### v1.1
 - last.fm integration
 - better repeat logic
 - "play all" button when view a chart
 - background.js enhancements for syncing data with foreground
 
-##License
+## License
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use any files in this repository except in compliance with the License. You may obtain a copy of the License at
 
 http://www.apache.org/licenses/LICENSE-2.0
