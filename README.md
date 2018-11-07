@@ -23,7 +23,7 @@ And ... it's free, opensource, yaaaay!!!
 
 [If you like UpNext, buy its author a cup of Vietnamese coffee :)](https://www.paypal.com/cgi-bin/webscr?cmd=_donations&business=PJHLAT7APWS62&lc=VN&item_name=SoundCloudify&currency_code=USD&bn=PP%2dDonationsBF%3abtn_donateCC_LG%2egif%3aNonHosted)
 
-##KEY FEATURES:
+## KEY FEATURES:
 - Music Discovery
 - Playback history
 - Playlist management
