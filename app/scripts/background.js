@@ -232,7 +232,7 @@ Player.prototype = {
 
         if (this.state.shuffle) {
 
-            nextIndex = Utils.random(0, this.trackIds.length - 1);
+            nextIndex = Utils.random(0, this.trackIds.length);
 
         } else {
 
